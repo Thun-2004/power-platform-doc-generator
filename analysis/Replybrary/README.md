@@ -3,9 +3,9 @@
 This folder contains a structured reverse-engineering analysis of the client’s **Replybrary** Power Platform solution.  
 The purpose is to prepare for **Task 6**, where we design a parser and documentation generator for Power Apps solutions.
 
----
 
-## ✔ What this analysis includes
+
+## What this analysis includes
 
 ### 1. `Replybrary-summary.json`
 A clean, simplified JSON representation of the actual solution zip, covering:
@@ -20,7 +20,7 @@ A clean, simplified JSON representation of the actual solution zip, covering:
 
 This JSON acts as the **target schema** our Task 6 parser should output.
 
----
+
 
 ### 2. `dependency-diagram.png`
 A visual diagram showing all critical dependencies:
@@ -34,7 +34,6 @@ A visual diagram showing all critical dependencies:
 
 This diagram is a blueprint of how Power Platform components relate inside a real solution.
 
----
 
 ## Why this work matters for us
 
@@ -44,7 +43,7 @@ This diagram is a blueprint of how Power Platform components relate inside a rea
 - Shows relationships we need to represent in the final documentation UI.
 - Clarifies how complex solutions (flows + SharePoint + env vars + bot) interconnect.
 
----
+
 
 ## How to use this folder
 
@@ -54,7 +53,7 @@ This diagram is a blueprint of how Power Platform components relate inside a rea
   `dependency-diagram.png`.
 - This folder will grow as we refine the schema or add unit-test examples.
 
----
+
 
 ## Author
 Created as part of Task 6 preparation – analysis, structuring, and documentation by Dara.
