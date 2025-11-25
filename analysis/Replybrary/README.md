@@ -48,12 +48,12 @@ This diagram is a blueprint of how Power Platform components relate inside a rea
 ## How to use this folder
 
 - Developers implementing the parser can use `Replybrary-summary.json`  
-  as the **expected output template**.
+ as the **expected output template**.
 - Team members working on UI/docs can base their components on the  
-  `dependency-diagram.png`.
+`dependency-diagram.png`.
 - This folder will grow as we refine the schema or add unit-test examples.
 
 
 
 ## Author
-Created as part of Task 6 preparation – analysis, structuring, and documentation by Dara.
+Created as part of Task 6 preparation analysis, structuring, and documentation by Dara.
