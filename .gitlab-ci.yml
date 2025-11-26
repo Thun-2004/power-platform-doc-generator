@@ -1,23 +1,43 @@
-build-job:
-  stage: build
-  script:
-    - echo "Hello, $GITLAB_USER_LOGIN!"
+#Taken from website tutorial: https://medium.com/@wahab.kazmi2000/building-and-deploying-a-react-js-project-with-docker-and-gitlab-ci-3913efa74c71
+stages:
+ - test
+ - build
+ - image
 
-test-job1:
-  stage: test
-  script:
-    - echo "This job tests something"
+variables:
+ IMAGE_NAME: development
+ IMAGE_TAG: latest
 
-test-job2:
-  stage: test
-  script:
-    - echo "This job tests something, but takes more time than test-job1."
-    - echo "After the echo commands complete, it runs the sleep command for 20 seconds"
-    - echo "which simulates a test that runs 20 seconds longer than test-job1"
-    - sleep 20
+test:
+ stage: test
+ image: node:14
+ script:
+ - npm install
+ - npm test
 
-deploy-prod:
-  stage: deploy
-  script:
-    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
-  environment: production
+build:
+ stage: build
+ image: node:14
+ script:
+ - npm install
+ - npm run build
+
+build-docker-image:
+ stage: image
+ image: docker:19.03.12
+ services:
+ - docker:19.03.12-dind
+ script:
+ - docker info
+ - |
+ if [ "$CI_COMMIT_BRANCH" == "main" ]; then
+ export IMAGE_NAME=production
+ elif [ "$CI_COMMIT_BRANCH" == "feature/frontend" ]; then
+ export IMAGE_NAME=staging
+ else
+ echo "Skipping Docker image build for branch $CI_COMMIT_BRANCH"
+ exit 0
+ fi
+ - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA .
+ - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+ - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
