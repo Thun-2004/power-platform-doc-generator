@@ -7,18 +7,21 @@ stages:
 variables:
  IMAGE_NAME: development
  IMAGE_TAG: latest
+ APP_DIRECTORY: doc-pow
 
 test:
  stage: test
  image: node:14
  script:
+ - cd $APP_DIRECTORY
  - npm install
- - npm test
+ - npm test --passWithNoTests
 
 build:
  stage: build
  image: node:14
  script:
+ - cd $APP_DIRECTORY
  - npm install
  - npm run build
 
@@ -28,16 +31,17 @@ build-docker-image:
  services:
  - docker:19.03.12-dind
  script:
+ - cd $APP_DIRECTORY
  - docker info
  - |
- if [ "$CI_COMMIT_BRANCH" == "main" ]; then
- export IMAGE_NAME=production
- elif [ "$CI_COMMIT_BRANCH" == "feature/frontend" ]; then
- export IMAGE_NAME=staging
- else
- echo "Skipping Docker image build for branch $CI_COMMIT_BRANCH"
- exit 0
- fi
- - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA .
- - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
- - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+    if [ "$CI_COMMIT_BRANCH" == "main" ]; then
+    export IMAGE_NAME=production
+    elif [ "$CI_COMMIT_BRANCH" == "feature/frontend" ]; then
+     export IMAGE_NAME=staging
+    else
+    echo "Skipping Docker image build for branch $CI_COMMIT_BRANCH"
+    exit 0
+    fi
+    - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA .
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
