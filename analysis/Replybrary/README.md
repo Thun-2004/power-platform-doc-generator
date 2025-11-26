@@ -1,4 +1,4 @@
-# Replybrary – Power Platform Solution Analysis (Task 6 Foundations)
+# Replybrary – Power Platform Solution Analysis (Task 6 Foundations).
 
 This folder contains a structured reverse-engineering analysis of the client’s **Replybrary** Power Platform solution.  
 The purpose is to prepare for **Task 6**, where we design a parser and documentation generator for Power Apps solutions.
