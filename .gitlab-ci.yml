@@ -7,7 +7,7 @@ stages:
 variables:
  IMAGE_NAME: development
  IMAGE_TAG: latest
- APP_DIRECTORY: doc-pow
+ APP_DIRECTORY: doctor-power
 
 test:
  stage: test
