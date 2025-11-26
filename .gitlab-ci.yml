@@ -7,11 +7,13 @@ stages:
 variables:
  IMAGE_NAME: development
  IMAGE_TAG: latest
+ APP_DIRECTORY: doc-pow
 
 test:
  stage: test
  image: node:14
  script:
+ - cd $APP_DIRECTORY
  - npm install
  - npm test
 
@@ -19,6 +21,7 @@ build:
  stage: build
  image: node:14
  script:
+ - cd $APP_DIRECTORY
  - npm install
  - npm run build
 
@@ -28,6 +31,7 @@ build-docker-image:
  services:
  - docker:19.03.12-dind
  script:
+ - cd $APP_DIRECTORY
  - docker info
  - |
     if [ "$CI_COMMIT_BRANCH" == "main" ]; then
