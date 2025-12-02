@@ -13,6 +13,17 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        var MyAllowSpecificOrigins = "_myAllowSpecificOrigins"; //cors rule
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: MyAllowSpecificOrigins,
+                            policy  =>
+                            {
+                                policy.WithOrigins("http://example.com",
+                                                    "http://www.contoso.com");
+                            });
+        });
 
         // Add services to the container.
         builder.Services.AddControllers();
@@ -47,6 +58,7 @@ public class Program
 
         app.UseAuthentication();
         app.UseHttpsRedirection();
+        app.UseCors(MyAllowSpecificOrigins);
         app.UseAuthorization();
         app.MapControllers();
         app.UseCors("AllowAll"); 
