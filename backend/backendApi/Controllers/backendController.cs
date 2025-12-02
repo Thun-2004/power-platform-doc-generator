@@ -14,14 +14,12 @@ public class ProductsController : ControllerBase
         new Product { Id = 3, Name = "Keyboard", Price = 79.99m }
     };
 
-
-    // GET: api/products
+    // GET: api/pr   oducts
     [HttpGet]
     public ActionResult<IEnumerable<Product>> GetAllProducts()
     {
         return Ok(products);
     }
-
 
     // GET: api/products/1
     [HttpGet("{id}")]
@@ -35,7 +33,6 @@ public class ProductsController : ControllerBase
         return Ok(product);
     }
 
-
     // POST: api/products
     [HttpPost]
     public ActionResult<Product> CreateProduct(Product product)
@@ -45,7 +42,6 @@ public class ProductsController : ControllerBase
         
         return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
     }
-
 
     // PUT: api/products/1
     [HttpPut("{id}")]
@@ -62,7 +58,6 @@ public class ProductsController : ControllerBase
         return Ok(product);
     }
 
-
     // DELETE: api/products/1
     [HttpDelete("{id}")]
     public ActionResult DeleteProduct(int id)
@@ -77,6 +72,7 @@ public class ProductsController : ControllerBase
         return Ok(new { message = "Product deleted successfully" });
     }
 }
+
 // Product model
 public class Product
 {
@@ -84,3 +80,5 @@ public class Product
     public string Name { get; set; } = string.Empty;
     public decimal Price { get; set; }
 }
+
+

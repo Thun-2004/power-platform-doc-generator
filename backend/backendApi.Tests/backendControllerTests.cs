@@ -11,8 +11,7 @@ namespace backendApi.Tests
     public class backendControllerTests : IClassFixture<WebApplicationFactory<backendApi.Program>>
     {
         private readonly WebApplicationFactory<backendApi.Program> _factory;
-        public backendControllerTests(
-            WebApplicationFactory<backendApi.Program> factory)
+        public backendControllerTests(WebApplicationFactory<backendApi.Program> factory)
         {
             _factory = factory;
         }
