@@ -1,10 +1,8 @@
 using Scalar.AspNetCore;
 
 using Microsoft.AspNetCore.Identity;
-// using backend.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using backendApi.Data;
-
 
 namespace backendApi; 
 
@@ -13,7 +11,7 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        var MyAllowSpecificOrigins = "_myAllowSpecificOrigins"; //cors rule
+        var MyAllowSpecificOrigins = "_myAllowSpecificOrigins"; //cors rule's name
 
         builder.Services.AddCors(options =>
         {

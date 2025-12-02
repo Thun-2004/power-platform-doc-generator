@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace MyFirstApi.Controllers;
 
@@ -15,6 +16,7 @@ public class ProductsController : ControllerBase
     };
 
     // GET: api/pr   oducts
+    [Authorize]
     [HttpGet]
     public ActionResult<IEnumerable<Product>> GetAllProducts()
     {
