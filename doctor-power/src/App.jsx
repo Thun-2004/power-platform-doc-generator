@@ -8,10 +8,16 @@ function App() {
 
   return (
     <>
-      <div className='Images'>
-          <img src={dpLogo} className="logo react" alt="React logo" />
+      <header className="logo-header">
+          <img src={dpLogo} className="logo" alt="Doctor Power Logo" />
+          <h1 className="logo-text">octor Power</h1>
+      </header>
+
+      <div className="sign-up-login">
+        <button className="auth-button">Login</button>
+        <button className="auth-button">Sign Up</button>
       </div>
-      <h1>Welcome to doctor Power!</h1>
+      
       <div className="card">
         <button onClick={() => setCount((count) => count +1)}>
           count is {count}
