@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import dpLogo from './assets/dp-logo.png'
-import viteLogo from '/vite.svg'
 import './App.css'
 import Upload from './Upload' 
+// import FileUpload from './fileUpload'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -18,14 +18,11 @@ function App() {
         <button className="auth-button">Login</button>
         <button className="auth-button">Sign Up</button>
       </div>
-      
-      <div className="card">
-        <button onClick={() => setCount((count) => count +1)}>
-          count is {count}
-        </button>
+
+      <div className="file-upload">
+        <Upload />
       </div>
-      <Upload />
-    
+  
     </>
   )
 }
