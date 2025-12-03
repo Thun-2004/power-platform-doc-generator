@@ -2,6 +2,7 @@ import { useState } from 'react'
 import dpLogo from './assets/dp-logo.png'
 import viteLogo from '/vite.svg'
 import './App.css'
+import Upload from './Upload' 
 
 function App() {
   const [count, setCount] = useState(0)
@@ -23,13 +24,8 @@ function App() {
           count is {count}
         </button>
       </div>
-      <p className="read-the-docs">
-        To do:
-        <ul>
-          <li>Add file upload system</li>
-          <li>Get the basic UI done</li>
-        </ul>
-      </p>
+      <Upload />
+    
     </>
   )
 }
