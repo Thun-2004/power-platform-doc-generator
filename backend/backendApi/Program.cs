@@ -2,7 +2,10 @@ using Scalar.AspNetCore;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.InMemory; 
 using backendApi.Data;
+// using Application; 
+// using AddInfrastructure; 
 
 namespace backendApi; 
 
@@ -25,6 +28,9 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllers();
+        // builder.Services.AddInfrastructure(); 
+        // builder.Services.AddApplication();
+
         builder.Services.AddOpenApi();
 
         builder.Services.AddDbContext<AppDbContext>(options =>
