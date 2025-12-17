@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import dpLogo from './assets/dp-logo.png'
 import './App.css'
-import Upload from './Upload' 
+import Upload from './Upload'
+import FileOutput from './fileOutput'
+import Sidebar from './sidebar' 
 // import FileUpload from './fileUpload'
 
 function App() {
@@ -21,6 +23,12 @@ function App() {
 
       <div className="file-upload">
         <Upload />
+      </div>
+      <div className="file-output">
+        <FileOutput />
+      </div>
+      <div className="sidebar">
+        <Sidebar />
       </div>
   
     </>
