@@ -1,0 +1,70 @@
+using Scalar.AspNetCore;
+
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+using backend.Data;
+using backend.Infrastructure;
+
+namespace backend; 
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        var MyAllowSpecificOrigins = "_myAllowSpecificOrigins"; //cors rule's name
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: MyAllowSpecificOrigins,
+                            policy  =>
+                            {
+                                policy.WithOrigins("http://example.com",
+                                                    "http://www.contoso.com");
+                            });
+        });
+
+        // Add services to the container.
+        // builder.Services.AddControllers();
+        builder.Services.AddInfrastructures();
+        // builder.Services.AddApplication();
+
+        builder.Services.AddOpenApi();
+
+        builder.Services.AddDbContext<AppDbContext>(options =>
+        {
+            options.UseInMemoryDatabase("AuthDb"); 
+        }
+        );
+
+        builder.Services.AddAuthorization(); 
+
+        //setup table (in memory)
+        builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<AppDbContext>(); 
+
+        var app = builder.Build();
+
+        //map 
+        app.MapIdentityApi<IdentityUser>(); 
+
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+            app.MapScalarApiReference();
+
+            // Automatically redirect to Scalar documentation (only in dev)
+            app.MapGet("/", () => Results.Redirect("/scalar")); 
+            
+        }
+
+        app.UseAuthentication();
+        app.UseHttpsRedirection();
+        app.UseCors(MyAllowSpecificOrigins);
+        app.UseAuthorization();
+        // app.MapControllers();
+        app.UseCors("AllowAll"); 
+        app.Run();
+    }
+}
