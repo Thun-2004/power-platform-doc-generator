@@ -24,9 +24,16 @@ public class Program
                                                     "http://www.contoso.com");
                             });
         });
+        
+        //NOTE: testing only
+        // var uploadRoot = Path.Combine(
+        //     Environment.GetFolderPath(Environment.SpecialFolder.Desktop), 
+        //     "uploads-test"
+        // ); 
+        // Directory.CreateDirectory(uploadRoot); 
 
         // Add services to the container.
-        // builder.Services.AddControllers();
+        builder.Services.AddControllers();
         builder.Services.AddInfrastructures();
         // builder.Services.AddApplication();
 
@@ -63,8 +70,7 @@ public class Program
         app.UseHttpsRedirection();
         app.UseCors(MyAllowSpecificOrigins);
         app.UseAuthorization();
-        // app.MapControllers();
-        app.UseCors("AllowAll"); 
+        app.MapControllers();
         app.Run();
     }
 }

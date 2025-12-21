@@ -134,4 +134,3 @@
 /Users/benn/Desktop/sh38-main/backend/obj/Debug/net9.0/backend.pdb
 /Users/benn/Desktop/sh38-main/backend/obj/Debug/net9.0/backend.genruntimeconfig.cache
 /Users/benn/Desktop/sh38-main/backend/obj/Debug/net9.0/ref/backend.dll
-/Users/benn/Desktop/sh38-main/backend/bin/Debug/net9.0/backend.Infrastructure/bin/Debug/net9.0/backend.Infrastructure.deps.json
