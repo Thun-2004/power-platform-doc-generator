@@ -7,7 +7,6 @@ import Sidebar from './sidebar'
 // import FileUpload from './fileUpload'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
@@ -24,9 +23,11 @@ function App() {
       <div className="file-upload">
         <Upload />
       </div>
+
       <div className="file-output">
         <FileOutput />
       </div>
+
       <div className="sidebar">
         <Sidebar />
       </div>

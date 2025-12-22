@@ -9,8 +9,6 @@ const UploadBox = () => {
         const file = event.target.files[0];
         setSelectedFile(file)    };
 
-
-
     return (
         <div className="upload-container">
             <h2 className="upload-title">Upload File</h2>
