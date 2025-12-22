@@ -2,11 +2,11 @@
 //upload file 
 using System.Net;
 using Microsoft.Net.Http.Headers;
-using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 
-using backend.Utilities; 
+using backend.Utilities;
+using backend.Domain;
 namespace backend.controllers; 
 
 //if file size = small -> buffer in memory 
@@ -17,15 +17,37 @@ namespace backend.controllers;
 //File complete on disk -> return status 200
 //open file from disk and process (parse/build diagram)
 
+
+
+
+public class UploadRequest
+{
+    public IFormFile File { get; set; } = default!;
+}
+
 [ApiController]
 [Route("api/[controller]")]
 public class FileController : ControllerBase
 {
     // Keep these simple for now (you can move to appsettings later)
-    private static readonly string[] PermittedExtensions = [".zip", ".msapp"];
     private const long FileSizeLimit = 500L * 1024 * 1024; // 500MB
     private const int BoundaryLengthLimit = 70;
 
+    //FIX: current files stored in memory -> shift to disk(sqlite or ms azure) where it allows fast read/write
+    // private readonly List<UploadedFile> selectedFiles = []; 
+
+    private readonly ILogger<FileController> _logger;
+
+    private readonly IUploadStore _store;
+
+
+    public FileController(ILogger<FileController> logger, IUploadStore store) {
+        _logger = logger;
+        _store = store;
+    }
+
+
+    // Upload to disk 
     [HttpPost("uploadFile")]
     //[DisableFormValueModelBinding] // from the docs sample; OK to keep if you have it
     public async Task<IActionResult> UploadPhysical()
@@ -58,7 +80,7 @@ public class FileController : ControllerBase
             if (!ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition))
                 continue;
 
-            // Handle normal form fields (e.g. outputType)
+            // Handle normal form fields
             if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
             {
                 var key = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value;
@@ -78,7 +100,8 @@ public class FileController : ControllerBase
                 var safeDisplayName = WebUtility.HtmlEncode(originalFileName);
 
                 var ext = Path.GetExtension(originalFileName).ToLowerInvariant();
-                if (!PermittedExtensions.Contains(ext))
+                PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext); 
+                if (extType == 0)
                     return BadRequest($"File type '{safeDisplayName}' not permitted.");
 
                 // Choose a safe server-side filename
@@ -125,28 +148,82 @@ public class FileController : ControllerBase
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> Upload2([FromForm] UploadRequest req)
     {
-        var file = req.File; 
-        if (file == null || file.Length == 0)
-            return BadRequest("File is required");
+        try{
+            var file = req.File;
+            if (file == null || file.Length == 0)
+                return BadRequest("File is required");
 
-        var dir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
-        Directory.CreateDirectory(dir);
+            //add
+            string originalFileName = req.File.FileName; 
+            var safeDisplayName = WebUtility.HtmlEncode(originalFileName); //FIX: not sure why have it
 
-        // Don’t trust client filename in prod; for now OK for local test
-        var fullFilePath = Path.Combine(dir, file.FileName);
+            var ext = Path.GetExtension(originalFileName).ToLowerInvariant();
+            PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext); 
+            if (extType == 0)
+                return BadRequest($"File type '{safeDisplayName}' not permitted.");
+            //add
+            
+            var dir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
+            Directory.CreateDirectory(dir);
 
-        await using var stream = System.IO.File.Create(fullFilePath);
-        await file.CopyToAsync(stream);
+            // Don’t trust client filename in prod; for now OK for local test
+            var fullFilePath = Path.Combine(dir, file.FileName);
 
-        return Ok(new { message = "success" });
+            await using var stream = System.IO.File.Create(fullFilePath);
+            await file.CopyToAsync(stream);
+
+            //create obj
+
+            UploadedFile uploadedFile = new UploadedFile
+            { 
+                OriginalName = originalFileName,
+                StoredPath = fullFilePath,
+            }; 
+
+            _store.Files.Add(uploadedFile); 
+            
+            return Ok(new { fileId = uploadedFile.Id.ToString(), message = "success" }); //FIX: return name + status
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e); 
+        }
     }
+
+    [HttpPost("modes")]
+    public async Task<IActionResult> selectModes([FromForm] string fileId, [FromForm] string[] modes)
+    {
+        var file = _store.Files.FirstOrDefault(f => f.Id.ToString() == fileId); 
+        _logger.LogInformation("Test here");
+        foreach(var s in _store.Files)
+        {
+            _logger.LogInformation("File: {File}", s);
+        }
+        if (file == null)
+            return NotFound(new { code = 404, message = $"File {fileId} not found"}); 
+ 
+        file.Modes = modes.Select(ModetypeConversion.ToModeType).ToList();
+
+        return Ok(new { code = 200, message = "success", output=modes }); 
+            
+
+        //FIX: return processed output? 
+        //Results = processedFile();
+        // try
+        // {
+        //     // TODO: 
+        //     // var result = ProcessFile(file);
+        //     return Ok(new { code = 200, message = "success" }); 
+            
+        // }catch(Exception e)
+        // {
+        //     //FIX: create enum for error message type
+        //     return StatusCode(StatusCodes.Status500InternalServerError, new { code = 500, message = "Processing failed", error = e.Message });
+        // }
+    }
+  
     
 } 
-
-public class UploadRequest
-{
-    public IFormFile File { get; set; } = default!;
-}
     
     //end point for sending converted file type 
     // public async Task<IActionResult> ()

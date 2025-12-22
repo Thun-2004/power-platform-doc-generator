@@ -35,6 +35,8 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllers();
         builder.Services.AddInfrastructures();
+        //FIX: in memory cache for testing
+        builder.Services.AddSingleton<IUploadStore, UploadStore>();
         // builder.Services.AddApplication();
 
         builder.Services.AddOpenApi();
