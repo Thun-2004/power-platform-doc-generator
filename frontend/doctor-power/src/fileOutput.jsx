@@ -9,15 +9,25 @@ const fileTypes = [
     { id: "diagram6", title: "diagram6", desc: "Set fixed price for people to buy your product instantly" },
 ];
 
-const OutputSelect = () => {
+// const OutputSelect = () => {
+//     const [selected, setSelected] = useState([]);
+//     const toggleSelected = (id) => {
+//         setSelected((prevSelected) =>
+//             prevSelected.includes(id)
+//                 ? prevSelected.filter((item) => item !== id)
+//                 : [...prevSelected, id]                      
+//         );
+//     };
+
+const OutputSelect = ({ onGenerate, isGenerating }) => {
     const [selected, setSelected] = useState([]);
+
     const toggleSelected = (id) => {
-        setSelected((prevSelected) =>
-            prevSelected.includes(id)
-                ? prevSelected.filter((item) => item !== id)
-                : [...prevSelected, id]                      
+        setSelected((prev) =>
+        prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
         );
     };
+    
 
     return (
         <div className="w-full">
@@ -54,6 +64,13 @@ const OutputSelect = () => {
                     );
                 })}
             </div>
+            <button 
+                className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm mt-4 font-medium cursor-pointer transition-all hover:brightness-110"
+                onClick={() => 
+                    isGenerating = true
+                }
+            >Generate documents</button>
+            
         </div>
     );
 }
