@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./App.css"
 
 const fileTypes = [
     { id: "er", title: "ER diagram", desc: "Set fixed price for people to buy your product instantly" },
@@ -21,10 +20,10 @@ const OutputSelect = () => {
     };
 
     return (
-        <div className="file-type-selector">
-            <h2 className="fts-heading">Select output file types</h2>
+        <div className="w-full">
+            <h2 className="text-xl font-semibold mb-3 text-gray-800">Select output file types</h2>
 
-            <div className="fts-grid">
+            <div className="grid grid-cols-2 gap-4">
                 {fileTypes.map((type) => {
                     const isSelected = selected.includes(type.id);
 
@@ -33,18 +32,22 @@ const OutputSelect = () => {
                             key={type.id}
                             type="button"
                             onClick={() => toggleSelected(type.id)}
-                            className={`fts-card ${isSelected ? "fts-card--selected" : ""}`}
+                            className={`bg-white border-1 rounded-lg p-4 cursor-pointer text-left transition-all hover:shadow-md hover:-translate-y-0.5 ${
+                                isSelected ? "border-blue-600 shadow-sm" : "border-gray-300"
+                            }`}
                         >
-                            <div className="fts-card-row">
+                            <div className="flex items-start gap-3">
                                 <span
-                                    className={`fts-radio ${isSelected ? "fts-radio--selected" : ""}`}
+                                    className={`mt-0.5 w-[18px] h-[18px] rounded-full border-1 flex items-center justify-center transition-all ${
+                                        isSelected ? "border-blue-600" : "border-gray-400"
+                                    }`}
                                 >
-                                    {isSelected && <span className="fts-radio-inner" />}
+                                    {isSelected && <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />}
                                 </span>
 
                                 <div>
-                                    <div className="fts-title">{type.title}</div>
-                                    <div className="fts-desc">{type.desc}</div>
+                                    <div className="font-semibold text-base text-black">{type.title}</div>
+                                    <div className="mt-1 text-xs text-gray-500">{type.desc}</div>
                                 </div>
                             </div>
                         </button>

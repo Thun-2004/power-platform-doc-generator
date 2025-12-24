@@ -10,32 +10,23 @@ const UploadBox = () => {
         setSelectedFile(file)    };
 
     return (
-        <div className="upload-container">
-            <h2 className="upload-title">Upload File</h2>
-            <div className="upload-box">
-                <div className="upload-content">
-                    <label id="upload-button">
+        <div className="upload-container-new">
+            <div className="upload-drag-drop-new">
+                <div className="upload-drag-content-new">
+                    <p className="upload-hint-new">Drag and drop your file here</p>
+                    <p className="upload-constraints-new">Max 120 MB, PNG, JPEG, MP3, MP4</p>
+                    <label className="browse-button-new">
                         Browse File
                         <input
                             type="file"
-                            accept=".zip"
+                            accept=".png,.jpeg,.jpg,.mp3,.mp4"
                             style={{ display: "none" }}
                             onChange={handleFileSelect}
                         />
                     </label>
                 </div>
             </div>
-            <div className="upload-output">
-                {selectedFile && (
-                    <div>
-                        <p>File name: {selectedFile.name}</p>
-                        <p>File type: {selectedFile.type}</p>
-                        <p>File size: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
-                    </div>
-                )}
-            </div>
         </div>
-
     )
 
 };
