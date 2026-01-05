@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
-#root {
+/* #root {
   width: 100%;
   margin: 0;
   padding: 0;
   text-align: left;
-}
+} */
 
-.logo-header {
+/* .logo-header {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -15,18 +15,18 @@
   display: flex;
   align-items: center;
   gap: 1px;
-}
+} */
 
-.sign-up-login {
+/* .sign-up-login {
   position: absolute;
   top: 60px;
   right: 10px;
 
   display: flex;
   gap: 20px;
-}
+} */
 
-.auth-button {
+/* .auth-button {
   width: 140px;
   height: 40px;
 
@@ -43,9 +43,9 @@
   align-items: center; 
 
   transition: filter 300ms;
-}
+} */
 
-.logo {
+/* .logo {
   height: 5em;
   padding: 1.5em;
   will-change: filter;
@@ -97,7 +97,7 @@
 
 /* File Upload section */
 
-.upload-container {
+/* .upload-container {
   position: absolute;
   top: 160px;        
   left: 575px;        
@@ -153,7 +153,7 @@
 /* File Output section */
 
 
-.file-type-selector {
+/* .file-type-selector {
   margin-top: 480px;
   width: 100%;
 }
@@ -162,7 +162,6 @@
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  /*text-shadow: 0 0 8px rgba(59, 130, 246, 0.8); */
   text-shadow:
     0 0 6px rgba(59, 130, 246, 0.7),
     0 0 12px rgba(59, 130, 246, 0.5),
@@ -248,10 +247,10 @@
   .fts-grid {
     grid-template-columns: 1fr;
   }
-}
+} */
 
 /* Sidebar section */
-
+/* 
 .floating-sidebar {
   position: fixed;
   top: 50%;                 
@@ -286,10 +285,10 @@
   color: inherit;
   cursor: pointer;
   padding: 0;
-}
+} */
 
 /* Hamburger icon */
-.hamburger {
+/* .hamburger {
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -324,10 +323,10 @@
   max-width: 200px;
   max-height: 400px; 
   opacity: 1;
-}
+} */
 
 /* New Dashboard Layout Styles */
-
+/* 
 .app-container {
   min-height: 100vh;
   background-color: #F9FAFC;
@@ -390,16 +389,16 @@
 
 .auth-button:hover {
   filter: brightness(1.1);
-}
+} */
 
 /* Dashboard Container */
-.dashboard-container {
+/* .dashboard-container {
   display: flex;
   min-height: calc(100vh - 100px);
-}
+} */
 
 /* Sidebar */
-.dashboard-sidebar {
+/* .dashboard-sidebar {
   width: 250px;
   background-color: #f3f4f6;
   padding: 1.5rem 1rem;
@@ -472,10 +471,10 @@
 .nav-text {
   font-size: 0.95rem;
   font-weight: 500;
-}
+} */
 
 /* Main Content */
-.dashboard-main {
+/* .dashboard-main {
   flex: 1;
   padding: 2rem;
   background-color: white;
@@ -489,10 +488,10 @@
   font-weight: 600;
   margin-bottom: 1rem;
   color: #1f2937;
-}
+} */
 
 /* Upload Section */
-.upload-section {
+/* .upload-section {
   margin-bottom: 2rem;
 }
 
@@ -543,10 +542,10 @@
 
 .browse-button:hover {
   filter: brightness(1.1);
-}
+} */
 
 /* Output Select Section */
-.output-select-section {
+/* .output-select-section {
   margin-bottom: 2rem;
 }
 
@@ -558,10 +557,10 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
-}
+} */
 
 /* Output Section */
-.output-section {
+/* .output-section {
   margin-top: 2rem;
 }
 
@@ -645,4 +644,5 @@
 
 .file-action-button:hover {
   background-color: #d1d5db;
-}
+}   */
+

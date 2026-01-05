@@ -21,7 +21,7 @@ const OutputSelect = () => {
 
     return (
         <div className="w-full">
-            <h2 className="text-xl font-semibold mb-3 text-gray-800">Select output file types</h2>
+            <h2 className="text-title">Select output file types</h2>
 
             <div className="grid grid-cols-2 gap-4">
                 {fileTypes.map((type) => {
