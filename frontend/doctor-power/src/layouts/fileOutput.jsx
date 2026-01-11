@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import uploadFile from "../api/file";
 
 const fileTypes = [
     { id: "er", title: "ER diagram", desc: "Set fixed price for people to buy your product instantly" },
@@ -10,14 +11,72 @@ const fileTypes = [
 ];
 
 const OutputSelect = () => {
+    //FIXME: finish axios private for this
+    // const axiosPrivate = useAxiosPrivate();
+
     const [selected, setSelected] = useState([]);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedModes, setSelectedModes] = useState([]);
+    const [progress, setProgress] = useState(0);
+    const [isUploading, setIsUploading] = useState(false);
+
+    const abortRef = useRef(null);  //like useState but not rerender 
+
     const toggleSelected = (id) => {
         setSelected((prevSelected) =>
             prevSelected.includes(id)
                 ? prevSelected.filter((item) => item !== id)
                 : [...prevSelected, id]                      
         );
+        if (!selectedModes.includes(id)) {
+            setSelectedModes([...selectedModes, id]);
+        }else{
+            setSelectedModes(selectedModes.filter((item) => item !== id)); 
+        }
+        console.log("Selected modes:", selectedModes);
     };
+
+    const onPickFile = (e) => {
+        const f = e.target.files?.[0] ?? null;
+        setFile(f);
+        setProgress(0);
+    };
+
+    //FIXME: might need to change in case multiple files are allowed
+    const onRemoveFile = () => {
+        setFile(null); 
+        setProgress(0); 
+    };
+
+    const onGenerateOutputFile = () => {
+        if(!file) return; 
+
+        const fd = new FormData(); 
+        fd.append("file", file); 
+        selectedModes.forEach((m) => fd.append("modes", m)); 
+
+        const controller = new AbortController();
+        abortRef.current = controller; 
+
+        try {
+            setIsUploading(true);
+
+            //FIXME: use axiosPrivate and complete uploadFile function
+            const res = uploadFile()
+        } catch (error) {
+            if (error.name == "CanceledError"){
+                console.log("Upload canceled");
+            } else {
+                console.error(error);
+            }
+        } finally {
+            setIsUploading(false);
+        }  
+    };
+
+    const onCancelUpload = () => {
+        abortRef.current?.abort(); 
+    }
 
     return (
         <div className="w-full">
@@ -53,6 +112,10 @@ const OutputSelect = () => {
                         </button>
                     );
                 })}
+            </div>
+
+            <div className="mt-6">
+                <button className="btn-theme">Generate</button>
             </div>
         </div>
     );
