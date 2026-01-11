@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { House, Bookmark, User, Menu } from 'lucide-react';
 import "../styles/App.css";
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState('home');
 
   return (
@@ -24,7 +26,10 @@ const Sidebar = () => {
                 ? 'bg-blue-600 text-white'
                 : 'text-gray-600 hover:bg-gray-200'
             }`}
-            onClick={() => setActiveMenu('home')}
+            onClick={() => {
+              setActiveMenu('home')
+              navigate('/', { replace: true });
+            }}
           >
             <House size={20} />
             <span className="text-menu">Home</span>
@@ -35,7 +40,10 @@ const Sidebar = () => {
                 ? 'bg-blue-600 text-white' 
                 : 'text-gray-600 hover:bg-gray-200'
             }`}
-            onClick={() => setActiveMenu('collections')}
+            onClick={() => {
+              setActiveMenu('collections')
+              navigate('/mycollection', { replace: true });
+            }}
           >
             <Bookmark size={20}/>
             <span className="text-menu">Your collections</span>
