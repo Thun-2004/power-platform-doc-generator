@@ -20,11 +20,10 @@ namespace backend.controllers;
 //open file from disk and process (parse/build diagram)
 
 
-
-
 public class UploadRequest
 {
     public IFormFile File { get; set; } = default!;
+    public string[] OutputTypes { get; set; } = []; 
 }
 
 [ApiController]
@@ -47,8 +46,7 @@ public class FileController : ControllerBase
         _logger = logger;
         _store = store;
     }
-
-
+    
     // Upload to disk 
     [HttpPost("uploadFile")]
     //[DisableFormValueModelBinding] // from the docs sample; OK to keep if you have it
@@ -146,45 +144,96 @@ public class FileController : ControllerBase
         return total;
     }
 
-    [HttpPost("upload")]
+    //uploadFile(axiosInst, file, outputTypes)
+    // [HttpPost("upload")]
+    // [Consumes("multipart/form-data")]
+    // public async Task<IActionResult> Upload2([FromForm] UploadRequest req)
+    // {
+    //     try{
+    //         var file = req.File;
+    //         if (file == null || file.Length == 0)
+    //             return BadRequest("File is required");
+
+    //         //add
+    //         string originalFileName = req.File.FileName; 
+    //         var safeDisplayName = WebUtility.HtmlEncode(originalFileName); //FIX: not sure why have it
+
+    //         var ext = Path.GetExtension(originalFileName).ToLowerInvariant();
+    //         PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext); 
+    //         if (extType == 0)
+    //             return BadRequest($"File type '{safeDisplayName}' not permitted.");
+    //         //add
+            
+    //         var dir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
+    //         Directory.CreateDirectory(dir);
+
+    //         // Don’t trust client filename in prod; for now OK for local test
+    //         var fullFilePath = Path.Combine(dir, file.FileName);
+
+    //         await using var stream = System.IO.File.Create(fullFilePath);
+    //         await file.CopyToAsync(stream);
+
+    //         //create obj
+
+    //         UploadedFile uploadedFile = new UploadedFile
+    //         { 
+    //             OriginalName = originalFileName,
+    //             StoredPath = fullFilePath,
+    //         }; 
+
+    //         _store.Files.Add(uploadedFile); 
+            
+    //         return Ok(new { fileId = uploadedFile.Id.ToString(), message = "success" }); //FIX: return name + status
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         return BadRequest(e); 
+    //     }
+    // }
+
+    [HttpPost("generate")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> Upload2([FromForm] UploadRequest req)
     {
         try{
             var file = req.File;
+            var outputTypes = req.OutputTypes; 
+
             if (file == null || file.Length == 0)
                 return BadRequest("File is required");
 
             //add
-            string originalFileName = req.File.FileName; 
-            var safeDisplayName = WebUtility.HtmlEncode(originalFileName); //FIX: not sure why have it
+            Console.Write("endpoint's called"); 
+            string originalFileName = req.File.FileName;
+            // var safeDisplayName = WebUtility.HtmlEncode(originalFileName); //FIX: not sure why have it
 
-            var ext = Path.GetExtension(originalFileName).ToLowerInvariant();
-            PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext); 
-            if (extType == 0)
-                return BadRequest($"File type '{safeDisplayName}' not permitted.");
-            //add
+            // var ext = Path.GetExtension(originalFileName).ToLowerInvariant();
+            // PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext);
+
+            // if (extType == 0)
+            //     return BadRequest($"File type '{safeDisplayName}' not permitted.");
+
+            // //add
+            // var dir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
+            // Directory.CreateDirectory(dir);
+
+            // // Don’t trust client filename in prod; for now OK for local test
+            // var fullFilePath = Path.Combine(dir, file.FileName);
+
+            // await using var stream = System.IO.File.Create(fullFilePath);
+            // await file.CopyToAsync(stream);
+
+            // //create obj
+
+            // UploadedFile uploadedFile = new UploadedFile
+            // { 
+            //     OriginalName = originalFileName,
+            //     StoredPath = fullFilePath,
+            // }; 
+
+            // _store.Files.Add(uploadedFile); 
             
-            var dir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
-            Directory.CreateDirectory(dir);
-
-            // Don’t trust client filename in prod; for now OK for local test
-            var fullFilePath = Path.Combine(dir, file.FileName);
-
-            await using var stream = System.IO.File.Create(fullFilePath);
-            await file.CopyToAsync(stream);
-
-            //create obj
-
-            UploadedFile uploadedFile = new UploadedFile
-            { 
-                OriginalName = originalFileName,
-                StoredPath = fullFilePath,
-            }; 
-
-            _store.Files.Add(uploadedFile); 
-            
-            return Ok(new { fileId = uploadedFile.Id.ToString(), message = "success" }); //FIX: return name + status
+            return Ok(new { fileName = originalFileName, message = "success" }); //FIX: return name + status
         }
         catch (Exception e)
         {
@@ -208,7 +257,6 @@ public class FileController : ControllerBase
 
         return Ok(new { code = 200, message = "success", output=modes }); 
             
-
         //FIX: return processed output? 
         //Results = processedFile();
         // try

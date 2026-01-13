@@ -13,15 +13,14 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        var MyAllowSpecificOrigins = "_myAllowSpecificOrigins"; //cors rule's name
+        var AllowFrontend = "_myAllowSpecificOrigins"; //cors rule's name
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy(name: MyAllowSpecificOrigins,
+            options.AddPolicy(name: AllowFrontend,
                             policy  =>
                             {
-                                policy.WithOrigins("http://example.com",
-                                                    "http://www.contoso.com");
+                                policy.WithOrigins("http://localhost:5173");
                             });
         });
         
@@ -70,7 +69,7 @@ public class Program
 
         app.UseAuthentication();
         app.UseHttpsRedirection();
-        app.UseCors(MyAllowSpecificOrigins);
+        app.UseCors(AllowFrontend);
         app.UseAuthorization();
         app.MapControllers();
         app.Run();

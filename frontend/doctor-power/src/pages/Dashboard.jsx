@@ -1,6 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FileCheck,Trash2 } from 'lucide-react';
 import uploadFile from "../api/file";
+
+//temp
+import axios from 'axios';
 
 
 const Dashboard = () => {
@@ -21,7 +24,6 @@ const Dashboard = () => {
   //FIXME: finish axios private for this
   // const axiosPrivate = useAxiosPrivate();
 
-  const [selected, setSelected] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedModes, setSelectedModes] = useState([]);
   const [progress, setProgress] = useState(0);
@@ -31,18 +33,17 @@ const Dashboard = () => {
   const fileInputRef = useRef(null); // to clear the DOM input val
 
   const toggleSelected = (id) => {
-      setSelected((prevSelected) =>
-          prevSelected.includes(id)
-              ? prevSelected.filter((item) => item !== id)
-              : [...prevSelected, id]                      
-      );
-      if (!selectedModes.includes(id)) {
-          setSelectedModes([...selectedModes, id]);
-      }else{
-          setSelectedModes(selectedModes.filter((item) => item !== id)); 
-      }
-      console.log("Selected modes:", selectedModes);
+    setSelectedModes(
+      prev => 
+        prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    ); 
+
+      // console.log("Selected modes:", selectedModes);
   };
+
+  useEffect(() => {
+      console.log("Selected modes changed:", selectedModes);
+    }, [selectedModes]);
 
   const onPickFile = (e) => {
       const f = e.target.files?.[0] ?? null;
@@ -63,7 +64,7 @@ const Dashboard = () => {
   };
 
   const onGenerateOutputFile = () => {
-      if(!selectedFile) return; 
+      if(!selectedFile) return;
 
       const fd = new FormData(); 
       fd.append("file", selectedFile); 
@@ -85,8 +86,22 @@ const Dashboard = () => {
           }
       } finally {
           setIsUploading(false);
-      }  
+      }
   };
+
+  const test_call = async () => {
+      const fd = new FormData(); 
+
+      fd.append("File", selectedFile);
+      fd.append("OutputTypes", selectedModes);
+
+      const response = await axios.post(
+          'http://localhost:5280/api/File/generate', 
+          fd
+      )
+
+      console.log(response.data);
+  }
 
   const onCancelUpload = () => {
       abortRef.current?.abort(); 
@@ -150,13 +165,15 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-2 gap-4">
                 {fileTypes.map((type) => {
-                    const isSelected = selected.includes(type.id);
+                    var isSelected = selectedModes.includes(type.id);
 
                     return (
                         <button
                             key={type.id}
                             type="button"
-                            onClick={() => toggleSelected(type.id)}
+                            onClick={() => {
+                              toggleSelected(type.id)
+                            }}
                             className={`bg-white border-1 rounded-lg p-4 cursor-pointer text-left transition-all hover:shadow-md hover:-translate-y-0.5 ${
                                 isSelected ? "border-blue-600 shadow-sm" : "border-gray-300"
                             }`}
@@ -181,7 +198,7 @@ const Dashboard = () => {
             </div>
 
             <div className="mt-6">
-                <button className="btn-theme">Generate</button>
+                <button onClick={test_call} className="btn-theme">Generate</button>
             </div>
         </div>
         </section>
