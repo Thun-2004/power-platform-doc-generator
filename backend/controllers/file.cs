@@ -11,14 +11,13 @@ using backend.Utilities;
 using backend.Domain;
 namespace backend.controllers; 
 
-//if file size = small -> buffer in memory 
-// large = save to disk 
+//if file size = small -> buffer in memory
+// large = save to disk
 
 //HTTP multipart req(read chunk by chunk)
 //Server writes chunks to a temp file (disk)
 //File complete on disk -> return status 200
 //open file from disk and process (parse/build diagram)
-
 
 public class UploadRequest
 {
@@ -145,55 +144,55 @@ public class FileController : ControllerBase
     }
 
     //uploadFile(axiosInst, file, outputTypes)
-    // [HttpPost("upload")]
-    // [Consumes("multipart/form-data")]
-    // public async Task<IActionResult> Upload2([FromForm] UploadRequest req)
-    // {
-    //     try{
-    //         var file = req.File;
-    //         if (file == null || file.Length == 0)
-    //             return BadRequest("File is required");
+    [HttpPost("upload")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Upload2([FromForm] UploadRequest req)
+    {
+        try{
+            var file = req.File;
+            if (file == null || file.Length == 0)
+                return BadRequest("File is required");
 
-    //         //add
-    //         string originalFileName = req.File.FileName; 
-    //         var safeDisplayName = WebUtility.HtmlEncode(originalFileName); //FIX: not sure why have it
+            //add
+            string originalFileName = req.File.FileName; 
+            var safeDisplayName = WebUtility.HtmlEncode(originalFileName); //FIX: not sure why have it
 
-    //         var ext = Path.GetExtension(originalFileName).ToLowerInvariant();
-    //         PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext); 
-    //         if (extType == 0)
-    //             return BadRequest($"File type '{safeDisplayName}' not permitted.");
-    //         //add
+            var ext = Path.GetExtension(originalFileName).ToLowerInvariant();
+            PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext); 
+            if (extType == 0)
+                return BadRequest($"File type '{safeDisplayName}' not permitted.");
+            //add
             
-    //         var dir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
-    //         Directory.CreateDirectory(dir);
+            var dir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
+            Directory.CreateDirectory(dir);
 
-    //         // Don’t trust client filename in prod; for now OK for local test
-    //         var fullFilePath = Path.Combine(dir, file.FileName);
+            // Don’t trust client filename in prod; for now OK for local test
+            var fullFilePath = Path.Combine(dir, file.FileName);
 
-    //         await using var stream = System.IO.File.Create(fullFilePath);
-    //         await file.CopyToAsync(stream);
+            await using var stream = System.IO.File.Create(fullFilePath);
+            await file.CopyToAsync(stream);
 
-    //         //create obj
+            //create obj
 
-    //         UploadedFile uploadedFile = new UploadedFile
-    //         { 
-    //             OriginalName = originalFileName,
-    //             StoredPath = fullFilePath,
-    //         }; 
+            UploadedFile uploadedFile = new UploadedFile
+            { 
+                OriginalName = originalFileName,
+                StoredPath = fullFilePath,
+            }; 
 
-    //         _store.Files.Add(uploadedFile); 
+            _store.Files.Add(uploadedFile); 
             
-    //         return Ok(new { fileId = uploadedFile.Id.ToString(), message = "success" }); //FIX: return name + status
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return BadRequest(e); 
-    //     }
-    // }
+            return Ok(new { fileId = uploadedFile.Id.ToString(), message = "success" }); //FIX: return name + status
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e); 
+        }
+    }
 
     [HttpPost("generate")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Upload2([FromForm] UploadRequest req)
+    public async Task<IActionResult> TempFn([FromForm] UploadRequest req)
     {
         try{
             var file = req.File;
@@ -205,33 +204,6 @@ public class FileController : ControllerBase
             //add
             Console.Write("endpoint's called"); 
             string originalFileName = req.File.FileName;
-            // var safeDisplayName = WebUtility.HtmlEncode(originalFileName); //FIX: not sure why have it
-
-            // var ext = Path.GetExtension(originalFileName).ToLowerInvariant();
-            // PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext);
-
-            // if (extType == 0)
-            //     return BadRequest($"File type '{safeDisplayName}' not permitted.");
-
-            // //add
-            // var dir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
-            // Directory.CreateDirectory(dir);
-
-            // // Don’t trust client filename in prod; for now OK for local test
-            // var fullFilePath = Path.Combine(dir, file.FileName);
-
-            // await using var stream = System.IO.File.Create(fullFilePath);
-            // await file.CopyToAsync(stream);
-
-            // //create obj
-
-            // UploadedFile uploadedFile = new UploadedFile
-            // { 
-            //     OriginalName = originalFileName,
-            //     StoredPath = fullFilePath,
-            // }; 
-
-            // _store.Files.Add(uploadedFile); 
             
             return Ok(new { fileName = originalFileName, message = "success" }); //FIX: return name + status
         }

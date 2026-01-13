@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FileCheck,Trash2 } from 'lucide-react';
+import axiosPublic from "../api/axios";
 import uploadFile from "../api/file";
 
 //temp
@@ -95,8 +96,8 @@ const Dashboard = () => {
       fd.append("File", selectedFile);
       fd.append("OutputTypes", selectedModes);
 
-      const response = await axios.post(
-          'http://localhost:5280/api/File/generate', 
+      const response = await axiosPublic.post(
+          '/api/File/generate', 
           fd
       )
 
