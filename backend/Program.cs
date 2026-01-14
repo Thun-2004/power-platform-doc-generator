@@ -30,7 +30,6 @@ public class Program
         //     "uploads-test"
         // ); 
         // Directory.CreateDirectory(uploadRoot); 
-
         // Add services to the container.
         builder.Services.AddControllers();
         builder.Services.AddInfrastructures();
