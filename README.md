@@ -47,3 +47,4 @@ If you have run out of energy or time for your project, put a note at the top of
 
 
 
+Note: Previous commit message contained a typo ('jaon' → 'json').
