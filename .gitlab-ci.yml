@@ -27,23 +27,23 @@ backend_build:
    - dotnet build
    - dotnet test
 
-build-docker-image:
- stage: image
- image: docker:19.03.12
- services:
- - docker:19.03.12-dind
- script:
- - cd frontend
- - docker info
- - |
-    if [ "$CI_COMMIT_BRANCH" == "main" ]; then
-    export IMAGE_NAME=production
-    elif [ "$CI_COMMIT_BRANCH" == "feature/frontend" ]; then
-     export IMAGE_NAME=staging
-    else
-    echo "Skipping Docker image build for branch $CI_COMMIT_BRANCH"
-    exit 0
-    fi
-    - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA .
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+# build-docker-image:
+#  stage: image
+#  image: docker:19.03.12
+#  services:
+#  - docker:19.03.12-dind
+#  script:
+#  - cd frontend
+#  - docker info
+#  - |
+#     if [ "$CI_COMMIT_BRANCH" == "main" ]; then
+#     export IMAGE_NAME=production
+#     elif [ "$CI_COMMIT_BRANCH" == "feature/frontend" ]; then
+#      export IMAGE_NAME=staging
+#     else
+#     echo "Skipping Docker image build for branch $CI_COMMIT_BRANCH"
+#     exit 0
+#     fi
+#     - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA .
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA
