@@ -2,31 +2,13 @@
   "root": "/Users/daraling/Downloads/Replybrary_1_0_0_20",
   "top_level": [
     {
-      "name": ".DS_Store",
+      "name": "[Content_Types].xml",
       "type": "file",
-      "bytes": 10244
+      "bytes": 2416
     },
     {
       "name": "Assets/",
       "type": "dir"
-    },
-    {
-      "name": "CanvasApps/",
-      "type": "dir"
-    },
-    {
-      "name": "ParsedaDataSolution",
-      "type": "file",
-      "bytes": 3312
-    },
-    {
-      "name": "Workflows/",
-      "type": "dir"
-    },
-    {
-      "name": "[Content_Types].xml",
-      "type": "file",
-      "bytes": 2416
     },
     {
       "name": "botcomponents/",
@@ -34,6 +16,10 @@
     },
     {
       "name": "bots/",
+      "type": "dir"
+    },
+    {
+      "name": "CanvasApps/",
       "type": "dir"
     },
     {
@@ -54,30 +40,31 @@
       "type": "dir"
     },
     {
+      "name": "ParsedaDataSolution",
+      "type": "file",
+      "bytes": 3312
+    },
+    {
       "name": "solution.xml",
       "type": "file",
       "bytes": 5185
+    },
+    {
+      "name": "Workflows/",
+      "type": "dir"
     }
   ],
   "canvasapps": {
     "exists": true,
     "groups": {
-      "wmreply_replybrary_b320d_AdditionalUris0_identity.json": [
-        "wmreply_replybrary_b320d_AdditionalUris0_identity.json"
-      ],
-      "wmreply_replybrary_b320d_BackgroundImageUri": [
-        "wmreply_replybrary_b320d_BackgroundImageUri"
-      ],
-      "wmreply_replybrary_b320d_DocumentUri.msapp": [
+      "wmreply_replybrary_b320d": [
+        "wmreply_replybrary_b320d_AdditionalUris0_identity.json",
+        "wmreply_replybrary_b320d_BackgroundImageUri",
         "wmreply_replybrary_b320d_DocumentUri.msapp"
       ],
-      "wmreply_replybraryv2_c933c_AdditionalUris0_identity.json": [
-        "wmreply_replybraryv2_c933c_AdditionalUris0_identity.json"
-      ],
-      "wmreply_replybraryv2_c933c_BackgroundImageUri": [
-        "wmreply_replybraryv2_c933c_BackgroundImageUri"
-      ],
-      "wmreply_replybraryv2_c933c_DocumentUri.msapp": [
+      "wmreply_replybraryv2_c933c": [
+        "wmreply_replybraryv2_c933c_AdditionalUris0_identity.json",
+        "wmreply_replybraryv2_c933c_BackgroundImageUri",
         "wmreply_replybraryv2_c933c_DocumentUri.msapp"
       ]
     }
@@ -98,20 +85,16 @@
         "bytes": 16671
       },
       {
-        "name": "PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69.json",
-        "bytes": 14562
+        "name": "PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB.json",
+        "bytes": 22260
       },
       {
         "name": "PMflow-A3194D5E-D434-F011-8C4C-6045BD0ACADB.json",
         "bytes": 3985
       },
       {
-        "name": "PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB.json",
-        "bytes": 22260
-      },
-      {
-        "name": "ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69.json",
-        "bytes": 16662
+        "name": "PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69.json",
+        "bytes": 14562
       },
       {
         "name": "Replybrary_GetExchangeRate-4E437A2B-C74D-F011-877B-000D3A0CEB69.json",
@@ -120,6 +103,10 @@
       {
         "name": "Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB.json",
         "bytes": 5576
+      },
+      {
+        "name": "ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69.json",
+        "bytes": 16662
       },
       {
         "name": "UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69.json",
@@ -131,72 +118,52 @@
     "exists": true,
     "items": [
       {
-        "name": ".DS_Store",
-        "bytes": 14340
+        "name": "wmreply_Replybrary_Admin_List/"
       },
       {
-        "name": "wmreply_Replybrary_Admin_List/",
-        "bytes": null
+        "name": "wmreply_Replybrary_App_Link/"
       },
       {
-        "name": "wmreply_Replybrary_App_Link/",
-        "bytes": null
+        "name": "wmreply_Replybrary_CertificationsTracker_List/"
       },
       {
-        "name": "wmreply_Replybrary_CertificationsTracker_List/",
-        "bytes": null
+        "name": "wmreply_Replybrary_Client_List/"
       },
       {
-        "name": "wmreply_Replybrary_ClientContacts_List/",
-        "bytes": null
+        "name": "wmreply_Replybrary_ClientContacts_List/"
       },
       {
-        "name": "wmreply_Replybrary_Client_List/",
-        "bytes": null
+        "name": "wmreply_Replybrary_Currency_List/"
       },
       {
-        "name": "wmreply_Replybrary_Currency_List/",
-        "bytes": null
+        "name": "wmreply_Replybrary_LessonsLearnt_List/"
       },
       {
-        "name": "wmreply_Replybrary_LessonsLearnt_List/",
-        "bytes": null
+        "name": "wmreply_Replybrary_Links_List/"
       },
       {
-        "name": "wmreply_Replybrary_Links_List/",
-        "bytes": null
+        "name": "wmreply_Replybrary_M365GroupID/"
       },
       {
-        "name": "wmreply_Replybrary_M365GroupID/",
-        "bytes": null
+        "name": "wmreply_Replybrary_People_List/"
       },
       {
-        "name": "wmreply_Replybrary_People_List/",
-        "bytes": null
+        "name": "wmreply_Replybrary_Project_List/"
       },
       {
-        "name": "wmreply_Replybrary_ProjectHistory_List/",
-        "bytes": null
+        "name": "wmreply_Replybrary_ProjectHistory_List/"
       },
       {
-        "name": "wmreply_Replybrary_Project_List/",
-        "bytes": null
+        "name": "wmreply_Replybrary_ReusableIdeas_List/"
       },
       {
-        "name": "wmreply_Replybrary_ReusableIdeas_List/",
-        "bytes": null
+        "name": "wmreply_Replybrary_SkillLevels_List/"
       },
       {
-        "name": "wmreply_Replybrary_SMEs_List/",
-        "bytes": null
+        "name": "wmreply_Replybrary_SMEs_List/"
       },
       {
-        "name": "wmreply_Replybrary_SP_Site/",
-        "bytes": null
-      },
-      {
-        "name": "wmreply_Replybrary_SkillLevels_List/",
-        "bytes": null
+        "name": "wmreply_Replybrary_SP_Site/"
       }
     ]
   }
