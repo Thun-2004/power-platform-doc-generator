@@ -2,8 +2,6 @@
 stages:
  - frontend
  - backend
- - test
- - build
  - image
 
 variables:
