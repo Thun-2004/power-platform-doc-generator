@@ -33,7 +33,7 @@ build-docker-image:
  services:
  - docker:19.03.12-dind
  script:
- - cd $APP_DIRECTORY
+ - cd frontend
  - docker info
  - |
     if [ "$CI_COMMIT_BRANCH" == "main" ]; then
