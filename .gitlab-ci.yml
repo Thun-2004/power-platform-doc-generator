@@ -1,5 +1,7 @@
 #Taken from website tutorial: https://medium.com/@wahab.kazmi2000/building-and-deploying-a-react-js-project-with-docker-and-gitlab-ci-3913efa74c71
 stages:
+ - frontend
+ - backend
  - test
  - build
  - image
@@ -9,21 +11,23 @@ variables:
  IMAGE_TAG: latest
  APP_DIRECTORY: doctor-power
 
-test:
- stage: test
- image: node:14
- script:
- - cd $APP_DIRECTORY
- - npm install
- - npm test --passWithNoTests
+frontend_build: 
+   stage: frontend
+   image: node:14
+   script:
+   - cd frontend/$APP_DIRECTORY
+   - npm install
+   - npm run build
+   - npm test --passWithNoTests
 
-build:
- stage: build
- image: node:14
- script:
- - cd $APP_DIRECTORY
- - npm install
- - npm run build
+backend_build:
+   stage: backend
+   image: mcr.microsoft.com/dotnet/sdk:9.0
+   script:
+   - cd backend
+   - dotnet restore
+   - dotnet build
+   - dotnet test
 
 build-docker-image:
  stage: image
