@@ -1,0 +1,14 @@
+/Users/joshcrimin/Desktop/SolutionDocGen2/bin/Debug/net10.0/SolutionDocGen2
+/Users/joshcrimin/Desktop/SolutionDocGen2/bin/Debug/net10.0/SolutionDocGen2.deps.json
+/Users/joshcrimin/Desktop/SolutionDocGen2/bin/Debug/net10.0/SolutionDocGen2.runtimeconfig.json
+/Users/joshcrimin/Desktop/SolutionDocGen2/bin/Debug/net10.0/SolutionDocGen2.dll
+/Users/joshcrimin/Desktop/SolutionDocGen2/bin/Debug/net10.0/SolutionDocGen2.pdb
+/Users/joshcrimin/Desktop/SolutionDocGen2/obj/Debug/net10.0/SolutionDocGen2.GeneratedMSBuildEditorConfig.editorconfig
+/Users/joshcrimin/Desktop/SolutionDocGen2/obj/Debug/net10.0/SolutionDocGen2.AssemblyInfoInputs.cache
+/Users/joshcrimin/Desktop/SolutionDocGen2/obj/Debug/net10.0/SolutionDocGen2.AssemblyInfo.cs
+/Users/joshcrimin/Desktop/SolutionDocGen2/obj/Debug/net10.0/SolutionDocGen2.csproj.CoreCompileInputs.cache
+/Users/joshcrimin/Desktop/SolutionDocGen2/obj/Debug/net10.0/SolutionDocGen2.dll
+/Users/joshcrimin/Desktop/SolutionDocGen2/obj/Debug/net10.0/refint/SolutionDocGen2.dll
+/Users/joshcrimin/Desktop/SolutionDocGen2/obj/Debug/net10.0/SolutionDocGen2.pdb
+/Users/joshcrimin/Desktop/SolutionDocGen2/obj/Debug/net10.0/SolutionDocGen2.genruntimeconfig.cache
+/Users/joshcrimin/Desktop/SolutionDocGen2/obj/Debug/net10.0/ref/SolutionDocGen2.dll
