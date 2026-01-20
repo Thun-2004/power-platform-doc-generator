@@ -1,8 +1,19 @@
 {
   "version": 2,
-  "dgSpecHash": "bgcB34g58u4=",
+  "dgSpecHash": "Terl/bT//Bw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Application\\backend.Application.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/Users/benn/Desktop/sh38-main/backend/src/backend.Application/backend.Application.csproj",
+  "expectedPackageFiles": [
+    "/Users/benn/.nuget/packages/microsoft.extensions.configuration/9.0.0/microsoft.extensions.configuration.9.0.0.nupkg.sha512",
+    "/Users/benn/.nuget/packages/microsoft.extensions.configuration.abstractions/9.0.0/microsoft.extensions.configuration.abstractions.9.0.0.nupkg.sha512",
+    "/Users/benn/.nuget/packages/microsoft.extensions.dependencyinjection/9.0.0/microsoft.extensions.dependencyinjection.9.0.0.nupkg.sha512",
+    "/Users/benn/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/9.0.0/microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
+    "/Users/benn/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.3/microsoft.extensions.logging.abstractions.8.0.3.nupkg.sha512",
+    "/Users/benn/.nuget/packages/microsoft.extensions.primitives/9.0.0/microsoft.extensions.primitives.9.0.0.nupkg.sha512",
+    "/Users/benn/.nuget/packages/openai/2.8.0/openai.2.8.0.nupkg.sha512",
+    "/Users/benn/.nuget/packages/system.clientmodel/1.8.1/system.clientmodel.1.8.1.nupkg.sha512",
+    "/Users/benn/.nuget/packages/system.memory.data/8.0.1/system.memory.data.8.0.1.nupkg.sha512",
+    "/Users/benn/.nuget/packages/system.net.serversentevents/9.0.9/system.net.serversentevents.9.0.9.nupkg.sha512"
+  ],
   "logs": []
 }
