@@ -20,7 +20,6 @@ public class OpenAIGenerate
 
         var client = new OpenAIClient(apiKey);
 
-        //Chat completions (stable)
         var chat = client.GetChatClient("gpt-4.1-nano");
 
         var result = await chat.CompleteChatAsync(
