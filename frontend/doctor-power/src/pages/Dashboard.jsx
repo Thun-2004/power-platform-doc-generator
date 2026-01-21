@@ -29,6 +29,7 @@ const Dashboard = () => {
   const [selectedModes, setSelectedModes] = useState([]);
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   const abortRef = useRef(null);//like useState but not rerender 
   const fileInputRef = useRef(null); // to clear the DOM input val
@@ -50,6 +51,32 @@ const Dashboard = () => {
       const f = e.target.files?.[0] ?? null;
       setSelectedFile(f);
       setProgress(0);
+  };
+
+  const onDragOver = (e) => {
+      e.preventDefault();
+      setIsDragOver(true);
+  };
+
+  const onDragLeave = (e) => {
+      e.preventDefault();
+      setIsDragOver(false);
+  };
+
+  const onDrop = (e) => {
+      e.preventDefault();
+      setIsDragOver(false);
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+          const f = files[0];
+          setSelectedFile(f);
+          setProgress(0);
+          try {
+              if (fileInputRef.current) fileInputRef.current.value = "";
+          } catch (e) {
+              
+          }
+      }
   };
 
   //FIXME: might need to change in case multiple files are allowed
@@ -114,7 +141,14 @@ const Dashboard = () => {
         {/* Upload File Section */}
         <section className="mb-8">
           <h2 className="text-title">Upload File</h2>
-          <div className="w-full min-h-[200px] border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 flex justify-center items-center p-8">
+          <div 
+            className={`w-full min-h-[200px] border-2 border-dashed rounded-xl bg-gray-50 flex justify-center items-center p-8 transition-colors ${
+              isDragOver ? 'border-blue-400 bg-blue-50' : 'border-gray-300'
+            }`}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
+          >
             <div className="text-center flex flex-col items-center gap-4">
               <p className="text-base text-gray-600 m-0">Drag and drop your file here</p>
               <p className="text-sm text-gray-400 m-0">Max 120 MB, PNG, JPEG, MP3, MP4</p>
