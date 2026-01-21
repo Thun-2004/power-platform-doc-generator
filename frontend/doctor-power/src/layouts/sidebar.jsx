@@ -54,10 +54,13 @@ const Sidebar = () => {
                 ? 'bg-blue-600 text-white' 
                 : 'text-gray-600 hover:bg-gray-200'
             }`}
-            onClick={() => setActiveMenu('profile')}
+            onClick= {() => {
+              setActiveMenu('userprofile')
+              navigate('/userprofile', { replace: true });
+            }}
           >
             <User size={20}/>
-            <span className="text-menu">Profile</span>
+            <span className="text-menu">User Profile</span>
           </div>
         </nav>
       </aside>
