@@ -10,12 +10,10 @@ import axios from 'axios';
 const Dashboard = () => {
 
   const fileTypes = [
-    { id: "er", title: "ER diagram", desc: "Set fixed price for people to buy your product instantly" },
-    { id: "ui", title: "UI-Hierarchy flow", desc: "Set fixed price for people to buy your product instantly" },
-    { id: "program", title: "Program flow", desc: "Set fixed price for people to buy your product instantly" },
-    { id: "diagram4", title: "diagram4", desc: "Set fixed price for people to buy your product instantly" },
-    { id: "diagram5", title: "diagram5", desc: "Set fixed price for people to buy your product instantly" },
-    { id: "diagram6", title: "diagram6", desc: "Set fixed price for people to buy your product instantly" }
+    { id: "er", title: "ER diagram", desc: "Dummy text for generating an ER diagram" },
+    { id: "ui", title: "UI-Hierarchy flow", desc: "Dummy text for generating a UI-hierarchy" },
+    { id: "program", title: "Program flow", desc: "Dummy text for generating a program-flow" },
+    { id: "ai", title: "Dummy AI", desc: "Dummy option for assigning some AI task" },
   ];
   
   const outputFiles = [
@@ -117,12 +115,12 @@ const Dashboard = () => {
           <div className="w-full min-h-[200px] border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 flex justify-center items-center p-8">
             <div className="text-center flex flex-col items-center gap-4">
               <p className="text-base text-gray-600 m-0">Drag and drop your file here</p>
-              <p className="text-sm text-gray-400 m-0">Max 120 MB, PNG, JPEG, MP3, MP4</p>
+              <p className="text-sm text-gray-400 m-0">Max 120 MB, only .ZIP accepted</p>
               <label className="btn-theme">
                 Browse File
                 <input
                   type="file"
-                  accept=".png,.jpeg,.jpg,.mp3,.mp4"
+                  accept=".zip"
                   className="hidden"
                   ref={fileInputRef} //set DOM input
                   onChange={(e) => {

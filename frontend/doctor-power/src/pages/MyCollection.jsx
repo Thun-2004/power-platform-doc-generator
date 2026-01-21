@@ -1,5 +1,3 @@
-
-
 const MyCollection = () => {
   return (
     <main className="flex-1 p-8 bg-white m-4 rounded-xl shadow-sm overflow-y-auto">
