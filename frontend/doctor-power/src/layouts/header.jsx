@@ -9,7 +9,7 @@ const Header = () => {
             <img src={dpLogo} className="h-19 p-2" alt="Doctor Power Logo" />
             <div className="flex flex-col items-start justify-end mb-2">
                 <p className="text-xl font-bold text-blue-600 m-0">octor Power</p>
-                <p className="text-sm text-gray-500 m-0 -mt-1">Documentation Generator</p>
+                <p className="text-sm text-gray-500 m-0 -mt-1">Power Platform Documentation Generator</p>
             </div>
             </div>
             <div className="flex gap-4">
