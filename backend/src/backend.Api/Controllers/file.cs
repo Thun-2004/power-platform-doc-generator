@@ -73,7 +73,6 @@ public class FileController : ControllerBase
             string dir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
             Directory.CreateDirectory(dir);
 
-            // Don’t trust client filename in prod; for now OK for local test
             string fullFilePath = Path.Combine(dir, file.FileName);
 
             await using FileStream stream = System.IO.File.Create(fullFilePath);
@@ -90,9 +89,17 @@ public class FileController : ControllerBase
             
 
             //TODO: add process file function 
-            // var result = ProcessFile(file);
+            // System.Threading.Tasks.Task<string> response = FileProcessing.ProcessFile(uploadedFile.StoredPath);
 
-            return Ok(new { fileId = uploadedFile.Id.ToString(), message = "success" });
+            // return Ok(new { fileId = uploadedFile.Id.ToString(), message = "success" });
+            string response = await FileProcessing.ProcessFile(uploadedFile.StoredPath);
+
+            return Ok(new
+            {
+                fileId = uploadedFile.Id.ToString(),
+                message = "success",
+                response = response
+            });
         }
         catch (Exception e)
         {
@@ -101,11 +108,11 @@ public class FileController : ControllerBase
     }
 
 
-    [HttpPost("ai")]
-    public Task<IActionResult> TestAi(string prompt)
-    {
-        FileProcessing FileProcessings = new FileProcessing();
-        return Task.FromResult<IActionResult>(Ok(new { message = FileProcessings.ProcessFile(prompt) }));
-    }   
+    // [HttpPost("ai")]
+    // public Task<IActionResult> TestAi(string prompt)
+    // {
+    //     FileProcessing FileProcessings = new FileProcessing();
+    //     return Task.FromResult<IActionResult>(Ok(new { message = FileProcessings.ProcessFile(prompt) }));
+    // }   
 } 
     
