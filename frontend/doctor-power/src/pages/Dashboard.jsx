@@ -32,6 +32,10 @@ const Dashboard = () => {
   const abortRef = useRef(null);//like useState but not rerender 
   const fileInputRef = useRef(null); // to clear the DOM input val
 
+  const isZipFile = (file) => {
+    return file && file.name.toLowerCase().endsWith('.zip');
+  };
+
   const toggleSelected = (id) => {
     setSelectedModes(
       prev => 
@@ -47,8 +51,14 @@ const Dashboard = () => {
 
   const onPickFile = (e) => {
       const f = e.target.files?.[0] ?? null;
-      setSelectedFile(f);
-      setProgress(0);
+      if (f && isZipFile(f)) {
+        setSelectedFile(f);
+        setProgress(0);
+      } else if (f) {
+        alert('Please select a .zip file only.');
+        // Clear the input
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      }
   };
 
   const onDragOver = (e) => {
@@ -67,12 +77,16 @@ const Dashboard = () => {
       const files = e.dataTransfer.files;
       if (files.length > 0) {
           const f = files[0];
-          setSelectedFile(f);
-          setProgress(0);
-          try {
-              if (fileInputRef.current) fileInputRef.current.value = "";
-          } catch (e) {
-              
+          if (isZipFile(f)) {
+            setSelectedFile(f);
+            setProgress(0);
+            try {
+                if (fileInputRef.current) fileInputRef.current.value = "";
+            } catch (e) {
+                
+            }
+          } else {
+            alert('Please select a .zip file only.');
           }
       }
   };
