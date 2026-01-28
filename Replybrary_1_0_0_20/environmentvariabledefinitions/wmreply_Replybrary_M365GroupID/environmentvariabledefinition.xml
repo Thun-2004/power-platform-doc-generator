@@ -1,0 +1,10 @@
+<environmentvariabledefinition schemaname="wmreply_Replybrary_M365GroupID">
+  <displayname default="Replybrary_M365GroupID">
+    <label description="Replybrary_M365GroupID" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.1</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

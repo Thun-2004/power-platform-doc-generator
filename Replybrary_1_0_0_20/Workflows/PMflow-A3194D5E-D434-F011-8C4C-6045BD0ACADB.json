@@ -1,0 +1,94 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_teams": {
+        "api": {
+          "name": "shared_teams"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "wmreply_sharedteams_a045b"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "Replybrary_App_Link (wmreply_Replybrary_App_Link)": {
+          "defaultValue": "https://apps.powerapps.com/play/e/512bac6d-af73-e544-b4a6-5be90837f2a2/a/faf7e1d2-685b-488a-93b0-18aa09168491?tenantId=0a8f93eb-d1c3-4a4c-a834-06ee3ec8d44c&hint=af928232-012e-4235-ab6a-b6da40c447f8&sourcetime=1747662695760",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_App_Link"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "PM",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "Project",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "48d55514-7b86-4d03-8c27-f08fd84230e8"
+          }
+        }
+      },
+      "actions": {
+        "Post_card_in_a_chat_or_channel": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "poster": "Flow bot",
+              "location": "Chat with Flow bot",
+              "body/recipient": "@triggerBody()['text']",
+              "body/messageBody": "{\n  \"$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",\n  \"type\": \"AdaptiveCard\",\n  \"version\": \"1.4\",\n  \"body\": [\n    {\n      \"type\": \"TextBlock\",\n      \"text\": \"You have been assigned as the PM for this project - **@{triggerBody()['text_1']}**.\",\n      \"wrap\": true,\n      \"size\": \"Medium\",\n      \"weight\": \"Bolder\",\n      \"spacing\": \"Medium\"\n    },\n    {\n      \"type\": \"TextBlock\",\n      \"text\": \"Please go to the **Reply-brary App** and update the details for this project.\",\n      \"wrap\": true,\n      \"spacing\": \"Small\"\n    },\n    {\n      \"type\": \"ActionSet\",\n      \"spacing\": \"Large\",\n      \"actions\": [\n        {\n          \"type\": \"Action.OpenUrl\",\n          \"title\": \"Open Reply-brary App\",\n          \"url\": \"@{parameters('Replybrary_App_Link (wmreply_Replybrary_App_Link)')}\"  \n        }\n      ]\n    }\n  ]\n}"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_teams",
+              "operationId": "PostCardToConversation",
+              "connectionName": "shared_teams"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "8dd58987-1875-4c97-bc79-56b34f9bedcc"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

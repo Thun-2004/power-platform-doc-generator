@@ -1,0 +1,520 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_office365groups": {
+        "api": {
+          "name": "shared_office365groups"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "wmreply_sharedoffice365groups_d38cd"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365users": {
+        "api": {
+          "name": "shared_office365users"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365users_fd798"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_sharepointonline": {
+        "api": {
+          "name": "shared_sharepointonline"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "wmreply_sharedsharepointonline_f12ce"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_sharepointonline-1": {
+        "api": {
+          "name": "shared_sharepointonline"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "cr6e9_replybraryAgent.cr.oPO9QIRt"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "Replybrary_People_List (wmreply_Replybrary_People_List)": {
+          "defaultValue": "bc6d78cc-4002-4eb0-bfaf-4ee66e2add61",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_People_List"
+          }
+        },
+        "Replybrary_SP_Site (wmreply_Replybrary_SP_Site)": {
+          "defaultValue": "https://wmreplyukdev.sharepoint.com/sites/ReplybraryDev",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_SP_Site"
+          }
+        },
+        "Replybrary_M365GroupID (wmreply_Replybrary_M365GroupID)": {
+          "defaultValue": "4763d6d1-36aa-44ce-93c3-644e2706085f",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_M365GroupID"
+          }
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "type": "Recurrence",
+          "recurrence": {
+            "frequency": "Day",
+            "interval": 2,
+            "startTime": "2025-05-21T02:00:00Z",
+            "schedule": {}
+          },
+          "metadata": {
+            "operationMetadataId": "8dec1f89-a6fc-48c8-8bb2-9ca230bc3127"
+          }
+        }
+      },
+      "actions": {
+        "List_group_members": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "groupId": "@parameters('Replybrary_M365GroupID (wmreply_Replybrary_M365GroupID)')",
+              "$top": 500
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365groups",
+              "operationId": "ListGroupMembers",
+              "connectionName": "shared_office365groups"
+            }
+          },
+          "runAfter": {
+            "Get_items_-_get_items_from_people_list": [
+              "SUCCEEDED"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "393eff1f-6eb6-46e3-806b-f06bdecefd52"
+          }
+        },
+        "Apply_to_each": {
+          "type": "Foreach",
+          "foreach": "@outputs('List_group_members')?['body/value']",
+          "actions": {
+            "Get_user_profile_(V2)": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "id": "@items('Apply_to_each')?['userPrincipalName']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+                  "operationId": "UserProfile_V2",
+                  "connectionName": "shared_office365users"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "5482a69b-2c08-4642-80a1-7e164b8c7834"
+              }
+            },
+            "Get_items": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                  "table": "@parameters('Replybrary_People_List (wmreply_Replybrary_People_List)')",
+                  "$filter": "Email eq '@{items('Apply_to_each')?['userPrincipalName']}'"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "GetItems",
+                  "connectionName": "shared_sharepointonline"
+                }
+              },
+              "runAfter": {
+                "Get_user_photo_(V2)": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "4432d0d8-b34e-4a9d-9f56-293662e7d0c8"
+              }
+            },
+            "Condition": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@length(outputs('Get_items')?['body/value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Condition_1": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "equals": [
+                          "@empty(body('Get_user_photo_(V2)')?['$content'])",
+                          false
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Add_attachment": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                          "table": "@parameters('Replybrary_People_List (wmreply_Replybrary_People_List)')",
+                          "itemId": "@outputs('Create_item_2')?['body/ID']",
+                          "displayName": "@{outputs('Get_user_profile_(V2)')?['body/userPrincipalName']}ProfilePic.jpg",
+                          "body": "@body('Get_user_photo_(V2)')"
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                          "operationId": "CreateAttachment",
+                          "connectionName": "shared_sharepointonline"
+                        }
+                      },
+                      "metadata": {
+                        "operationMetadataId": "22ac4afc-407a-4da6-b579-7ca1a9fd8e28"
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "runAfter": {
+                    "Create_item_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "0648f591-b33a-4549-b3e0-7c3179d0c389"
+                  }
+                },
+                "Create_item_2": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                      "table": "@parameters('Replybrary_People_List (wmreply_Replybrary_People_List)')",
+                      "item/Title": "@outputs('Get_user_profile_(V2)')?['body/displayName']",
+                      "item/Email": "@outputs('Get_user_profile_(V2)')?['body/userPrincipalName']",
+                      "item/Office/Value": "@outputs('Get_user_profile_(V2)')?['body/city']",
+                      "item/personID": "@outputs('Get_user_profile_(V2)')?['body/id']",
+                      "item/SecurityClearance": false
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                      "operationId": "PostItem",
+                      "connectionName": "shared_sharepointonline-1"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "516e22d7-9c1e-42dc-b33f-edb64102013d"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Condition_2": {
+                    "type": "If",
+                    "expression": {
+                      "and": [
+                        {
+                          "equals": [
+                            "@empty(body('Get_user_photo_(V2)')?['$content'])",
+                            false
+                          ]
+                        }
+                      ]
+                    },
+                    "actions": {
+                      "For_each": {
+                        "type": "Foreach",
+                        "foreach": "@outputs('Get_items')?['body/value']",
+                        "actions": {
+                          "Get_attachments": {
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                              "parameters": {
+                                "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                                "table": "@parameters('Replybrary_People_List (wmreply_Replybrary_People_List)')",
+                                "itemId": "@items('For_each')?['ID']"
+                              },
+                              "host": {
+                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                                "operationId": "GetItemAttachments",
+                                "connectionName": "shared_sharepointonline"
+                              }
+                            },
+                            "metadata": {
+                              "operationMetadataId": "41768063-c65e-406b-af03-ed7b499ebb63"
+                            }
+                          },
+                          "Condition_3": {
+                            "type": "If",
+                            "expression": {
+                              "and": [
+                                {
+                                  "equals": [
+                                    "@empty(outputs('Get_attachments')?['body'])",
+                                    true
+                                  ]
+                                }
+                              ]
+                            },
+                            "actions": {
+                              "Add_attachment_1": {
+                                "type": "OpenApiConnection",
+                                "inputs": {
+                                  "parameters": {
+                                    "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                                    "table": "@parameters('Replybrary_People_List (wmreply_Replybrary_People_List)')",
+                                    "itemId": "@items('For_each')?['ID']",
+                                    "displayName": "@{outputs('Get_user_profile_(V2)')?['body/userPrincipalName']}ProfilePic.jpg",
+                                    "body": "@body('Get_user_photo_(V2)')"
+                                  },
+                                  "host": {
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                                    "operationId": "CreateAttachment",
+                                    "connectionName": "shared_sharepointonline"
+                                  }
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "4fdd9814-ea29-43b5-a9f3-257b5fb890de"
+                                }
+                              }
+                            },
+                            "else": {
+                              "actions": {
+                                "For_each_1": {
+                                  "type": "Foreach",
+                                  "foreach": "@outputs('Get_attachments')?['body']",
+                                  "actions": {
+                                    "Delete_attachment": {
+                                      "type": "OpenApiConnection",
+                                      "inputs": {
+                                        "parameters": {
+                                          "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                                          "table": "@parameters('Replybrary_People_List (wmreply_Replybrary_People_List)')",
+                                          "itemId": "@items('For_each')?['ID']",
+                                          "attachmentId": "@items('For_each_1')?['Id']"
+                                        },
+                                        "host": {
+                                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                                          "operationId": "DeleteAttachment",
+                                          "connectionName": "shared_sharepointonline"
+                                        }
+                                      },
+                                      "metadata": {
+                                        "operationMetadataId": "7651da82-3890-41ff-ab8f-bca46ea2427f"
+                                      }
+                                    }
+                                  },
+                                  "metadata": {
+                                    "operationMetadataId": "e0eede51-5557-4d67-b612-52a38866f44e"
+                                  }
+                                },
+                                "Add_attachment_1-copy": {
+                                  "type": "OpenApiConnection",
+                                  "inputs": {
+                                    "parameters": {
+                                      "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                                      "table": "@parameters('Replybrary_People_List (wmreply_Replybrary_People_List)')",
+                                      "itemId": "@items('For_each')?['ID']",
+                                      "displayName": "@{outputs('Get_user_profile_(V2)')?['body/userPrincipalName']}ProfilePic.jpg",
+                                      "body": "@body('Get_user_photo_(V2)')"
+                                    },
+                                    "host": {
+                                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                                      "operationId": "CreateAttachment",
+                                      "connectionName": "shared_sharepointonline"
+                                    }
+                                  },
+                                  "runAfter": {
+                                    "For_each_1": [
+                                      "Succeeded"
+                                    ]
+                                  },
+                                  "metadata": {
+                                    "operationMetadataId": "fc533563-c648-46d5-b85c-77aa363c3deb"
+                                  }
+                                }
+                              }
+                            },
+                            "runAfter": {
+                              "Compose": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "859ad719-4578-412c-8225-6fb0d00d5b57"
+                            }
+                          },
+                          "Compose": {
+                            "type": "Compose",
+                            "inputs": "@outputs('Get_attachments')?['body']",
+                            "runAfter": {
+                              "Get_attachments": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "73ce77c3-d235-47d8-833a-c51529b186f6"
+                            }
+                          }
+                        },
+                        "metadata": {
+                          "operationMetadataId": "b36614d6-0d99-4bcc-a148-e0e9b731a6c4"
+                        }
+                      }
+                    },
+                    "else": {
+                      "actions": {}
+                    },
+                    "metadata": {
+                      "operationMetadataId": "fe58fafa-e44d-41ea-94c2-aa15e0ad4363"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_items": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ce8e831e-275a-447e-891a-1be79dfa5edd"
+              }
+            },
+            "Get_user_photo_(V2)": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "id": "@items('Apply_to_each')?['userPrincipalName']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+                  "operationId": "UserPhoto_V2",
+                  "connectionName": "shared_office365users"
+                }
+              },
+              "runAfter": {
+                "Get_user_profile_(V2)": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "f5d0713d-3bfa-4be0-ace4-a912bc2270f9"
+              }
+            }
+          },
+          "runAfter": {
+            "Apply_to_each_-_archive_leavers": [
+              "SUCCEEDED"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "50bffce7-8247-4168-a503-0c4cde5f7b42"
+          }
+        },
+        "Get_items_-_get_items_from_people_list": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+              "table": "@parameters('Replybrary_People_List (wmreply_Replybrary_People_List)')",
+              "$filter": "Archive ne true"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetItems",
+              "connectionName": "shared_sharepointonline-1"
+            }
+          },
+          "runAfter": {}
+        },
+        "Apply_to_each_-_archive_leavers": {
+          "type": "Foreach",
+          "foreach": "@outputs('Get_items_-_get_items_from_people_list')?['body/value']",
+          "actions": {
+            "Filter_array_-_check_if_person_exists_in_list": {
+              "type": "Query",
+              "inputs": {
+                "from": "@outputs('List_group_members')?['body/value']",
+                "where": "@equals(item()?['userPrincipalName'],items('Apply_to_each_-_archive_leavers')?['Email'])"
+              }
+            },
+            "Condition_-_is_person_in_list_already": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@length(body('Filter_array_-_check_if_person_exists_in_list'))",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Update_item_-_archive_leaver's_item": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                      "table": "@parameters('Replybrary_People_List (wmreply_Replybrary_People_List)')",
+                      "id": "@items('Apply_to_each_-_archive_leavers')?['ID']",
+                      "item/SecurityClearance": false,
+                      "item/Archive": true
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                      "operationId": "PatchItem",
+                      "connectionName": "shared_sharepointonline-1"
+                    }
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Filter_array_-_check_if_person_exists_in_list": [
+                  "SUCCEEDED"
+                ]
+              }
+            }
+          },
+          "runAfter": {
+            "List_group_members": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

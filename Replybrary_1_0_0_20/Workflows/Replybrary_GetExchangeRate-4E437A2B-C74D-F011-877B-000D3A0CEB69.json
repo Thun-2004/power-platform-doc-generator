@@ -1,0 +1,205 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "api": {
+          "name": "shared_sharepointonline"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "cr6e9_replybraryAgent.cr.oPO9QIRt"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "Replybrary_Currency_List (wmreply_Replybrary_Currency_List)": {
+          "defaultValue": "9bf55fdf-4c45-465b-a4a3-8f71d6958b51",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_Currency_List"
+          }
+        },
+        "Replybrary_SP_Site (wmreply_Replybrary_SP_Site)": {
+          "defaultValue": "https://wmreplyukdev.sharepoint.com/sites/ReplybraryDev",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_SP_Site"
+          }
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "type": "Recurrence",
+          "recurrence": {
+            "frequency": "Day",
+            "interval": 1,
+            "startTime": "2025-06-20T09:00:00Z"
+          },
+          "metadata": {
+            "operationMetadataId": "21c19503-4c05-48f2-86af-a92ed5df3837"
+          }
+        }
+      },
+      "actions": {
+        "HTTP": {
+          "type": "Http",
+          "inputs": {
+            "uri": "https://open.er-api.com/v6/latest/GBP",
+            "method": "GET"
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "f8c35432-1d25-453d-8084-59b82b4755ba"
+          }
+        },
+        "Parse_JSON": {
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('HTTP')",
+            "schema": {
+              "base": "GBP",
+              "date": "2025-06-20",
+              "rates": {
+                "EUR": 1.1701,
+                "USD": 1.3492
+              }
+            }
+          },
+          "runAfter": {
+            "HTTP": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "22ff0524-f074-4da6-8d9a-d8ceab0c9df9"
+          }
+        },
+        "Compose_-_Euros": {
+          "type": "Compose",
+          "inputs": "@div(1, body('Parse_JSON')?['rates']?['EUR'])",
+          "runAfter": {
+            "Parse_JSON": [
+              "SUCCEEDED"
+            ]
+          }
+        },
+        "Compose_-_Dollars": {
+          "type": "Compose",
+          "inputs": "@div(1, body('Parse_JSON')?['rates']?['USD'])",
+          "runAfter": {
+            "Compose_-_Euros": [
+              "SUCCEEDED"
+            ]
+          }
+        },
+        "Get_items_-_Euros": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+              "table": "@parameters('Replybrary_Currency_List (wmreply_Replybrary_Currency_List)')",
+              "$filter": "Title eq 'Euros'"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetItems",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Compose_-_Dollars": [
+              "SUCCEEDED"
+            ]
+          }
+        },
+        "Get_items_-_Dollars": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+              "table": "@parameters('Replybrary_Currency_List (wmreply_Replybrary_Currency_List)')",
+              "$filter": "Title eq 'Dollars'"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetItems",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Get_items_-_Euros": [
+              "SUCCEEDED"
+            ]
+          }
+        },
+        "For_each": {
+          "type": "foreach",
+          "foreach": "@outputs('Get_items_-_Euros')?['body/value']",
+          "actions": {
+            "Update_item_-_Euros": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                  "table": "@parameters('Replybrary_Currency_List (wmreply_Replybrary_Currency_List)')",
+                  "id": "@items('For_each')?['ID']",
+                  "item/ExchangeRate": "@outputs('Compose_-_Euros')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PatchItem",
+                  "connectionName": "shared_sharepointonline"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Get_items_-_Dollars": [
+              "SUCCEEDED"
+            ]
+          }
+        },
+        "For_each_1": {
+          "type": "foreach",
+          "foreach": "@outputs('Get_items_-_Dollars')?['body/value']",
+          "actions": {
+            "Update_item_-_Dollars": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                  "table": "@parameters('Replybrary_Currency_List (wmreply_Replybrary_Currency_List)')",
+                  "id": "@item()?['ID']",
+                  "item/ExchangeRate": "@outputs('Compose_-_Dollars')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PatchItem",
+                  "connectionName": "shared_sharepointonline"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "For_each": [
+              "SUCCEEDED"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

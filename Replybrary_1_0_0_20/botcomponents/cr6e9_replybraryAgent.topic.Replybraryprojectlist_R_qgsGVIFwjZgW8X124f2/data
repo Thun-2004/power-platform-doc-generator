@@ -1,0 +1,4 @@
+kind: KnowledgeSourceConfiguration
+source:
+  kind: FederatedStructuredSearchSource
+  skillConfiguration: Replybraryprojectlist_Esnblz79KI97sl5ReRX5y

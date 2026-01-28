@@ -63,32 +63,31 @@ public class FileController : ControllerBase
 
             string originalFileName = req.File.FileName;
 
-            
             string ext = Path.GetExtension(originalFileName).ToLowerInvariant();
             PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext);
             if (extType == 0)
                 return BadRequest($"File type {ext} not permitted.");
 
-            //add
-            string dir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
-            Directory.CreateDirectory(dir);
+            //TODO: check if dir exists else create
+            // string outputDir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
+            // Directory.CreateDirectory(outputDir);
 
-            string fullFilePath = Path.Combine(dir, file.FileName);
+            string fullFilePath = Path.Combine(outputDir, file.FileName);
 
             await using FileStream stream = System.IO.File.Create(fullFilePath);
             await file.CopyToAsync(stream);
 
             //create obj
             UploadedFile uploadedFile = new()
-            { 
+            {
                 OriginalName = originalFileName,
                 StoredPath = fullFilePath,
-            }; 
+            };
 
             _store.Files.Add(uploadedFile); 
             
 
-            //TODO: add process file function 
+            //TODO: add process file function
             // System.Threading.Tasks.Task<string> response = FileProcessing.ProcessFile(uploadedFile.StoredPath);
 
             // return Ok(new { fileId = uploadedFile.Id.ToString(), message = "success" });
@@ -113,6 +112,6 @@ public class FileController : ControllerBase
     // {
     //     FileProcessing FileProcessings = new FileProcessing();
     //     return Task.FromResult<IActionResult>(Ok(new { message = FileProcessings.ProcessFile(prompt) }));
-    // }   
+    // }
 } 
     
