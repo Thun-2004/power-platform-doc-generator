@@ -1,0 +1,134 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "wmreply_sharedsharepointonline_f12ce"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "Replybrary_Client_List (wmreply_Replybrary_Client_List)": {
+          "defaultValue": "2870b432-b6b9-4c1e-8b16-340fa995c7ac",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_Client_List"
+          }
+        },
+        "Replybrary_SP_Site (wmreply_Replybrary_SP_Site)": {
+          "defaultValue": "https://wmreplyukdev.sharepoint.com/sites/ReplybraryDev",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_SP_Site"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "21e0e51d-0a39-4753-b735-35222fab6c6b"
+          },
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "ClientName",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "ImageContent",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_items": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "7a3153ae-6d75-4fb3-816a-7219998fe235"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+              "table": "@parameters('Replybrary_Client_List (wmreply_Replybrary_Client_List)')",
+              "$filter": "Title eq '@{triggerBody()['text']}'"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetItems",
+              "connectionName": "shared_sharepointonline"
+            }
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@outputs('Get_items')?['body/value']",
+          "actions": {
+            "Add_attachment": {
+              "metadata": {
+                "operationMetadataId": "85a242e4-bae8-4b14-a8e4-3b5ef280f98c"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                  "table": "@parameters('Replybrary_Client_List (wmreply_Replybrary_Client_List)')",
+                  "itemId": "@items('Apply_to_each')?['ID']",
+                  "displayName": "@{triggerBody()['text']}.png",
+                  "body": "@base64ToBinary(triggerBody()['text_1'])"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "CreateAttachment",
+                  "connectionName": "shared_sharepointonline"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Get_items": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "82b66585-422d-46ab-a6af-97ff77b6d9e9"
+          },
+          "type": "Foreach"
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -195,3 +195,7 @@
 /Users/benn/Desktop/sh38-main/backend/src/backend.Api/obj/Debug/net9.0/backend.pdb
 /Users/benn/Desktop/sh38-main/backend/src/backend.Api/obj/Debug/net9.0/backend.genruntimeconfig.cache
 /Users/benn/Desktop/sh38-main/backend/src/backend.Api/obj/Debug/net9.0/ref/backend.dll
+/Users/benn/Desktop/sh38-main/backend/src/backend.Api/bin/Debug/net9.0/backend.Application.dll
+/Users/benn/Desktop/sh38-main/backend/src/backend.Api/bin/Debug/net9.0/backend.Application.pdb
+/Users/benn/Desktop/sh38-main/backend/src/backend.Api/bin/Debug/net9.0/OpenAI.dll
+/Users/benn/Desktop/sh38-main/backend/src/backend.Api/bin/Debug/net9.0/System.Net.ServerSentEvents.dll

@@ -15,6 +15,7 @@
           "Microsoft.EntityFrameworkCore.InMemory": "9.0.0",
           "Microsoft.Identity.Web": "4.1.1",
           "Scalar.AspNetCore": "2.11.8",
+          "backend.Application": "1.0.0",
           "backend.Domain": "1.0.0",
           "backend.Infrastructure": "1.0.0"
         },
@@ -25,9 +26,9 @@
       "Azure.Core/1.38.0": {
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "1.1.1",
-          "System.ClientModel": "1.0.0",
+          "System.ClientModel": "1.8.1",
           "System.Diagnostics.DiagnosticSource": "6.0.1",
-          "System.Memory.Data": "1.0.2",
+          "System.Memory.Data": "8.0.1",
           "System.Numerics.Vectors": "4.5.0",
           "System.Text.Encodings.Web": "8.0.0",
           "System.Text.Json": "8.0.5",
@@ -628,6 +629,18 @@
           }
         }
       },
+      "OpenAI/2.8.0": {
+        "dependencies": {
+          "System.ClientModel": "1.8.1",
+          "System.Net.ServerSentEvents": "9.0.9"
+        },
+        "runtime": {
+          "lib/net8.0/OpenAI.dll": {
+            "assemblyVersion": "2.8.0.0",
+            "fileVersion": "2.8.0.0"
+          }
+        }
+      },
       "Scalar.AspNetCore/2.11.8": {
         "runtime": {
           "lib/net9.0/Scalar.AspNetCore.dll": {
@@ -637,15 +650,15 @@
         }
       },
       "System.Buffers/4.6.0": {},
-      "System.ClientModel/1.0.0": {
+      "System.ClientModel/1.8.1": {
         "dependencies": {
-          "System.Memory.Data": "1.0.2",
-          "System.Text.Json": "8.0.5"
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "System.Memory.Data": "8.0.1"
         },
         "runtime": {
-          "lib/net6.0/System.ClientModel.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.24.5302"
+          "lib/net9.0/System.ClientModel.dll": {
+            "assemblyVersion": "1.8.1.0",
+            "fileVersion": "1.800.125.56003"
           }
         }
       },
@@ -667,15 +680,19 @@
         }
       },
       "System.Memory/4.5.4": {},
-      "System.Memory.Data/1.0.2": {
-        "dependencies": {
-          "System.Text.Encodings.Web": "8.0.0",
-          "System.Text.Json": "8.0.5"
-        },
+      "System.Memory.Data/8.0.1": {
         "runtime": {
-          "lib/netstandard2.0/System.Memory.Data.dll": {
-            "assemblyVersion": "1.0.2.0",
-            "fileVersion": "1.0.221.20802"
+          "lib/net8.0/System.Memory.Data.dll": {
+            "assemblyVersion": "8.0.0.1",
+            "fileVersion": "8.0.1024.46610"
+          }
+        }
+      },
+      "System.Net.ServerSentEvents/9.0.9": {
+        "runtime": {
+          "lib/net9.0/System.Net.ServerSentEvents.dll": {
+            "assemblyVersion": "9.0.0.9",
+            "fileVersion": "9.0.925.41916"
           }
         }
       },
@@ -707,6 +724,17 @@
       "System.Text.Json/8.0.5": {},
       "System.Threading.Tasks.Extensions/4.5.4": {},
       "System.ValueTuple/4.5.0": {},
+      "backend.Application/1.0.0": {
+        "dependencies": {
+          "backend.Infrastructure": "1.0.0"
+        },
+        "runtime": {
+          "backend.Application.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "backend.Domain/1.0.0": {
         "runtime": {
           "backend.Domain.dll": {
@@ -718,7 +746,8 @@
       "backend.Infrastructure/1.0.0": {
         "dependencies": {
           "Microsoft.Extensions.Configuration": "9.0.0",
-          "Microsoft.Extensions.DependencyInjection": "9.0.0"
+          "Microsoft.Extensions.DependencyInjection": "9.0.0",
+          "OpenAI": "2.8.0"
         },
         "runtime": {
           "backend.Infrastructure.dll": {
@@ -1211,6 +1240,13 @@
       "path": "microsoft.openapi/1.6.17",
       "hashPath": "microsoft.openapi.1.6.17.nupkg.sha512"
     },
+    "OpenAI/2.8.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KcYpZ9IhuxFD2hGAJlL5vABtkr00CjeJU0SY8CjZQyzvzkzLop8jhdX3iDvteVJg6e3y4TEiY+Kti4gDJAagnA==",
+      "path": "openai/2.8.0",
+      "hashPath": "openai.2.8.0.nupkg.sha512"
+    },
     "Scalar.AspNetCore/2.11.8": {
       "type": "package",
       "serviceable": true,
@@ -1225,12 +1261,12 @@
       "path": "system.buffers/4.6.0",
       "hashPath": "system.buffers.4.6.0.nupkg.sha512"
     },
-    "System.ClientModel/1.0.0": {
+    "System.ClientModel/1.8.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-I3CVkvxeqFYjIVEP59DnjbeoGNfo/+SZrCLpRz2v/g0gpCHaEMPtWSY0s9k/7jR1rAsLNg2z2u1JRB76tPjnIw==",
-      "path": "system.clientmodel/1.0.0",
-      "hashPath": "system.clientmodel.1.0.0.nupkg.sha512"
+      "sha512": "sha512-4oUQgw/vaO4FBOk3YsH40hbrjxRED1l95rRLvTMtHXfQxapXya9IfPpm/KgwValFFtYTfYGFOs/qzGmGyexicQ==",
+      "path": "system.clientmodel/1.8.1",
+      "hashPath": "system.clientmodel.1.8.1.nupkg.sha512"
     },
     "System.Diagnostics.DiagnosticSource/6.0.1": {
       "type": "package",
@@ -1253,12 +1289,19 @@
       "path": "system.memory/4.5.4",
       "hashPath": "system.memory.4.5.4.nupkg.sha512"
     },
-    "System.Memory.Data/1.0.2": {
+    "System.Memory.Data/8.0.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-JGkzeqgBsiZwKJZ1IxPNsDFZDhUvuEdX8L8BDC8N3KOj+6zMcNU28CNN59TpZE/VJYy9cP+5M+sbxtWJx3/xtw==",
-      "path": "system.memory.data/1.0.2",
-      "hashPath": "system.memory.data.1.0.2.nupkg.sha512"
+      "sha512": "sha512-BVYuec3jV23EMRDeR7Dr1/qhx7369dZzJ9IWy2xylvb4YfXsrUxspWc4UWYid/tj4zZK58uGZqn2WQiaDMhmAg==",
+      "path": "system.memory.data/8.0.1",
+      "hashPath": "system.memory.data.8.0.1.nupkg.sha512"
+    },
+    "System.Net.ServerSentEvents/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zEISfefh8BYD5m+GMsYJnodiTaz2fDBEOrLgYH7VsQhMIzNkcuSsg9Df/d3zywYX5ohCyCJ5AOax50XLKnXyjw==",
+      "path": "system.net.serversentevents/9.0.9",
+      "hashPath": "system.net.serversentevents.9.0.9.nupkg.sha512"
     },
     "System.Numerics.Vectors/4.5.0": {
       "type": "package",
@@ -1322,6 +1365,11 @@
       "sha512": "sha512-okurQJO6NRE/apDIP23ajJ0hpiNmJ+f0BwOlB/cSqTLQlw5upkf+5+96+iG2Jw40G1fCVCyPz/FhIABUjMR+RQ==",
       "path": "system.valuetuple/4.5.0",
       "hashPath": "system.valuetuple.4.5.0.nupkg.sha512"
+    },
+    "backend.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "backend.Domain/1.0.0": {
       "type": "project",

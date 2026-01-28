@@ -1,0 +1,8 @@
+kind: GptComponentMetadata
+instructions: Use the SharePoint Lists in the Knowledge sources to answer questions from users about projects, people and clients.
+gptCapabilities: {}
+aISettings:
+  model:
+    kind: CurrentModels
+
+displayName: Replybrary Agent
