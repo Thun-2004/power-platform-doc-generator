@@ -1,0 +1,55 @@
+﻿%% Canvas Apps sources:  
+%% Workflows sources: PMFormReminderFlow  IdentifierReminderFlow  EndFormFlow  EndFormFlowReminder  Replybrary_Identifier_Flow  Replybrary_GetExchangeRate 
+%% Environment Variables sources: Replybrary_App_Link (wmreply_Replybrary_App_Link)  Replybrary_SP_Site (wmreply_Replybrary_SP_Site)  Replybrary_Project_List (wmreply_Replybrary_Project_List)  Replybrary_Currency_List (wmreply_Replybrary_Currency_List) 
+
+flowchart LR
+  subgraph CanvasApps
+    CA1[wmreply_replybrary]
+    CA2[wmreply_replybraryv2]
+  end
+
+  subgraph Workflows
+    W1[PMFormReminderFlow]
+    W2[IdentifierReminderFlow]
+    W3[EndFormFlow]
+    W4[EndFormFlowReminder]
+    W5[Replybrary_Identifier_Flow]
+    W6[Replybrary_GetExchangeRate]
+  end
+
+  subgraph EnvironmentVariables
+    EVH[Environment Variables (shared)]
+    E1[Replybrary_App_Link (wmreply_Replybrary_App_Link)]
+    E2[Replybrary_SP_Site (wmreply_Replybrary_SP_Site)]
+    E3[Replybrary_Project_List (wmreply_Replybrary_Project_List)]
+    E4[Replybrary_Currency_List (wmreply_Replybrary_Currency_List)]
+  end
+
+  %% Connect each Canvas App to each Workflow
+  CA1 --> W1
+  CA1 --> W2
+  CA1 --> W3
+  CA1 --> W4
+  CA1 --> W5
+  CA1 --> W6
+
+  CA2 --> W1
+  CA2 --> W2
+  CA2 --> W3
+  CA2 --> W4
+  CA2 --> W5
+  CA2 --> W6
+
+  %% Connect each Workflow to the Environment Variables hub
+  W1 --> EVH
+  W2 --> EVH
+  W3 --> EVH
+  W4 --> EVH
+  W5 --> EVH
+  W6 --> EVH
+
+  %% Connect hub to every environment variable
+  EVH --> E1
+  EVH --> E2
+  EVH --> E3
+  EVH --> E4
