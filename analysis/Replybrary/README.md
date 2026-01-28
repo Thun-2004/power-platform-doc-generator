@@ -77,7 +77,7 @@ Replybrary_1_0_0_20/
 
 If CanvasAppsSrc is missing, screens = 0 and screen→workflow links will NOT be found.
 
-
+## What this analysis includes
 
 Step 1 — Unpack the solution (once)
 
@@ -168,6 +168,6 @@ What the Parser Extracts
 
 ---
 
-
-
+### 2. `dependency-diagram.png`
+A visual diagram showing all critical dependencies:
 

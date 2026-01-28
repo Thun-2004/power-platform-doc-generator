@@ -1,0 +1,435 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "cr6e9_replybraryAgent.cr.zZ5uCqA9"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      },
+      "shared_office365users": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "wmreply_sharedoffice365users_57d9e"
+        },
+        "api": {
+          "name": "shared_office365users"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "undefined",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Replybrary_People_List (wmreply_Replybrary_People_List)": {
+          "defaultValue": "1ed3b986-0b77-402d-977f-4683ab25f170",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_People_List"
+          }
+        },
+        "Replybrary_SP_Site (wmreply_Replybrary_SP_Site)": {
+          "defaultValue": "https://wmreplyukdev.sharepoint.com/sites/ReplybraryDev",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_SP_Site"
+          }
+        },
+        "Replybrary_Project_List (wmreply_Replybrary_Project_List)": {
+          "defaultValue": "98295499-eba6-4d4b-af02-3eb8acc06b48",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_Project_List"
+          }
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Day",
+            "interval": 1,
+            "startTime": "2025-06-11T09:00:00Z"
+          },
+          "metadata": {
+            "operationMetadataId": "d4bd6b15-d974-4523-adaf-21eb3c5d11e9"
+          },
+          "type": "Recurrence"
+        }
+      },
+      "actions": {
+        "HTTP_-_get_latest_deals": {
+          "runAfter": {
+            "Initialize_variable_-_owner_Name": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "89020443-ccda-415c-9ea5-b5bda81342ec"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "GET",
+            "uri": "https://api.pipedrive.com/api/v2/deals?filter_id=691&api_token=@{variables('API_Key')}\n",
+            "headers": {
+              "Content-Type": "application/json"
+            }
+          },
+          "runtimeConfiguration": {
+            "contentTransfer": {
+              "transferMode": "Chunked"
+            }
+          }
+        },
+        "Initialize_variable_-_API_Key": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "d5893327-3cf2-43e3-8b84-e912cd53f414"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "API_Key",
+                "type": "string",
+                "value": "4fb5392e4e035106f5aeb2a8266612dad6250323"
+              }
+            ]
+          }
+        },
+        "Parse_JSON": {
+          "runAfter": {
+            "HTTP_-_get_latest_deals": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "80f26c8c-7487-47b9-87c4-9c9e23d06484"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('HTTP_-_get_latest_deals')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "number"
+                      },
+                      "currency": {
+                        "type": "string"
+                      },
+                      "won_time": {
+                        "type": "string"
+                      },
+                      "update_time": {
+                        "type": "string"
+                      },
+                      "owner_id": {
+                        "type": "integer"
+                      },
+                      "custom_fields": {
+                        "type": "object",
+                        "properties": {
+                          "057743a161448b75a4cc5dfcbd413d187032f02a": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "title",
+                      "value",
+                      "currency",
+                      "won_time",
+                      "update_time"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "For_each": {
+          "foreach": "@body('Parse_JSON')?['data']",
+          "actions": {
+            "Get_items_-_find_existing_project_item": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "95d723ea-e037-4e57-bb77-7394dbe2877c"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_sharepointonline",
+                  "operationId": "GetItems",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                },
+                "parameters": {
+                  "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                  "table": "@parameters('Replybrary_Project_List (wmreply_Replybrary_Project_List)')",
+                  "$filter": "leadID eq '@{items('For_each')?['id']}'"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Condition_-_ignore_if_already_existing": {
+              "actions": {},
+              "runAfter": {
+                "Get_items_-_find_existing_project_item": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {
+                  "Compose": {
+                    "runAfter": {
+                      "Create_Project_item": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "d40a6652-1e4a-4b8d-8146-bffad72f7570"
+                    },
+                    "type": "Compose",
+                    "inputs": "@{items('For_each')?['owner_id']} - "
+                  },
+                  "Get_items_-_people_item": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "237a8031-7c29-414b-baa1-2432f6234b86"
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "shared_sharepointonline",
+                        "operationId": "GetItems",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                      },
+                      "parameters": {
+                        "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                        "table": "@parameters('Replybrary_People_List (wmreply_Replybrary_People_List)')",
+                        "$filter": "pipedriveID eq '@{items('For_each')?['owner_id']}'",
+                        "$top": 1
+                      },
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  },
+                  "Condition_-_if_found": {
+                    "actions": {
+                      "For_each_": {
+                        "foreach": "@outputs('Get_items_-_people_item')?['body/value']",
+                        "actions": {
+                          "Get_user_profile_(V2)": {
+                            "runAfter": {},
+                            "metadata": {
+                              "operationMetadataId": "e4abb42d-deb0-4505-8748-07ae7755a621"
+                            },
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                              "host": {
+                                "connectionName": "shared_office365users",
+                                "operationId": "UserProfile_V2",
+                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365users"
+                              },
+                              "parameters": {
+                                "id": "@items('For_each_')?['Email']"
+                              },
+                              "authentication": "@parameters('$authentication')"
+                            }
+                          },
+                          "Set_variable_-_owner_user_name": {
+                            "runAfter": {
+                              "Get_user_profile_(V2)": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "7fb4e907-ee26-420d-9955-18d4d0b8729e"
+                            },
+                            "type": "SetVariable",
+                            "inputs": {
+                              "name": "OwnerUserName",
+                              "value": "@outputs('Get_user_profile_(V2)')?['body/userPrincipalName']"
+                            }
+                          },
+                          "Set_variable_-_backup_owner": {
+                            "runAfter": {
+                              "Get_user_profile_(V2)": [
+                                "Failed"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "ebe5e34d-cb7d-4865-996e-0a4bc019e89f"
+                            },
+                            "type": "SetVariable",
+                            "inputs": {
+                              "name": "OwnerUserName",
+                              "value": "Toby White"
+                            }
+                          }
+                        },
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "db74f8b2-621d-43a6-96f2-854e5fe0385c"
+                        },
+                        "type": "Foreach"
+                      }
+                    },
+                    "runAfter": {
+                      "Get_items_-_people_item": [
+                        "Succeeded"
+                      ]
+                    },
+                    "else": {
+                      "actions": {
+                        "Set_variable_-_default_user_name": {
+                          "runAfter": {},
+                          "metadata": {
+                            "operationMetadataId": "a8db5046-0f8a-4609-9206-0639ec7c6189"
+                          },
+                          "type": "SetVariable",
+                          "inputs": {
+                            "name": "OwnerUserName",
+                            "value": "Toby White"
+                          }
+                        }
+                      }
+                    },
+                    "expression": {
+                      "and": [
+                        {
+                          "greaterOrEquals": [
+                            "@length(outputs('Get_items_-_people_item')?['body/value'])",
+                            1
+                          ]
+                        }
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "a55906ad-0906-4d74-beb1-63d509f83a43"
+                    },
+                    "type": "If"
+                  },
+                  "Create_Project_item": {
+                    "runAfter": {
+                      "Condition_-_if_found": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "07c5407d-8985-4e20-8d1e-9e901caf4683"
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "shared_sharepointonline",
+                        "operationId": "PostItem",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                      },
+                      "parameters": {
+                        "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                        "table": "@parameters('Replybrary_Project_List (wmreply_Replybrary_Project_List)')",
+                        "item/leadID": "@items('For_each')?['id']",
+                        "item/ProjectName": "@items('For_each')?['title']",
+                        "item/LeadOwner/Claims": "@variables('OwnerUserName')",
+                        "item/Saleprice": "@items('For_each')?['value']",
+                        "item/Active": true,
+                        "item/Design": false,
+                        "item/ACM": false,
+                        "item/PowerBI": false,
+                        "item/PowerAutomate": false,
+                        "item/CopilotStudio": false,
+                        "item/PowerApps": false,
+                        "item/CustomDev": false,
+                        "item/M365CopilotAdoption": false,
+                        "item/Intranet": false,
+                        "item/VivaEngage": false,
+                        "item/IdentifierFormFilled": false,
+                        "item/PMFirstFormFilled": false,
+                        "item/PMEndFormFilled": false,
+                        "item/ProjectCounted": false
+                      },
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  }
+                }
+              },
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@length(outputs('Get_items_-_find_existing_project_item')?['body/value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c8c2ec1f-6dfd-41d5-b4b5-de117db4075c"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "76565367-07fc-4479-bc0e-443b51b5adf8"
+          },
+          "type": "Foreach"
+        },
+        "Initialize_variable_-_owner_Name": {
+          "runAfter": {
+            "Initialize_variable_-_API_Key": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ea9faaf4-8247-487b-af6e-1195f6b086e2"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "OwnerUserName",
+                "type": "string"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

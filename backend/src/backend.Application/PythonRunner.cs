@@ -29,8 +29,6 @@ public static class PythonRunner
 
     // }
 
-
-    
         public static async Task<(int exitCode, string stdout, string stderr)> RunAsync(
             string pythonExe, string scriptPath, string args = "")
         {

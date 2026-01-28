@@ -1,0 +1,401 @@
+<ImportExportXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.25103.154" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.25103.00154">
+  <Entities></Entities>
+  <Roles></Roles>
+  <Workflows>
+    <Workflow WorkflowId="{82921763-2342-f011-8779-000d3a0ceb69}" Name="EndFormFlow">
+      <JsonFileName>/Workflows/EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>5</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <ModernFlowType>0</ModernFlowType>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="EndFormFlow" />
+      </LocalizedNames>
+    </Workflow>
+    <Workflow WorkflowId="{5898f434-a147-f011-8779-000d3a0ceb69}" Name="Replybrary | Daily Pipedrive check">
+      <JsonFileName>/Workflows/ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>5</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0.0.1</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <ModernFlowType>0</ModernFlowType>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="Replybrary | Daily Pipedrive check" />
+      </LocalizedNames>
+    </Workflow>
+    <Workflow WorkflowId="{128f82aa-b942-f011-877a-000d3a0ceb69}" Name="EndFormFlowReminder">
+      <JsonFileName>/Workflows/EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>5</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <ModernFlowType>0</ModernFlowType>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="EndFormFlowReminder" />
+      </LocalizedNames>
+    </Workflow>
+    <Workflow WorkflowId="{f9309d25-c742-f011-877a-000d3a0ceb69}" Name="UploadLogo">
+      <JsonFileName>/Workflows/UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>5</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <ModernFlowType>0</ModernFlowType>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="UploadLogo" />
+      </LocalizedNames>
+    </Workflow>
+    <Workflow WorkflowId="{b025c04d-d342-f011-877a-000d3a0ceb69}" Name="PMFormReminderFlow">
+      <JsonFileName>/Workflows/PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>5</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <ModernFlowType>0</ModernFlowType>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="PMFormReminderFlow" />
+      </LocalizedNames>
+    </Workflow>
+    <Workflow WorkflowId="{d4ae74b0-da42-f011-877a-000d3a0ceb69}" Name="IdentifierReminderFlow">
+      <JsonFileName>/Workflows/IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>5</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <ModernFlowType>0</ModernFlowType>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="IdentifierReminderFlow" />
+      </LocalizedNames>
+    </Workflow>
+    <Workflow WorkflowId="{4e437a2b-c74d-f011-877b-000d3a0ceb69}" Name="Replybrary_GetExchangeRate">
+      <JsonFileName>/Workflows/Replybrary_GetExchangeRate-4E437A2B-C74D-F011-877B-000D3A0CEB69.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>5</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0.0.4</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <ModernFlowType>0</ModernFlowType>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="Replybrary_GetExchangeRate" />
+      </LocalizedNames>
+    </Workflow>
+    <Workflow WorkflowId="{38ca161e-ba34-f011-8c4c-6045bd0acadb}" Name="Replybrary_Identifier_Flow">
+      <JsonFileName>/Workflows/Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>5</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <ModernFlowType>0</ModernFlowType>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="Replybrary_Identifier_Flow" />
+      </LocalizedNames>
+    </Workflow>
+    <Workflow WorkflowId="{a3194d5e-d434-f011-8c4c-6045bd0acadb}" Name="PMflow">
+      <JsonFileName>/Workflows/PMflow-A3194D5E-D434-F011-8C4C-6045BD0ACADB.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>5</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <ModernFlowType>0</ModernFlowType>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="PMflow" />
+      </LocalizedNames>
+    </Workflow>
+    <Workflow WorkflowId="{3ce0853c-4c36-f011-8c4c-6045bd0acadb}" Name="PeopleListFlow">
+      <JsonFileName>/Workflows/PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>5</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <ModernFlowType>0</ModernFlowType>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="PeopleListFlow" />
+      </LocalizedNames>
+    </Workflow>
+  </Workflows>
+  <FieldSecurityProfiles></FieldSecurityProfiles>
+  <Templates />
+  <EntityMaps />
+  <EntityRelationships />
+  <OrganizationSettings />
+  <optionsets />
+  <CustomControls />
+  <EntityDataProviders />
+  <CanvasApps>
+    <CanvasApp>
+      <Name>wmreply_replybrary_b320d</Name>
+      <AppVersion>2025-08-20T15:44:12Z</AppVersion>
+      <Status>Ready</Status>
+      <CreatedByClientVersion>3.25082.8.0</CreatedByClientVersion>
+      <MinClientVersion>3.25082.8.0</MinClientVersion>
+      <Tags>{"primaryDeviceWidth":"1366","primaryDeviceHeight":"768","supportsPortrait":"true","supportsLandscape":"true","primaryFormFactor":"Tablet","showStatusBar":"false","publisherVersion":"3.25082.8","minimumRequiredApiVersion":"2.2.0","hasComponent":"false","hasUnlockedComponent":"false","isUnifiedRootApp":"false","sienaVersion":"20250820T151105Z-3.25082.8.0","coauthoringEnabled":"true","multipleWritersEnabled":"true","acceptedCoauthoringTerms":"true"}</Tags>
+      <IsCdsUpgraded>0</IsCdsUpgraded>
+      <GalleryItemId xsi:nil="true"></GalleryItemId>
+      <BackgroundColor>rgba(255, 255, 255, 1)</BackgroundColor>
+      <DisplayName>Reply-brary</DisplayName>
+      <Description xsi:nil="true"></Description>
+      <CommitMessage xsi:nil="true"></CommitMessage>
+      <Publisher></Publisher>
+      <AuthorizationReferences>[]</AuthorizationReferences>
+      <ConnectionReferences>{"c5c9b457-384a-458f-ad12-d2eef8344797":{"id":"/providers/microsoft.powerapps/apis/shared_logicflows","displayName":"Logic flows","iconUri":"https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/v1.0.1766/1.0.1766.4330/logicflows/icon.png","dataSources":["PMflow"],"dependencies":[],"dependents":[],"parameterHints":{"workflowName":{"value":"78b6fadc-945e-4e72-974e-2aadb788d449"},"workflowEntityId":{"value":"a3194d5e-d434-f011-8c4c-6045bd0acadb"},"workflowDisplayName":{"value":"PMflow"}},"parameterHintsV2":{"workflowName":{"value":"78b6fadc-945e-4e72-974e-2aadb788d449"},"workflowEntityId":{"value":"a3194d5e-d434-f011-8c4c-6045bd0acadb"},"workflowDisplayName":{"value":"PMflow"}},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{},"apiTier":"Standard","actions":["Run"]},"95088f1d-2593-40f0-ba38-b667f463f4a8":{"id":"/providers/microsoft.powerapps/apis/shared_logicflows","displayName":"Logic flows","iconUri":"https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/v1.0.1766/1.0.1766.4330/logicflows/icon.png","dataSources":["UploadLogo"],"dependencies":[],"dependents":[],"parameterHints":{"workflowName":{"value":"049a2c08-a7c5-4cc7-8daa-06aabc7cd870"},"workflowEntityId":{"value":"f9309d25-c742-f011-877a-000d3a0ceb69"},"workflowDisplayName":{"value":"UploadLogo"}},"parameterHintsV2":{"workflowName":{"value":"049a2c08-a7c5-4cc7-8daa-06aabc7cd870"},"workflowEntityId":{"value":"f9309d25-c742-f011-877a-000d3a0ceb69"},"workflowDisplayName":{"value":"UploadLogo"}},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{},"apiTier":"Standard","actions":["Run"]},"f40b3651-6281-48c9-a00b-29f5beca452e":{"id":"/providers/microsoft.powerapps/apis/shared_sharepointonline","displayName":"SharePoint","iconUri":"https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/v1.0.1762/1.0.1762.4298/sharepointonline/icon.png","dataSources":["Replybrary_Project_List","Replybrary_Client_List","Replybrary_ProjectHistory_List","Replybrary_ReusableIdeas_List","Replybrary_People_List","Replybrary_LessonsLearnt_List","Replybrary_ClientContacts_List","Replybrary_CertificationsTracker_List","Replybrary_Currency_List","Replybrary_Admin_List","Replybrary_Links_List"],"dependencies":[],"dependents":[],"parameterHints":{},"parameterHintsV2":{},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{"https://wmreplyukdev.sharepoint.com/sites/ReplybraryDev_wmreply_Replybrary_SP_Site":{"datasetOverride":{"name":"https://wmreplyukdev.sharepoint.com/sites/ReplybraryDev","environmentVariableName":"wmreply_Replybrary_SP_Site"},"dataSources":{"Replybrary_Project_List":{"tableName":"98295499-eba6-4d4b-af02-3eb8acc06b48","tableNameOverride":{"name":"98295499-eba6-4d4b-af02-3eb8acc06b48","environmentVariableName":"wmreply_Replybrary_Project_List"}},"Replybrary_Client_List":{"tableName":"2870b432-b6b9-4c1e-8b16-340fa995c7ac","tableNameOverride":{"name":"2870b432-b6b9-4c1e-8b16-340fa995c7ac","environmentVariableName":"wmreply_Replybrary_Client_List"}},"Replybrary_ProjectHistory_List":{"tableName":"265f5f58-8cf5-49eb-8aab-c99c6d3b1a14","tableNameOverride":{"name":"265f5f58-8cf5-49eb-8aab-c99c6d3b1a14","environmentVariableName":"wmreply_Replybrary_ProjectHistory_List"}},"Replybrary_ReusableIdeas_List":{"tableName":"347fdf43-c463-429e-8f3d-fe7aeba3fa9d","tableNameOverride":{"name":"347fdf43-c463-429e-8f3d-fe7aeba3fa9d","environmentVariableName":"wmreply_Replybrary_ReusableIdeas_List"}},"Replybrary_People_List":{"tableName":"1ed3b986-0b77-402d-977f-4683ab25f170","tableNameOverride":{"name":"1ed3b986-0b77-402d-977f-4683ab25f170","environmentVariableName":"wmreply_Replybrary_People_List"}},"Replybrary_LessonsLearnt_List":{"tableName":"1d3f460c-b5f8-4a84-96e5-83b809a83034","tableNameOverride":{"name":"1d3f460c-b5f8-4a84-96e5-83b809a83034","environmentVariableName":"wmreply_Replybrary_LessonsLearnt_List"}},"Replybrary_ClientContacts_List":{"tableName":"2c7b0baa-e90a-4686-96b3-9fa6cfba9b5a","tableNameOverride":{"name":"2c7b0baa-e90a-4686-96b3-9fa6cfba9b5a","environmentVariableName":"wmreply_Replybrary_ClientContacts_List"}},"Replybrary_CertificationsTracker_List":{"tableName":"f91c49aa-890d-4e77-acd8-b2688ca84270","tableNameOverride":{"name":"f91c49aa-890d-4e77-acd8-b2688ca84270","environmentVariableName":"wmreply_Replybrary_CertificationsTracker_List"}},"Replybrary_Currency_List":{"tableName":"9bf55fdf-4c45-465b-a4a3-8f71d6958b51","tableNameOverride":{"name":"9bf55fdf-4c45-465b-a4a3-8f71d6958b51","environmentVariableName":"wmreply_Replybrary_Currency_List"}},"Replybrary_Admin_List":{"tableName":"c2f11e56-b4a9-432d-9b29-a352ad4df2a7","tableNameOverride":{"name":"c2f11e56-b4a9-432d-9b29-a352ad4df2a7","environmentVariableName":"wmreply_Replybrary_Admin_List"}},"Replybrary_Links_List":{"tableName":"85862d21-93e1-4888-9eec-1a38d1107cfd","tableNameOverride":{"name":"85862d21-93e1-4888-9eec-1a38d1107cfd","environmentVariableName":"wmreply_Replybrary_Links_List"}}}}},"apiTier":"Standard","actions":["providers/PowerPlatform.Governance/Operations/Read","providers/PowerPlatform.Governance/Operations/Write","providers/PowerPlatform.Governance/Operations/Delete"]}}</ConnectionReferences>
+      <DatabaseReferences>{}</DatabaseReferences>
+      <AppComponents>[]</AppComponents>
+      <AppComponentDependencies>[]</AppComponentDependencies>
+      <CanConsumeAppPass>1</CanConsumeAppPass>
+      <CanvasAppType>0</CanvasAppType>
+      <BypassConsent>0</BypassConsent>
+      <AdminControlBypassConsent>0</AdminControlBypassConsent>
+      <EmbeddedApp xsi:nil="true"></EmbeddedApp>
+      <IntroducedVersion>1.0</IntroducedVersion>
+      <CdsDependencies>{"cdsdependencies":[{"dependencyid":"a3194d5e-d434-f011-8c4c-6045bd0acadb","componenttype":29,"componenttypeplatformname":"Workflow"},{"dependencyid":"f9309d25-c742-f011-877a-000d3a0ceb69","componenttype":29,"componenttypeplatformname":"Workflow"},{"logicalname":"wmreply_Replybrary_SP_Site","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_Project_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_Client_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_ProjectHistory_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_ReusableIdeas_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_People_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_LessonsLearnt_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_ClientContacts_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_CertificationsTracker_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_Currency_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_Admin_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_Links_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"}]}</CdsDependencies>
+      <IsCustomizable>1</IsCustomizable>
+      <BackgroundImageUri>/CanvasApps/wmreply_replybrary_b320d_BackgroundImageUri</BackgroundImageUri>
+      <DocumentUri>/CanvasApps/wmreply_replybrary_b320d_DocumentUri.msapp</DocumentUri>
+      <AdditionalUris>
+        <AdditionalUri>/CanvasApps/wmreply_replybrary_b320d_AdditionalUris0_identity.json</AdditionalUri>
+      </AdditionalUris>
+    </CanvasApp>
+    <CanvasApp>
+      <Name>wmreply_replybraryv2_c933c</Name>
+      <AppVersion>2025-11-11T11:29:13Z</AppVersion>
+      <Status>Ready</Status>
+      <CreatedByClientVersion>3.25103.13.0</CreatedByClientVersion>
+      <MinClientVersion>3.25103.13.0</MinClientVersion>
+      <Tags>{"primaryDeviceWidth":"1911","primaryDeviceHeight":"851","supportsPortrait":"false","supportsLandscape":"true","primaryFormFactor":"Tablet","showStatusBar":"false","publisherVersion":"3.25103.13","minimumRequiredApiVersion":"2.2.0","hasComponent":"true","hasUnlockedComponent":"true","isUnifiedRootApp":"false","sienaVersion":"20251015T162902Z-3.25101.17.0"}</Tags>
+      <IsCdsUpgraded>0</IsCdsUpgraded>
+      <GalleryItemId xsi:nil="true"></GalleryItemId>
+      <BackgroundColor>RGBA(0,176,240,1)</BackgroundColor>
+      <DisplayName>Reply-brary v2</DisplayName>
+      <Description xsi:nil="true"></Description>
+      <CommitMessage xsi:nil="true"></CommitMessage>
+      <Publisher xsi:nil="true"></Publisher>
+      <AuthorizationReferences>[]</AuthorizationReferences>
+      <ConnectionReferences>{"2e839f98-f3ab-4b67-b7e3-094498abe5d3":{"id":"/providers/microsoft.powerapps/apis/shared_sharepointonline","displayName":"SharePoint","iconUri":"https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/v1.0.1769/1.0.1769.4352/sharepointonline/icon.png","dataSources":["Replybrary_Currency_List","Replybrary_Admin_List","Replybrary_SMEs_List","Replybrary_SkillLevels_List","Replybrary_Links_List","Replybrary_ProjectHistory_List","Replybrary_Client_List","Replybrary_ClientContacts_List","Replybrary_Project_List","Replybrary_ReusableIdeas_List","Replybrary_LessonsLearnt_List","Replybrary_CertificationsTracker_List","Replybrary_People_List"],"dependencies":[],"dependents":[],"parameterHints":{},"parameterHintsV2":{},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{"https://wmreplyukdev.sharepoint.com/sites/ReplybraryDev_wmreply_Replybrary_SP_Site":{"datasetOverride":{"name":"https://wmreplyukdev.sharepoint.com/sites/ReplybraryDev","environmentVariableName":"wmreply_Replybrary_SP_Site"},"dataSources":{"Replybrary_Currency_List":{"tableName":"9bf55fdf-4c45-465b-a4a3-8f71d6958b51","tableNameOverride":{"name":"9bf55fdf-4c45-465b-a4a3-8f71d6958b51","environmentVariableName":"wmreply_Replybrary_Currency_List"}},"Replybrary_Admin_List":{"tableName":"c2f11e56-b4a9-432d-9b29-a352ad4df2a7","tableNameOverride":{"name":"c2f11e56-b4a9-432d-9b29-a352ad4df2a7","environmentVariableName":"wmreply_Replybrary_Admin_List"}},"Replybrary_SMEs_List":{"tableName":"34862a08-b3d7-432b-a9a0-ab6b04570776","tableNameOverride":{"name":"34862a08-b3d7-432b-a9a0-ab6b04570776","environmentVariableName":"wmreply_Replybrary_SMEs_List"}},"Replybrary_SkillLevels_List":{"tableName":"2ce5540b-a86d-4155-b26a-2e9466ef6985","tableNameOverride":{"name":"2ce5540b-a86d-4155-b26a-2e9466ef6985","environmentVariableName":"wmreply_Replybrary_SkillLevels_List"}},"Replybrary_Links_List":{"tableName":"85862d21-93e1-4888-9eec-1a38d1107cfd","tableNameOverride":{"name":"85862d21-93e1-4888-9eec-1a38d1107cfd","environmentVariableName":"wmreply_Replybrary_Links_List"}},"Replybrary_ProjectHistory_List":{"tableName":"265f5f58-8cf5-49eb-8aab-c99c6d3b1a14","tableNameOverride":{"name":"265f5f58-8cf5-49eb-8aab-c99c6d3b1a14","environmentVariableName":"wmreply_Replybrary_ProjectHistory_List"}},"Replybrary_Client_List":{"tableName":"2870b432-b6b9-4c1e-8b16-340fa995c7ac","tableNameOverride":{"name":"2870b432-b6b9-4c1e-8b16-340fa995c7ac","environmentVariableName":"wmreply_Replybrary_Client_List"}},"Replybrary_ClientContacts_List":{"tableName":"2c7b0baa-e90a-4686-96b3-9fa6cfba9b5a","tableNameOverride":{"name":"2c7b0baa-e90a-4686-96b3-9fa6cfba9b5a","environmentVariableName":"wmreply_Replybrary_ClientContacts_List"}},"Replybrary_Project_List":{"tableName":"98295499-eba6-4d4b-af02-3eb8acc06b48","tableNameOverride":{"name":"98295499-eba6-4d4b-af02-3eb8acc06b48","environmentVariableName":"wmreply_Replybrary_Project_List"}},"Replybrary_ReusableIdeas_List":{"tableName":"347fdf43-c463-429e-8f3d-fe7aeba3fa9d","tableNameOverride":{"name":"347fdf43-c463-429e-8f3d-fe7aeba3fa9d","environmentVariableName":"wmreply_Replybrary_ReusableIdeas_List"}},"Replybrary_LessonsLearnt_List":{"tableName":"1d3f460c-b5f8-4a84-96e5-83b809a83034","tableNameOverride":{"name":"1d3f460c-b5f8-4a84-96e5-83b809a83034","environmentVariableName":"wmreply_Replybrary_LessonsLearnt_List"}},"Replybrary_CertificationsTracker_List":{"tableName":"f91c49aa-890d-4e77-acd8-b2688ca84270","tableNameOverride":{"name":"f91c49aa-890d-4e77-acd8-b2688ca84270","environmentVariableName":"wmreply_Replybrary_CertificationsTracker_List"}},"Replybrary_People_List":{"tableName":"bc6d78cc-4002-4eb0-bfaf-4ee66e2add61","tableNameOverride":{"name":"bc6d78cc-4002-4eb0-bfaf-4ee66e2add61","environmentVariableName":"wmreply_Replybrary_People_List"}}}}},"apiTier":"Standard","actions":["providers/PowerPlatform.Governance/Operations/Read","providers/PowerPlatform.Governance/Operations/Write","providers/PowerPlatform.Governance/Operations/Delete"]},"6c5230a0-2bd7-4f01-9a05-cadc1a3eb90f":{"id":"/providers/microsoft.powerapps/apis/shared_logicflows","displayName":"Logic flows","iconUri":"https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/v1.0.1774/1.0.1774.4397/logicflows/icon.png","dataSources":["UploadLogo"],"dependencies":[],"dependents":[],"parameterHints":{"workflowName":{"value":"4adcf298-9153-4fbd-8ea8-161d23bbdb0c"},"workflowEntityId":{"value":"f9309d25-c742-f011-877a-000d3a0ceb69"},"workflowDisplayName":{"value":"UploadLogo"}},"parameterHintsV2":{"workflowName":{"value":"4adcf298-9153-4fbd-8ea8-161d23bbdb0c"},"workflowEntityId":{"value":"f9309d25-c742-f011-877a-000d3a0ceb69"},"workflowDisplayName":{"value":"UploadLogo"}},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{},"apiTier":"Standard","actions":["Run"]},"407f99c1-f81d-47df-9299-9122567ad8e5":{"id":"/providers/microsoft.powerapps/apis/shared_logicflows","displayName":"Logic flows","iconUri":"https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/v1.0.1774/1.0.1774.4397/logicflows/icon.png","dataSources":["PMflow"],"dependencies":[],"dependents":[],"parameterHints":{"workflowName":{"value":"2f57b91f-d588-4ab7-abfe-ee2a72bd8e0a"},"workflowEntityId":{"value":"a3194d5e-d434-f011-8c4c-6045bd0acadb"},"workflowDisplayName":{"value":"PMflow"}},"parameterHintsV2":{"workflowName":{"value":"2f57b91f-d588-4ab7-abfe-ee2a72bd8e0a"},"workflowEntityId":{"value":"a3194d5e-d434-f011-8c4c-6045bd0acadb"},"workflowDisplayName":{"value":"PMflow"}},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{},"apiTier":"Standard","actions":["Run"]}}</ConnectionReferences>
+      <DatabaseReferences>{}</DatabaseReferences>
+      <AppComponents>[]</AppComponents>
+      <AppComponentDependencies>[]</AppComponentDependencies>
+      <CanConsumeAppPass>1</CanConsumeAppPass>
+      <CanvasAppType>0</CanvasAppType>
+      <BypassConsent>0</BypassConsent>
+      <AdminControlBypassConsent>0</AdminControlBypassConsent>
+      <EmbeddedApp xsi:nil="true"></EmbeddedApp>
+      <IntroducedVersion>1.0</IntroducedVersion>
+      <CdsDependencies>{"cdsdependencies":[{"dependencyid":"f9309d25-c742-f011-877a-000d3a0ceb69","componenttype":29,"componenttypeplatformname":"Workflow"},{"dependencyid":"a3194d5e-d434-f011-8c4c-6045bd0acadb","componenttype":29,"componenttypeplatformname":"Workflow"},{"logicalname":"wmreply_Replybrary_SP_Site","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_Currency_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_Admin_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_SMEs_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_SkillLevels_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_Links_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_ProjectHistory_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_Client_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_ClientContacts_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_Project_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_ReusableIdeas_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_LessonsLearnt_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_CertificationsTracker_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"},{"logicalname":"wmreply_Replybrary_People_List","componenttype":380,"componenttypeplatformname":"EnvironmentVariableDefinition"}]}</CdsDependencies>
+      <IsCustomizable>1</IsCustomizable>
+      <BackgroundImageUri>/CanvasApps/wmreply_replybraryv2_c933c_BackgroundImageUri</BackgroundImageUri>
+      <DocumentUri>/CanvasApps/wmreply_replybraryv2_c933c_DocumentUri.msapp</DocumentUri>
+      <AdditionalUris>
+        <AdditionalUri>/CanvasApps/wmreply_replybraryv2_c933c_AdditionalUris0_identity.json</AdditionalUri>
+      </AdditionalUris>
+    </CanvasApp>
+  </CanvasApps>
+  <connectionreferences>
+    <connectionreference connectionreferencelogicalname="cr6e9_replybraryAgent.cr.oPO9QIRt">
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_sharepointonline</connectorid>
+      <iscustomizable>0</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="cr6e9_replybraryAgent.cr.zZ5uCqA9">
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_sharepointonline</connectorid>
+      <iscustomizable>0</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="new_sharedoffice365users_fd798">
+      <connectionreferencedisplayname>Office 365 Users</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_office365users</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="wmreply_sharedoffice365groups_d38cd">
+      <connectionreferencedisplayname>Office 365 Groups Replybrary-d38cd</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_office365groups</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="wmreply_sharedoffice365users_57d9e">
+      <connectionreferencedisplayname>Office 365 Users Replybrary-57d9e</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_office365users</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="wmreply_sharedsharepointonline_f12ce">
+      <connectionreferencedisplayname>SharePoint OneCCDocManApp-f12ce</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_sharepointonline</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="wmreply_sharedteams_a045b">
+      <connectionreferencedisplayname>Microsoft Teams Replybrary-a045b</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_teams</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+  </connectionreferences>
+  <Languages>
+    <Language>1033</Language>
+  </Languages>
+</ImportExportXml>
