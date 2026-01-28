@@ -72,32 +72,32 @@ public class FileController : ControllerBase
             // string outputDir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
             // Directory.CreateDirectory(outputDir);
 
-            string fullFilePath = Path.Combine(outputDir, file.FileName);
+            // string fullFilePath = Path.Combine(outputDir, file.FileName);
 
-            await using FileStream stream = System.IO.File.Create(fullFilePath);
-            await file.CopyToAsync(stream);
+            // await using FileStream stream = System.IO.File.Create(fullFilePath);
+            // await file.CopyToAsync(stream);
 
-            //create obj
-            UploadedFile uploadedFile = new()
-            {
-                OriginalName = originalFileName,
-                StoredPath = fullFilePath,
-            };
+            // //create obj
+            // UploadedFile uploadedFile = new()
+            // {
+            //     OriginalName = originalFileName,
+            //     StoredPath = fullFilePath,
+            // };
 
-            _store.Files.Add(uploadedFile); 
+            // _store.Files.Add(uploadedFile); 
             
 
             //TODO: add process file function
             // System.Threading.Tasks.Task<string> response = FileProcessing.ProcessFile(uploadedFile.StoredPath);
 
             // return Ok(new { fileId = uploadedFile.Id.ToString(), message = "success" });
-            string response = await FileProcessing.ProcessFile(uploadedFile.StoredPath);
+            // string response = await FileProcessing.ProcessFile(uploadedFile.StoredPath);
 
             return Ok(new
             {
-                fileId = uploadedFile.Id.ToString(),
+                // fileId = uploadedFile.Id.ToString(),
                 message = "success",
-                response = response
+                // response = response
             });
         }
         catch (Exception e)
