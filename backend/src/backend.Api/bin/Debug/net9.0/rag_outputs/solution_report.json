@@ -1,0 +1,165 @@
+﻿{
+  "root": "/var/folders/8x/3j91c4_d4ngch6_z44jb08pc0000gq/T/extract/bac9b305-5d9a-49c4-b588-2263003d1625",
+  "top_level": [
+    {
+      "name": "Assets/",
+      "type": "dir"
+    },
+    {
+      "name": "botcomponents/",
+      "type": "dir"
+    },
+    {
+      "name": "bots/",
+      "type": "dir"
+    },
+    {
+      "name": "CanvasApps/",
+      "type": "dir"
+    },
+    {
+      "name": "customizations.xml",
+      "type": "file",
+      "bytes": 34274
+    },
+    {
+      "name": "dvtablesearchentities/",
+      "type": "dir"
+    },
+    {
+      "name": "dvtablesearchs/",
+      "type": "dir"
+    },
+    {
+      "name": "environmentvariabledefinitions/",
+      "type": "dir"
+    },
+    {
+      "name": "solution.xml",
+      "type": "file",
+      "bytes": 5185
+    },
+    {
+      "name": "Workflows/",
+      "type": "dir"
+    },
+    {
+      "name": "[Content_Types].xml",
+      "type": "file",
+      "bytes": 2416
+    }
+  ],
+  "canvasapps": {
+    "exists": true,
+    "groups": {
+      "wmreply_replybraryv2_c933c": [
+        "wmreply_replybraryv2_c933c_AdditionalUris0_identity.json",
+        "wmreply_replybraryv2_c933c_BackgroundImageUri",
+        "wmreply_replybraryv2_c933c_DocumentUri.msapp"
+      ],
+      "wmreply_replybrary_b320d": [
+        "wmreply_replybrary_b320d_AdditionalUris0_identity.json",
+        "wmreply_replybrary_b320d_BackgroundImageUri",
+        "wmreply_replybrary_b320d_DocumentUri.msapp"
+      ]
+    }
+  },
+  "workflows": {
+    "exists": true,
+    "items": [
+      {
+        "name": "EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69.json",
+        "bytes": 11987
+      },
+      {
+        "name": "EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69.json",
+        "bytes": 11926
+      },
+      {
+        "name": "IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69.json",
+        "bytes": 16671
+      },
+      {
+        "name": "PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB.json",
+        "bytes": 22260
+      },
+      {
+        "name": "PMflow-A3194D5E-D434-F011-8C4C-6045BD0ACADB.json",
+        "bytes": 3985
+      },
+      {
+        "name": "PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69.json",
+        "bytes": 14562
+      },
+      {
+        "name": "ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69.json",
+        "bytes": 16662
+      },
+      {
+        "name": "Replybrary_GetExchangeRate-4E437A2B-C74D-F011-877B-000D3A0CEB69.json",
+        "bytes": 6796
+      },
+      {
+        "name": "Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB.json",
+        "bytes": 5576
+      },
+      {
+        "name": "UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69.json",
+        "bytes": 4622
+      }
+    ]
+  },
+  "environmentvariabledefinitions": {
+    "exists": true,
+    "items": [
+      {
+        "name": "wmreply_Replybrary_Admin_List/"
+      },
+      {
+        "name": "wmreply_Replybrary_App_Link/"
+      },
+      {
+        "name": "wmreply_Replybrary_CertificationsTracker_List/"
+      },
+      {
+        "name": "wmreply_Replybrary_ClientContacts_List/"
+      },
+      {
+        "name": "wmreply_Replybrary_Client_List/"
+      },
+      {
+        "name": "wmreply_Replybrary_Currency_List/"
+      },
+      {
+        "name": "wmreply_Replybrary_LessonsLearnt_List/"
+      },
+      {
+        "name": "wmreply_Replybrary_Links_List/"
+      },
+      {
+        "name": "wmreply_Replybrary_M365GroupID/"
+      },
+      {
+        "name": "wmreply_Replybrary_People_List/"
+      },
+      {
+        "name": "wmreply_Replybrary_ProjectHistory_List/"
+      },
+      {
+        "name": "wmreply_Replybrary_Project_List/"
+      },
+      {
+        "name": "wmreply_Replybrary_ReusableIdeas_List/"
+      },
+      {
+        "name": "wmreply_Replybrary_SkillLevels_List/"
+      },
+      {
+        "name": "wmreply_Replybrary_SMEs_List/"
+      },
+      {
+        "name": "wmreply_Replybrary_SP_Site/"
+      }
+    ]
+  }
+}
