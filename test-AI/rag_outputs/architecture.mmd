@@ -1,0 +1,38 @@
+﻿flowchart LR
+  subgraph CanvasApps
+    CA1["wmreply_replybrary_b320d_AdditionalUris0_identity.json "]
+    CA2["wmreply_replybraryv2_c933c_AdditionalUris0_identity.json "]
+  end
+
+  subgraph Workflows
+    W1["PMFormReminderFlow "]
+    W2["IdentifierReminderFlow "]
+    W3["EndFormFlow "]
+    W4["EndFormFlowReminder "]
+  end
+
+  subgraph EnvironmentVariables
+    EVH["Environment Variables (shared)"]
+    E1["Replybrary_App_Link (wmreply_Replybrary_App_Link) "]
+    E2["Replybrary_SP_Site (wmreply_Replybrary_SP_Site) "]
+    E3["Replybrary_Project_List (wmreply_Replybrary_Project_List) "]
+  end
+
+  CA1 --> W1
+  CA1 --> W2
+  CA1 --> W3
+  CA1 --> W4
+
+  CA2 --> W1
+  CA2 --> W2
+  CA2 --> W3
+  CA2 --> W4
+
+  W1 --> EVH
+  W2 --> EVH
+  W3 --> EVH
+  W4 --> EVH
+
+  EVH --> E1
+  EVH --> E2
+  EVH --> E3

@@ -78,24 +78,16 @@ public sealed class SolutionReport
 // ----------------------------
 public static class SolutionParser
 {
-    public static string[] Run(string input_path, string output_path)
+    public static string Run(string input_path, string output_path)
     {
         string input = input_path;
         string output = output_path;
 
-        // for (int i = 0; i < args.Length; i++)
-        // {
-        //     var a = args[i];
-        //     if (a.Equals("--input", StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
-        //         input = args[++i];
-        //     else if (a.Equals("--out", StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
-        //         output = args[++i];
-        // }
 
         if (string.IsNullOrWhiteSpace(input) || string.IsNullOrWhiteSpace(output))
         {
             Console.Error.WriteLine("Usage: dotnet run -- --input <solution_folder> --out <output_folder>");
-            return [];
+            return "";
         }
 
         var root = new DirectoryInfo(Path.GetFullPath(Environment.ExpandEnvironmentVariables(input)));
@@ -219,13 +211,6 @@ public static class SolutionParser
             );
         }
 
-        var parsed_files = new[]
-        {
-            Path.Combine(chunksDir, "overview.json"),
-            Path.Combine(chunksDir, "canvasapps.json"),
-            Path.Combine(chunksDir, "envvars.json"),
-            Path.Combine(chunksDir, "workflows.json"),
-        }.Where(File.Exists).ToArray();
 
         Console.WriteLine("Parsing is complete");
         Console.WriteLine($"Canvas Apps (grouped): {canvasGroupsCount}");
@@ -234,8 +219,7 @@ public static class SolutionParser
         Console.WriteLine($"Reports written to: {outDirPath}");
         Console.WriteLine($"Chunks written to: {chunksDir}");
 
-        // return chunksDir;
-        return parsed_files; 
+        return chunksDir;
     }
 
     static bool IsIgnored(string name) =>

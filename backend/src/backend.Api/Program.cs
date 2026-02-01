@@ -25,12 +25,6 @@ public class Program
                             });
         });
         
-        //NOTE: testing only
-        // var uploadRoot = Path.Combine(
-        //     Environment.GetFolderPath(Environment.SpecialFolder.Desktop), 
-        //     "uploads-test"
-        // ); 
-        // Directory.CreateDirectory(uploadRoot); 
         // Add services to the container.
         builder.Services.AddControllers();
         builder.Services.AddInfrastructures();
@@ -75,3 +69,5 @@ public class Program
         app.Run();
     }
 }
+
+
