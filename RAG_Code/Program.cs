@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿
+using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -117,10 +118,12 @@ Usage:
 
   dotnet run -- ask ""<question>"" [--vs <vector_store_id>] [--model <model>]
 
-  dotnet run -- generate overview   [--out <folder>] [--vs <vector_store_id>] [--model <model>]
-  dotnet run -- generate workflows  [--out <folder>] [--vs <vector_store_id>] [--model <model>]
-  dotnet run -- generate faq        [--out <folder>] [--vs <vector_store_id>] [--model <model>]
-  dotnet run -- generate diagrams   [--out <folder>] [--vs <vector_store_id>] [--model <model>]
+  dotnet run -- generate overview        [--out <folder>] [--vs <vector_store_id>] [--model <model>]
+  dotnet run -- generate workflows       [--out <folder>] [--vs <vector_store_id>] [--model <model>]
+  dotnet run -- generate faq             [--out <folder>] [--vs <vector_store_id>] [--model <model>]
+  dotnet run -- generate diagrams        [--out <folder>] [--vs <vector_store_id>] [--model <model>]
+  dotnet run -- generate erd             [--out <folder>] [--vs <vector_store_id>] [--model <model>]
+  dotnet run -- generate screen-mapping  [--out <folder>] [--vs <vector_store_id>] [--model <model>]
 
   dotnet run -- export word [--out <folder>]
   dotnet run -- export pdf  [--out <folder>]
@@ -156,6 +159,64 @@ static int RunProcess(string fileName, string arguments, string workingDir)
     return p.ExitCode;
 }
 
+//  small router so "ask" looks in the right chunk
+static string BuildRoutedPrompt(string question)
+{
+    var q = question.ToLowerInvariant();
+
+    bool isEdges =
+        q.Contains("edge") ||
+        q.Contains("edges") ||
+        q.Contains("mapping") ||
+        q.Contains("map") ||
+        q.Contains("relationship") ||
+        q.Contains("relationships") ||
+        q.Contains("screen_to_workflow") ||
+        q.Contains("workflow_to_env") ||
+        q.Contains("app_to_screen") ||
+        q.Contains("app_to_connector") ||
+        q.Contains("workflow_to_connector") ||
+        q.Contains("connects") ||
+        q.Contains("links");
+
+    bool isErd =
+        q.Contains("erd") ||
+        q.Contains("entity relationship") ||
+        q.Contains("er diagram") ||
+        q.Contains("schema") ||
+        q.Contains("tables") ||
+        q.Contains("fields") ||
+        q.Contains("columns") ||
+        q.Contains("primary key") ||
+        q.Contains("foreign key");
+
+    var sb = new StringBuilder();
+
+    sb.AppendLine("Answer using ONLY the uploaded solution chunks.");
+    sb.AppendLine("If the information is not present, say: Not found in uploaded files.");
+    sb.AppendLine();
+
+    if (isEdges)
+    {
+        sb.AppendLine("Routing rule:");
+        sb.AppendLine("- You MUST look in the uploaded file named relationships.json when the question is about edges, mappings, or relationships.");
+        sb.AppendLine();
+    }
+
+    if (isErd)
+    {
+        sb.AppendLine("Routing rule:");
+        sb.AppendLine("- You MUST look in the uploaded file named erd_schema.json when the question is about ERD/schema/tables/fields.");
+        sb.AppendLine("- Do NOT invent tables, fields, or relationships.");
+        sb.AppendLine();
+    }
+
+    sb.AppendLine("Question:");
+    sb.AppendLine(question);
+
+    return sb.ToString();
+}
+
 // ---------------- MAIN ----------------
 
 try
@@ -163,6 +224,7 @@ try
     var apiKey = MustEnv("OPENAI_API_KEY");
 
     // Put current vector store id here (the one i have created and reused)
+    // NOTE: you can override at runtime via --vs
     string defaultVs = "vs_6972909f03948191a19a88a9fd13e234";
     string vsId = defaultVs;
 
@@ -236,12 +298,7 @@ try
             throw new Exception("ask requires a question: dotnet run -- ask \"...\"");
 
         var question = string.Join(" ", args.Skip(1));
-        var prompt =
-$@"Answer using ONLY the uploaded solution chunks.
-If the information is not present, say 'Not found in uploaded files.'
-
-Question:
-{question}";
+        var prompt = BuildRoutedPrompt(question);
 
         var answer = await AskWithFileSearch(http, model, vsId, prompt);
         Console.WriteLine(answer);
@@ -252,19 +309,21 @@ Question:
     if (cmd == "generate")
     {
         if (args.Length < 2)
-            throw new Exception("generate requires a type: overview | workflows | faq | diagrams");
+            throw new Exception("generate requires a type: overview | workflows | faq | diagrams | erd | screen-mapping");
 
         var kind = args[1].ToLowerInvariant();
 
         if (kind == "overview")
         {
             var prompt =
-@"Generate a clean Markdown solution overview based ONLY on the uploaded chunks.
+@"Generate a clean Markdown solution overview based ONLY on uploaded chunks.
 Include:
-- Key counts (workflows, env vars, canvas app groups)
-- List workflows
-- List environment variables (names)
-- Keep it concise, headings + bullet points.";
+- Counts: canvas apps, workflows, env vars, relationship edges (by type), screens (if present)
+- Connectors used (unique list)
+- Workflows list
+- Env var names list
+- If screens exist: list screens per app (names)
+Keep it concise with headings + bullet points.";
 
             var md = await AskWithFileSearch(http, model, vsId, prompt);
             var path = Path.Combine(outDir, "overview.md");
@@ -304,7 +363,6 @@ If info is missing, say 'Not found in uploaded files.' Keep it concise.";
             return;
         }
 
-
         if (kind == "diagrams")
         {
             var prompt =
@@ -332,7 +390,6 @@ Formatting rules:
 - Output ONLY valid Mermaid code. No second diagram. No markdown fences.";
 
             var mermaid = await AskWithFileSearch(http, model, vsId, prompt);
-
             mermaid = mermaid.Replace("```mermaid", "").Replace("```", "").Trim();
 
             var path = Path.Combine(outDir, "architecture.mmd");
@@ -341,7 +398,60 @@ Formatting rules:
             return;
         }
 
-        throw new Exception("Unknown generate type. Use: overview | workflows | faq | diagrams");
+        // ERD generator
+        if (kind == "erd")
+        {
+            var prompt =
+@"Output ONLY Mermaid erDiagram code (no markdown fences, no explanation).
+
+Use ONLY the uploaded file named erd_schema.json.
+Do NOT invent tables, fields, or relationships.
+
+Rules:
+- If erd_schema.json has no tables, output an erDiagram with a single comment line explaining it's empty.
+- For each table: include its fields.
+- Only include a field if it exists in erd_schema.json.
+- Keep field types simple (string, int, decimal, bool, datetime, guid) based on schema.
+- Use relationship types exactly:
+  - 1:N shown as: A ||--o{ B : ""relationship_name""
+  - N:N shown as: A }o--o{ B : ""relationship_name""
+- If no relationships exist in erd_schema.json, output an erDiagram with tables only and no edges.
+- Use logical names if display names are missing.";
+
+            var mermaid = await AskWithFileSearch(http, model, vsId, prompt);
+            mermaid = mermaid.Replace("```mermaid", "").Replace("```", "").Trim();
+
+            var path = Path.Combine(outDir, "erd.mmd");
+            File.WriteAllText(path, mermaid, Encoding.UTF8);
+            Console.WriteLine($"Wrote: {path}");
+            return;
+        }
+
+        // SCREEN->WORKFLOW mapping markdown 
+        if (kind == "screen-mapping")
+        {
+            var prompt =
+@"Create a Markdown table using ONLY the uploaded file named relationships.json.
+
+Goal:
+- Produce a SCREEN -> WORKFLOW mapping table for ALL items where type == ""screen_to_workflow"".
+
+Rules:
+- Do NOT invent anything.
+- Table columns MUST be exactly: Screen | Workflow | EvidenceFile | EvidenceSnippet
+- EvidenceFile: extract the filename portion from evidence (up to the first ':', e.g. ""Client Info Screen.fx.yaml"")
+- EvidenceSnippet: include a short snippet that contains the ""<FlowName>.Run("" call (trim to ~120 chars)
+- If there are zero screen_to_workflow items, output: ""Not found in uploaded files.""
+- Output ONLY the Markdown table (no explanation).";
+
+            var md = await AskWithFileSearch(http, model, vsId, prompt);
+            var path = Path.Combine(outDir, "screen_workflow_mapping.md");
+            File.WriteAllText(path, md, Encoding.UTF8);
+            Console.WriteLine($"Wrote: {path}");
+            return;
+        }
+
+        throw new Exception("Unknown generate type. Use: overview | workflows | faq | diagrams | erd | screen-mapping");
     }
 
     // -------- export --------
@@ -364,6 +474,16 @@ Formatting rules:
             RunProcess("pandoc", $"\"{overview}\" -o \"Replybrary_Overview.docx\" --toc", outDir);
             RunProcess("pandoc", $"\"{workflows}\" -o \"Replybrary_Workflows.docx\" --toc", outDir);
             RunProcess("pandoc", $"\"{faq}\" -o \"Replybrary_FAQ.docx\" --toc", outDir);
+
+            // Optional: generated mapping/erd, export them too (if missing this wont fail) 
+            var map = Path.Combine(outDir, "screen_workflow_mapping.md");
+            if (File.Exists(map))
+                RunProcess("pandoc", $"\"{map}\" -o \"Replybrary_Screen_Workflow_Mapping.docx\" --toc", outDir);
+
+            var erd = Path.Combine(outDir, "erd.mmd");
+            if (File.Exists(erd))
+                RunProcess("pandoc", $"\"{erd}\" -o \"Replybrary_ERD_Mermaid.docx\" --toc", outDir);
+
             Console.WriteLine("Wrote Word docs into: " + outDir);
             return;
         }
@@ -373,6 +493,15 @@ Formatting rules:
             RunProcess("pandoc", $"\"{overview}\" -o \"Replybrary_Overview.pdf\" --toc", outDir);
             RunProcess("pandoc", $"\"{workflows}\" -o \"Replybrary_Workflows.pdf\" --toc", outDir);
             RunProcess("pandoc", $"\"{faq}\" -o \"Replybrary_FAQ.pdf\" --toc", outDir);
+
+            var map = Path.Combine(outDir, "screen_workflow_mapping.md");
+            if (File.Exists(map))
+                RunProcess("pandoc", $"\"{map}\" -o \"Replybrary_Screen_Workflow_Mapping.pdf\" --toc", outDir);
+
+            var erd = Path.Combine(outDir, "erd.mmd");
+            if (File.Exists(erd))
+                RunProcess("pandoc", $"\"{erd}\" -o \"Replybrary_ERD_Mermaid.pdf\" --toc", outDir);
+
             Console.WriteLine("Wrote PDFs into: " + outDir);
             return;
         }
@@ -391,6 +520,8 @@ Formatting rules:
         Console.WriteLine("  dotnet run -- generate workflows");
         Console.WriteLine("  dotnet run -- generate faq");
         Console.WriteLine("  dotnet run -- generate diagrams");
+        Console.WriteLine("  dotnet run -- generate screen-mapping");
+        Console.WriteLine("  dotnet run -- generate erd        (requires erd_schema.json in chunks + indexed)");
         Console.WriteLine("  dotnet run -- export word   (requires pandoc)");
         Console.WriteLine("  dotnet run -- export pdf    (requires pandoc)");
         Console.WriteLine();
