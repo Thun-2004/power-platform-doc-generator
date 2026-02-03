@@ -1,59 +1,173 @@
-# Replybrary – Power Platform Solution Analysis (Task 6 Foundations)
+# Replybrary – Power Platform Solution Analysis & Parser (Task 6 Foundations)
 
-This folder contains a structured reverse-engineering analysis of the client’s **Replybrary** Power Platform solution.  
-The purpose is to prepare for **Task 6**, where we design a parser and documentation generator for Power Apps solutions.
+This folder contains a structured reverse-engineering + automated parsing workflow for the client’s **Replybrary** Power Platform solution.  
+It supports **Task 6** by producing repeatable, evidence-based outputs (JSON chunks + docs) from a real solution export.
 
+---
 
+## What this repo now does (current state)
 
-## What this analysis includes
+We upgraded from a “manual summary + static diagram” approach to a **working parser pipeline** that:
 
-### 1. `Replybrary-summary.json`
-A clean, simplified JSON representation of the actual solution zip, covering:
-
-- Solution metadata (name, version, publisher)
-- **Two Canvas Apps** and their technical names
-- **SharePoint connections** for each app  
-- **Logic Flows** (Power Automate) used by each app
-- **Environment variables** linking the SharePoint site and lists
-- **All relevant SharePoint lists** used as data sources
-- **Bot (Copilot Studio)** and its connected knowledge sources
-
-This JSON acts as the **target schema** our Task 6 parser should output.
-
-
-
-### 2. `dependency-diagram.png`
-A visual diagram showing all critical dependencies:
-
-- Solution → Canvas Apps  
-- Canvas Apps → Connectors (SharePoint, LogicFlows)  
-- Connectors → Environment variables  
-- Environment variables → SharePoint lists  
-- Power Automate flows → Trigger patterns + list usage  
-- Copilot Studio bot → Knowledge sources (dvTableSearch → lists)
-
-This diagram is a blueprint of how Power Platform components relate inside a real solution.
+- Unpacks the solution export (Power Platform CLI)
+- Unpacks Canvas Apps into source (`.fx.yaml`) so screens and formulas can be inspected
+- Parses the solution into structured outputs:
+  - Canvas Apps (grouped + detailed)
+  - Power Automate workflows (list + detailed)
+  - Environment variables
+  - Screens (from Canvas Apps source)
+  - Relationship edges inferred from evidence:
+    - `screen_to_workflow` (screen formula calls like `FlowName.Run(...)`)
+    - `workflow_to_env` (env var usage)
+    - `workflow_to_connector` (connector usage)
 
 
-## Why this work matters for us
+---
 
-- Gives the team a **concrete, real example** of how solution metadata actually looks.
-- Defines the **output format** our parser should eventually generate.
-- Helps with **test-driven development** (parser output compared to JSON).
-- Shows relationships we need to represent in the final documentation UI.
-- Clarifies how complex solutions (flows + SharePoint + env vars + bot) interconnect.
+## Key outputs (what to show in Task 6 demo)
+
+### Parser outputs (ground truth)
+Generated into:
+
+```text
+/Users/daraling/Downloads/Replybrary_reports/
+└─ chunks/
+   ├─ overview.json
+   ├─ canvasapps.json
+   ├─ canvasapps_detailed.json
+   ├─ workflows.json
+   ├─ workflows_detailed.json
+   ├─ envvars.json
+   ├─ relationships.json
+   └─ erd_schema.json
+
+Example successful parse:
+	•	Canvas Apps (grouped): 2
+	•	Workflows: 10
+	•	Environment variables: 16
+	•	Screens found: ~39
+	•	Relationship edges inferred: ~95
+
+    ---
+
+Prerequisites
+
+- .NET SDK installed
+- Power Platform CLI (`pac`) installed
+- Power Platform solution ZIP
+- Canvas Apps unpacked to source (required for screens)
+
+Step 1 – Unpack Power Platform Solution
+
+Run once per solution version.
+
+After unpacking, your solution folder **must look like this**:
+
+```text
+Replybrary_1_0_0_20/
+├─ CanvasApps/
+│  ├─ *.msapp
+├─ CanvasAppsSrc/                ← REQUIRED for screens
+│  └─ <app_name>/
+│     └─ Src/
+│        └─ *.fx.yaml
+├─ Workflows/
+├─ environmentvariabledefinitions.xml
+└─ other solution files
+
+If CanvasAppsSrc is missing, screens = 0 and screen→workflow links will NOT be found.
 
 
 
-## How to use this folder
+Step 1 — Unpack the solution (once)
 
-- Developers implementing the parser can use `Replybrary-summary.json`  
- as the **expected output template**.
-- Team members working on UI/docs can base their components on the  
-`dependency-diagram.png`.
-- This folder will grow as we refine the schema or add unit-test examples.
-
+pac solution unpack \
+  --zipfile "<PATH_TO_SOLUTION_ZIP>" \
+  --folder "<SOLUTION_FOLDER>" \
+  --processCanvasApps
 
 
-## Author
-Created as part of Task 6 preparation analysis, structuring, and documentation by Dara.
+⸻
+
+Step 2 — Unpack Canvas Apps to source (REQUIRED)
+
+Run for each .msapp file:
+
+pac canvas unpack \
+  --msapp "<SOLUTION_FOLDER>/CanvasApps/<app>.msapp" \
+  --sources "<SOLUTION_FOLDER>/CanvasAppsSrc/<app>"
+
+Verify screens exist:
+
+find "<SOLUTION_FOLDER>/CanvasAppsSrc" -type f -iname "*.fx.yaml" | head
+
+
+⸻
+
+Step 3 — Run the parser
+
+From the folder containing NewSolution_Parser.csproj:
+
+cd "<PARSER_PROJECT_PATH>"
+
+dotnet run -- \
+  --input "<SOLUTION_FOLDER>" \
+  --out "<OUTPUT_FOLDER>"
+
+
+⸻
+
+Expected Output (Example)
+
+Canvas Apps (grouped): 2
+Workflows: 10
+Environment variables: 16
+Screens found: ~40
+Relationship edges inferred: ~90+
+
+
+⸻
+
+Output Files
+
+Generated under:
+
+<OUTPUT_FOLDER>/chunks/
+├─ overview.json
+├─ canvasapps.json
+├─ canvasapps_detailed.json
+├─ workflows.json
+├─ workflows_detailed.json
+├─ envvars.json
+├─ relationships.json
+└─ erd_schema.json
+
+These files are the authoritative parsed representation of the solution.
+
+⸻
+
+Common Issues
+	•	Screens = 0
+→ Canvas Apps not unpacked to source
+	•	Few relationships
+→ Screens or workflow source missing
+	•	Parser won’t run
+→ Command not run from folder containing .csproj
+
+⸻
+
+What the Parser Extracts
+	•	Canvas Apps
+	•	Power Automate workflows
+	•	Environment variables
+	•	Screens (*.fx.yaml)
+	•	Screen → Workflow calls
+	•	Workflow → Env var usage
+	•	Workflow → Connector usage
+	•	Optional ERD schema
+
+---
+
+
+
+
