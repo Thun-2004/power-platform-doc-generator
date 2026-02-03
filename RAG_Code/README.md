@@ -1,108 +1,175 @@
-# Replybrary AI Documentation Generator
+# Replybrary – RAG Doc Generator (Vector Store + Ask/Generate CLI)
 
-## What this is
-
-This tool automatically generates clear, up-to-date documentation and diagrams for the Replybrary Power Platform solution.
-
-Instead of manually writing docs, it:
-- Reads the parsed solution output (JSON chunks)
-- Understands workflows, canvas apps, and environment variables
-- Generates:
-  - Markdown documentation (overview, workflows, FAQ)
-  - Architecture diagrams (Mermaid)
-  - Optional Word / PDF exports
-
-Everything is generated **only** from the parsed solution files.  
-There is no guessing and no external knowledge.
+This tool indexes the parser “chunks” into an OpenAI Vector Store, then generates Markdown + Mermaid docs (overview, workflows, FAQ, diagrams, ERD, screen→workflow mapping) using **file_search** over those uploaded chunks.
 
 ---
 
-## Important: required workflow (read this first)
+## Prerequisites
 
-**Before any AI / RAG functionality works, the solution MUST be parsed locally.**
+- .NET SDK (same version as the RAG project)
+- An OpenAI API key in an env var:
 
-Each user must:
-1. Run the Power Platform parser on their own machine
-2. Generate the JSON chunk outputs
-
-Without this step, there is nothing for the AI to read, index, or generate from.
-
-**Flow:**
-Solution files → Parser → JSON chunks → Vector store → AI outputs
-
----
-
-## Setup
-
-### Prerequisites
-- .NET 8+
-- OpenAI API key
-- Parsed solution output (JSON chunks)
-
-### Environment variable
-Set your API key locally:
 ```bash
-export OPENAI_API_KEY="your_key_here"
+export OPENAI_API_KEY="YOUR_KEY"
 
-## First-time indexing (one-time cost)
+	•	Parser output already generated (you need the chunks/ folder):
 
-This uploads the parsed JSON chunks and creates embeddings.
-
-- (Optional) pandoc for Word / PDF exports
-
- dotnet run -- index --chunks "<path_to_chunks_folder>"
-
-Save the vector store ID that is printed.
-This is reused for all future queries and generation.
-
-Generating documentation
-
-All of the following reuse the same vector store and are low cost.
-
-dotnet run -- generate overview
-dotnet run -- generate workflows
-dotnet run -- generate faq
-dotnet run -- generate diagrams
-
-Outputs are written to:
-
-/rag_outputs
-
-Diagrams
-
-The generate diagrams command outputs Mermaid code (.mmd).
-
-To view visually:
-	•	Copy the Mermaid code
-	•	Paste it into https://mermaid.live or Mermaid-enabled tools
-	•	Export PNG / SVG if needed
+<OUTPUT_FOLDER>/chunks/
+  overview.json
+  canvasapps.json
+  canvasapps_detailed.json
+  workflows.json
+  workflows_detailed.json
+  envvars.json
+  relationships.json
+  erd_schema.json
 
 
+⸻
 
-Exports (optional)
+Where to run commands
 
-Requires pandoc:
+Run all dotnet run commands from the folder containing the RAG Program.cs / .csproj (the RAG project root).
 
+⸻
+
+Step 1 — Create a NEW Vector Store (one-time per chunk set)
+
+This uploads every *.json file from your chunks folder.
+
+dotnet run -- index \
+  --chunks "<OUTPUT_FOLDER>/chunks" \
+  --name "replybrary_chunks"
+
+Output will include a vector store id like:
+
+Vector store: vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+Save it. You reuse it for ask/generate until chunks change.
+
+When do I need a new vector store?
+
+Create a new vector store only when the chunk JSON files changed (new parser run, new solution export, new relationships/screens, etc.).
+
+⸻
+
+Step 2 — Ask a question (uses existing vector store)
+
+dotnet run -- ask "Which screens call UploadLogo?" \
+  --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+More examples:
+
+dotnet run -- ask "List all environment variables." --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+dotnet run -- ask "Show workflow to connector relationships." --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+dotnet run -- ask "What tables are in the ERD schema?" --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+
+⸻
+
+Step 3 — Generate docs (writes files to an output folder)
+
+Set an output folder (optional). Default is ./rag_outputs.
+
+dotnet run -- generate overview \
+  --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX" \
+  --out "<RAG_OUTPUT_FOLDER>"
+
+dotnet run -- generate workflows \
+  --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX" \
+  --out "<RAG_OUTPUT_FOLDER>"
+
+dotnet run -- generate faq \
+  --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX" \
+  --out "<RAG_OUTPUT_FOLDER>"
+
+dotnet run -- generate diagrams \
+  --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX" \
+  --out "<RAG_OUTPUT_FOLDER>"
+
+dotnet run -- generate screen-mapping \
+  --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX" \
+  --out "<RAG_OUTPUT_FOLDER>"
+
+dotnet run -- generate erd \
+  --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX" \
+  --out "<RAG_OUTPUT_FOLDER>"
+
+Output files created
+
+<RAG_OUTPUT_FOLDER>/
+  overview.md
+  workflows.md
+  faq.md
+  architecture.mmd
+  screen_workflow_mapping.md
+  erd.mmd
+
+
+⸻
+
+Step 4 — Export to Word/PDF (optional)
+
+Requires pandoc installed.
+
+# macOS
 brew install pandoc
 
-Then:
+Export:
 
-dotnet run -- export word
-dotnet run -- export pdf
+dotnet run -- export word --out "<RAG_OUTPUT_FOLDER>"
+dotnet run -- export pdf  --out "<RAG_OUTPUT_FOLDER>"
 
-Asking Questions 
-dotnet run -- ask "How many workflows are in this solution?"
 
-Answers are based only on the uploaded solution files.
+⸻
 
-Team usage & safety
-	•	The API key is never committed to git
-	•	Each user sets their own OPENAI_API_KEY locally
-	•	Team members do not have access to anyone else’s API usage or spend
-	•	Vector store IDs can be shared, but cost is tied to the API key used to query it
+Demo Script (copy/paste)
 
-To make this a shared team project, each member will need:
-	•	Their own API key
-	•	Their own local environment variable set
+Use this in order:
 
-export OPENAI_API_KEY="your_key_here"
+# 1) Index (only if you do NOT already have a vector store for this chunk set)
+dotnet run -- index --chunks "<OUTPUT_FOLDER>/chunks" --name "replybrary_chunks"
+
+# 2) Ask (quick proof it can retrieve)
+dotnet run -- ask "How many screens and relationships are present?" --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+# 3) Generate everything
+dotnet run -- generate overview       --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+dotnet run -- generate workflows      --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+dotnet run -- generate faq            --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+dotnet run -- generate diagrams       --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+dotnet run -- generate screen-mapping --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+dotnet run -- generate erd            --vs "vs_XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+
+⸻
+
+Common Issues
+
+“Not found in uploaded files”
+	•	The info isn’t in the chunks folder you indexed
+	•	OR you indexed an older chunks folder
+Fix: re-run index on the correct <OUTPUT_FOLDER>/chunks.
+
+screen-mapping says not found
+	•	There are zero type == "screen_to_workflow" edges in relationships.json
+Fix: ensure CanvasAppsSrc exists before parsing so screen calls can be detected.
+
+ERD is empty
+	•	erd_schema.json has no tables/relationships
+Fix: only possible if parser didn’t extract schema data, or the solution has no schema captured in that file.
+
+⸻
+
+What to commit to Git
+
+ Commit:
+	•	RAG project code (Program.cs, .csproj, etc.)
+	•	README instructions
+	•	(Optional) example output files if your team wants sample docs
+
+ Do NOT commit:
+	•	Your API key
+	•	Generated vector store ids as “required” config
+	•	Large client exports unless allowed by client policy
+
