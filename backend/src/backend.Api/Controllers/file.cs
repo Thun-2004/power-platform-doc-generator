@@ -23,7 +23,7 @@ public class UploadRequest
 {
     public IFormFile File { get; set; } = default!;
     //TODO: change to array
-    public string SelectedOutputTypes { get; set; } = default!;
+    public List<string> SelectedOutputTypes { get; set; } = new();
 }
 
 [ApiController]
@@ -50,8 +50,9 @@ public class FileController : ControllerBase
     {
         try{
             IFormFile file = req.File;
-            //TODO: change to array
-            string outputTypes = req.SelectedOutputTypes; 
+            //TODO: set request time out for each end point 
+            Console.WriteLine("Selected output types: {0}", string.Join(",", req.SelectedOutputTypes.GetType()));
+            List<string> outputTypes = req.SelectedOutputTypes; 
 
             if (file == null || file.Length == 0)
                 return BadRequest("File is required");
@@ -85,19 +86,25 @@ public class FileController : ControllerBase
 
             //file processing
             try{
-                var response = await FileProcessing.ProcessFile(uploadedFile.StoredPath, outputTypes);
-                return Ok(new
-                    {
-                        // fileId = uploadedFile.Id.ToString(),
-                        success = true,
-                        message = response
-                    });
+                var response_path = await FileProcessing.ProcessFile(uploadedFile.StoredPath, outputTypes);
+                
+                if (!System.IO.File.Exists(response_path))
+                    return BadRequest("Generated file not found.");
+
+                var bytes = await System.IO.File.ReadAllBytesAsync(response_path); 
+
+                //TODO: create file struct : extension, mime type mapping
+            
+                return File(
+                    bytes,
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "Generated_Document.docx"
+                );
             }catch(Exception e)
             {
                 _logger.LogError(e, "FileProcessing failed");
                 return StatusCode(500, new { success = false, message = e.Message });
             }
-            
         }
         catch (Exception e)
         {
@@ -106,11 +113,12 @@ public class FileController : ControllerBase
     }
 
 
-    // [HttpPost("ai")]
-    // public Task<IActionResult> TestAi(string prompt)
-    // {
-    //     FileProcessing FileProcessings = new FileProcessing();
-    //     return Task.FromResult<IActionResult>(Ok(new { message = FileProcessings.ProcessFile(prompt) }));
-    // }
+    [HttpPost("ai")]
+    public Task<IActionResult> TestAi(string prompt)
+    {
+        return Task.FromResult<IActionResult>(Ok(
+            new { success = true, message = "AI response placeholder" }
+        )); 
+    }
 } 
     
