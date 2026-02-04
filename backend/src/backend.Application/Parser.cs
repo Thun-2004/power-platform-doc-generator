@@ -83,7 +83,6 @@ public static class SolutionParser
         string input = input_path;
         string output = output_path;
 
-
         if (string.IsNullOrWhiteSpace(input) || string.IsNullOrWhiteSpace(output))
         {
             Console.Error.WriteLine("Usage: dotnet run -- --input <solution_folder> --out <output_folder>");
@@ -210,7 +209,6 @@ public static class SolutionParser
                 Encoding.UTF8
             );
         }
-
 
         Console.WriteLine("Parsing is complete");
         Console.WriteLine($"Canvas Apps (grouped): {canvasGroupsCount}");

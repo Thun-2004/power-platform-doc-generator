@@ -5,7 +5,8 @@
 - Environment variables: 16   
 - Canvas app groups: 2 
 
-## Workflows (10) — source: workflows.json 
+## Workflows
+(Names from Workflows/ export) 
 - EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69.json  
 - EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69.json  
 - IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69.json  
@@ -17,7 +18,8 @@
 - Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB.json  
 - UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69.json
 
-## Environment variables (names, 16) — source: envvars.json 
+## Environment variables
+(Names from environmentvariabledefinitions/) 
 - wmreply_Replybrary_Admin_List/  
 - wmreply_Replybrary_App_Link/  
 - wmreply_Replybrary_CertificationsTracker_List/  
@@ -35,6 +37,7 @@
 - wmreply_Replybrary_SMEs_List/  
 - wmreply_Replybrary_SP_Site/
 
-## Canvas app groups (2) — source: canvasapps.json 
-- wmreply_replybraryv2_c933c  
-- wmreply_replybrary_b320d
+## Canvas app groups
+(Group keys and files) 
+- wmreply_replybraryv2_c933c (contains .msapp and related files)  
+- wmreply_replybrary_b320d (contains .msapp and related files)

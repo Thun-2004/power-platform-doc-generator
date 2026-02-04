@@ -7,6 +7,8 @@ using backend.Data;
 using backend.Domain;
 using backend.Infrastructure;
 
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+
 namespace backend.Api;
 
 public class Program
@@ -21,7 +23,11 @@ public class Program
             options.AddPolicy(name: AllowFrontend,
                             policy  =>
                             {
-                                policy.WithOrigins("http://localhost:5173");
+                                policy.WithOrigins(
+                                    "http://localhost:5173", 
+                                    "https://client.scalar.com"
+                                ).AllowAnyHeader()
+                                .AllowAnyMethod();
                             });
         });
         
@@ -44,6 +50,13 @@ public class Program
 
         //setup table (in memory)
         builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<AppDbContext>(); 
+
+        //TODO: set global request time outs
+        builder.Services.Configure<KestrelServerOptions>(options =>
+        {
+            options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);
+            options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(5);
+        });
 
         var app = builder.Build();
 
