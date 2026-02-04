@@ -1,6 +1,10 @@
 ﻿# Solution Parse Summary
 
+<<<<<<< HEAD
 **Root:** `C:\Users\Kylej\AppData\Local\Temp\extract\858cddf7-4011-4499-9bd3-ee71043ce452`
+=======
+**Root:** `/var/folders/8x/3j91c4_d4ngch6_z44jb08pc0000gq/T/extract/63947641-7229-429b-bc28-f1c894c1bd74`
+>>>>>>> 69d7001 (fix: add return generated file path)
 
 ## Key counts
 - Canvas Apps (grouped): **2**
