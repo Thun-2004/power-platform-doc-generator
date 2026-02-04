@@ -1,0 +1,57 @@
+﻿{
+  "root": "/var/folders/8x/3j91c4_d4ngch6_z44jb08pc0000gq/T/extract/08e31a1d-6773-445b-95ad-a2313f607c9f",
+  "counts": {
+    "canvasapps_groups": 2,
+    "workflows": 10,
+    "envvars": 16
+  },
+  "top_level": [
+    {
+      "name": "Assets/",
+      "type": "dir"
+    },
+    {
+      "name": "botcomponents/",
+      "type": "dir"
+    },
+    {
+      "name": "bots/",
+      "type": "dir"
+    },
+    {
+      "name": "CanvasApps/",
+      "type": "dir"
+    },
+    {
+      "name": "customizations.xml",
+      "type": "file",
+      "bytes": 34274
+    },
+    {
+      "name": "dvtablesearchentities/",
+      "type": "dir"
+    },
+    {
+      "name": "dvtablesearchs/",
+      "type": "dir"
+    },
+    {
+      "name": "environmentvariabledefinitions/",
+      "type": "dir"
+    },
+    {
+      "name": "solution.xml",
+      "type": "file",
+      "bytes": 5185
+    },
+    {
+      "name": "Workflows/",
+      "type": "dir"
+    },
+    {
+      "name": "[Content_Types].xml",
+      "type": "file",
+      "bytes": 2416
+    }
+  ]
+}

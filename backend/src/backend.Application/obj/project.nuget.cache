@@ -1,9 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "V4E6WgkvmFI=",
+  "dgSpecHash": "nCyGQm1YB+w=",
   "success": true,
   "projectFilePath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Application\\backend.Application.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Kylej\\.nuget\\packages\\closedxml\\0.105.0\\closedxml.0.105.0.nupkg.sha512",
+    "C:\\Users\\Kylej\\.nuget\\packages\\closedxml.parser\\2.0.0\\closedxml.parser.2.0.0.nupkg.sha512",
+    "C:\\Users\\Kylej\\.nuget\\packages\\documentformat.openxml\\3.1.1\\documentformat.openxml.3.1.1.nupkg.sha512",
+    "C:\\Users\\Kylej\\.nuget\\packages\\documentformat.openxml.framework\\3.1.1\\documentformat.openxml.framework.3.1.1.nupkg.sha512",
+    "C:\\Users\\Kylej\\.nuget\\packages\\excelnumberformat\\1.1.0\\excelnumberformat.1.1.0.nupkg.sha512",
     "C:\\Users\\Kylej\\.nuget\\packages\\microsoft.extensions.configuration\\9.0.0\\microsoft.extensions.configuration.9.0.0.nupkg.sha512",
     "C:\\Users\\Kylej\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\9.0.0\\microsoft.extensions.configuration.abstractions.9.0.0.nupkg.sha512",
     "C:\\Users\\Kylej\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\9.0.0\\microsoft.extensions.dependencyinjection.9.0.0.nupkg.sha512",
@@ -11,7 +16,10 @@
     "C:\\Users\\Kylej\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.3\\microsoft.extensions.logging.abstractions.8.0.3.nupkg.sha512",
     "C:\\Users\\Kylej\\.nuget\\packages\\microsoft.extensions.primitives\\9.0.0\\microsoft.extensions.primitives.9.0.0.nupkg.sha512",
     "C:\\Users\\Kylej\\.nuget\\packages\\openai\\2.8.0\\openai.2.8.0.nupkg.sha512",
+    "C:\\Users\\Kylej\\.nuget\\packages\\rbush.signed\\4.0.0\\rbush.signed.4.0.0.nupkg.sha512",
+    "C:\\Users\\Kylej\\.nuget\\packages\\sixlabors.fonts\\1.0.0\\sixlabors.fonts.1.0.0.nupkg.sha512",
     "C:\\Users\\Kylej\\.nuget\\packages\\system.clientmodel\\1.8.1\\system.clientmodel.1.8.1.nupkg.sha512",
+    "C:\\Users\\Kylej\\.nuget\\packages\\system.io.packaging\\8.0.1\\system.io.packaging.8.0.1.nupkg.sha512",
     "C:\\Users\\Kylej\\.nuget\\packages\\system.memory.data\\8.0.1\\system.memory.data.8.0.1.nupkg.sha512",
     "C:\\Users\\Kylej\\.nuget\\packages\\system.net.serversentevents\\9.0.9\\system.net.serversentevents.9.0.9.nupkg.sha512"
   ],

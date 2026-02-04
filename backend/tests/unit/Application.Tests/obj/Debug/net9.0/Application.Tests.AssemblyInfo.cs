@@ -13,7 +13,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Application.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+<<<<<<< HEAD
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75de307963388df43aaef2758656da0ecff60932")]
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2bee2c998e2c2acd2740b8df30218edf29cbde8")]
+>>>>>>> feature/AI
 [assembly: System.Reflection.AssemblyProductAttribute("Application.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Application.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
