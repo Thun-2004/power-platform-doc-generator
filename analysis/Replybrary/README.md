@@ -4,7 +4,6 @@ This folder contains a structured reverse-engineering analysis of the client’s
 The purpose is to prepare for **Task 6**, where we design a parser and documentation generator for Power Apps solutions.
 
 
-
 ## What this analysis includes
 
 ### 1. `Replybrary-summary.json`
@@ -19,7 +18,6 @@ A clean, simplified JSON representation of the actual solution zip, covering:
 - **Bot (Copilot Studio)** and its connected knowledge sources
 
 This JSON acts as the **target schema** our Task 6 parser should output.
-
 
 
 ### 2. `dependency-diagram.png`

@@ -1,0 +1,29 @@
+<dvtablesearch dvtablesearchid="32f25631-0ac9-4af3-9a7c-b52b9061880c">
+  <connectionreference>
+    <connectionreferencelogicalname>cr6e9_replybraryAgent.cr.zZ5uCqA9</connectionreferencelogicalname>
+  </connectionreference>
+  <iscustomizable>0</iscustomizable>
+  <knowledgeconfig>{
+  "$kind": "IngestionBasedGraphSearchConfiguration",
+  "driveItems": [
+    {
+      "$kind": "GraphDriveItemSyncDetails",
+      "displayName": "Replybrary project list",
+      "webUrl": "https://wmreplyukdev.sharepoint.com/sites/ReplybraryDev/Lists/Replybrary%20project%20list",
+      "driveId": "",
+      "itemId": "98295499-eba6-4d4b-af02-3eb8acc06b48",
+      "sharepointIds": {
+        "$kind": "SharepointIds",
+        "webId": "fa7780ea-c14d-4766-8599-4395a32cb44f",
+        "listId": "98295499-eba6-4d4b-af02-3eb8acc06b48",
+        "siteId": "b62d9252-aea8-4c43-9236-9e8493e9ccdb",
+        "siteUrl": "https://wmreplyukdev.sharepoint.com/sites/ReplybraryDev"
+      }
+    }
+  ]
+}</knowledgeconfig>
+  <name>Replybraryprojectlist_Esnblz79KI97sl5ReRX5y</name>
+  <searchtype>1</searchtype>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</dvtablesearch>

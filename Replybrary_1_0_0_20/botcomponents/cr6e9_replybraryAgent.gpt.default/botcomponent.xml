@@ -1,0 +1,11 @@
+<botcomponent schemaname="cr6e9_replybraryAgent.gpt.default">
+  <componenttype>15</componenttype>
+  <description>This agent will use the SharePoint lists in its knowledge sources to provide information about the different projects WM Reply has worked on. It will also be able to provide information about the employees in WM Reply and their experience and skills, and information about the clients WM Reply work for.</description>
+  <iscustomizable>0</iscustomizable>
+  <name>Replybrary Agent</name>
+  <parentbotid>
+    <schemaname>cr6e9_replybraryAgent</schemaname>
+  </parentbotid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</botcomponent>
