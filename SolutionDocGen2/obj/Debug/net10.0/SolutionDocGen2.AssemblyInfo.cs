@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SolutionDocGen2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9a176e801640e851aa329ac4e004b377d481ed08")]
 [assembly: System.Reflection.AssemblyProductAttribute("SolutionDocGen2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SolutionDocGen2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
