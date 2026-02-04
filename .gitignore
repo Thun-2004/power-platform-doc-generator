@@ -18,6 +18,10 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 
+#dotnet
+**/bin/
+**/obj/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

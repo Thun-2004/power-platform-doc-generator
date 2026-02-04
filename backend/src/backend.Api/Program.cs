@@ -7,6 +7,8 @@ using backend.Data;
 using backend.Domain;
 using backend.Infrastructure;
 
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+
 namespace backend.Api;
 
 public class Program
@@ -21,16 +23,14 @@ public class Program
             options.AddPolicy(name: AllowFrontend,
                             policy  =>
                             {
-                                policy.WithOrigins("http://localhost:5173");
+                                policy.WithOrigins(
+                                    "http://localhost:5173", 
+                                    "https://client.scalar.com"
+                                ).AllowAnyHeader()
+                                .AllowAnyMethod();
                             });
         });
         
-        //NOTE: testing only
-        // var uploadRoot = Path.Combine(
-        //     Environment.GetFolderPath(Environment.SpecialFolder.Desktop), 
-        //     "uploads-test"
-        // ); 
-        // Directory.CreateDirectory(uploadRoot); 
         // Add services to the container.
         builder.Services.AddControllers();
         builder.Services.AddInfrastructures();
@@ -50,6 +50,13 @@ public class Program
 
         //setup table (in memory)
         builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<AppDbContext>(); 
+
+        //TODO: set global request time outs
+        builder.Services.Configure<KestrelServerOptions>(options =>
+        {
+            options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);
+            options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(5);
+        });
 
         var app = builder.Build();
 
@@ -75,3 +82,5 @@ public class Program
         app.Run();
     }
 }
+
+
