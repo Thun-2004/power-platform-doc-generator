@@ -3616,19 +3616,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/benn/.nuget/packages/": {}
+    "C:\\Users\\Kylej\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/benn/Desktop/sh38-main/backend/src/backend.Api/backend.csproj",
+      "projectUniqueName": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Api\\backend.csproj",
       "projectName": "backend",
-      "projectPath": "/Users/benn/Desktop/sh38-main/backend/src/backend.Api/backend.csproj",
-      "packagesPath": "/Users/benn/.nuget/packages/",
-      "outputPath": "/Users/benn/Desktop/sh38-main/backend/src/backend.Api/obj/",
+      "projectPath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Api\\backend.csproj",
+      "packagesPath": "C:\\Users\\Kylej\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/benn/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\Kylej\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -3640,14 +3640,14 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "/Users/benn/Desktop/sh38-main/backend/src/backend.Application/backend.Application.csproj": {
-              "projectPath": "/Users/benn/Desktop/sh38-main/backend/src/backend.Application/backend.Application.csproj"
+            "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Application\\backend.Application.csproj": {
+              "projectPath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Application\\backend.Application.csproj"
             },
-            "/Users/benn/Desktop/sh38-main/backend/src/backend.Domain/backend.Domain.csproj": {
-              "projectPath": "/Users/benn/Desktop/sh38-main/backend/src/backend.Domain/backend.Domain.csproj"
+            "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Domain\\backend.Domain.csproj": {
+              "projectPath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Domain\\backend.Domain.csproj"
             },
-            "/Users/benn/Desktop/sh38-main/backend/src/backend.Infrastructure/backend.Infrastructure.csproj": {
-              "projectPath": "/Users/benn/Desktop/sh38-main/backend/src/backend.Infrastructure/backend.Infrastructure.csproj"
+            "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Infrastructure\\backend.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Infrastructure\\backend.Infrastructure.csproj"
             }
           }
         }
@@ -3662,7 +3662,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "9.0.200"
     },
     "frameworks": {
       "net9.0": {
@@ -3716,7 +3716,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.306/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

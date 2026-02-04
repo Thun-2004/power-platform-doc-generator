@@ -545,8 +545,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "/Users/benn/Desktop/sh38-main/backend/src/backend.Infrastructure/backend.Infrastructure.csproj": {
-              "projectPath": "/Users/benn/Desktop/sh38-main/backend/src/backend.Infrastructure/backend.Infrastructure.csproj"
+            "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Infrastructure\\backend.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Infrastructure\\backend.Infrastructure.csproj"
             }
           }
         }
