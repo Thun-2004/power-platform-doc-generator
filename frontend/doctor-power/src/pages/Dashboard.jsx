@@ -191,7 +191,7 @@ const Dashboard = () => {
                     </div>
                     <div className="flex flex-col gap-y-0">
                       <span className="text-md text-gray-800 font-medium">{selectedFile?.name}</span>
-                      <span className="text-sm text-gray-800 font-medium">status</span>
+                      <span className="text-sm text-gray-800 font-medium">status: <span className="text-green-600 ml-1">✓</span></span>
                     </div>
                   </div>
                   
