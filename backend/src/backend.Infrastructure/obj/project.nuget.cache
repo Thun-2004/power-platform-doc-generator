@@ -1,31 +1,26 @@
 {
   "version": 2,
-<<<<<<< HEAD
-  "dgSpecHash": "AfkHdQQnc4Q=",
-=======
-  "dgSpecHash": "iK/EdZTHapw=",
->>>>>>> c3d56e096a64f7e32957d3f95e2c0357cd2ed0e8
+  "dgSpecHash": "umQpdq/1B9o=",
   "success": true,
   "projectFilePath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Infrastructure\\backend.Infrastructure.csproj",
   "expectedPackageFiles": [
-<<<<<<< HEAD
     "C:\\Users\\Kylej\\.nuget\\packages\\microsoft.extensions.configuration\\9.0.0\\microsoft.extensions.configuration.9.0.0.nupkg.sha512",
     "C:\\Users\\Kylej\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\9.0.0\\microsoft.extensions.configuration.abstractions.9.0.0.nupkg.sha512",
     "C:\\Users\\Kylej\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\9.0.0\\microsoft.extensions.dependencyinjection.9.0.0.nupkg.sha512",
     "C:\\Users\\Kylej\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.0\\microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
-    "C:\\Users\\Kylej\\.nuget\\packages\\microsoft.extensions.primitives\\9.0.0\\microsoft.extensions.primitives.9.0.0.nupkg.sha512"
-=======
-    "/Users/benn/.nuget/packages/microsoft.extensions.configuration/9.0.0/microsoft.extensions.configuration.9.0.0.nupkg.sha512",
-    "/Users/benn/.nuget/packages/microsoft.extensions.configuration.abstractions/9.0.0/microsoft.extensions.configuration.abstractions.9.0.0.nupkg.sha512",
-    "/Users/benn/.nuget/packages/microsoft.extensions.dependencyinjection/9.0.0/microsoft.extensions.dependencyinjection.9.0.0.nupkg.sha512",
-    "/Users/benn/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/9.0.0/microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
-    "/Users/benn/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.3/microsoft.extensions.logging.abstractions.8.0.3.nupkg.sha512",
-    "/Users/benn/.nuget/packages/microsoft.extensions.primitives/9.0.0/microsoft.extensions.primitives.9.0.0.nupkg.sha512",
-    "/Users/benn/.nuget/packages/openai/2.8.0/openai.2.8.0.nupkg.sha512",
-    "/Users/benn/.nuget/packages/system.clientmodel/1.8.1/system.clientmodel.1.8.1.nupkg.sha512",
-    "/Users/benn/.nuget/packages/system.memory.data/8.0.1/system.memory.data.8.0.1.nupkg.sha512",
-    "/Users/benn/.nuget/packages/system.net.serversentevents/9.0.9/system.net.serversentevents.9.0.9.nupkg.sha512"
->>>>>>> c3d56e096a64f7e32957d3f95e2c0357cd2ed0e8
+    "C:\\Users\\Kylej\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.3\\microsoft.extensions.logging.abstractions.8.0.3.nupkg.sha512",
+    "C:\\Users\\Kylej\\.nuget\\packages\\microsoft.extensions.primitives\\9.0.0\\microsoft.extensions.primitives.9.0.0.nupkg.sha512",
+    "C:\\Users\\Kylej\\.nuget\\packages\\openai\\2.8.0\\openai.2.8.0.nupkg.sha512",
+    "C:\\Users\\Kylej\\.nuget\\packages\\system.clientmodel\\1.8.1\\system.clientmodel.1.8.1.nupkg.sha512",
+    "C:\\Users\\Kylej\\.nuget\\packages\\system.memory.data\\8.0.1\\system.memory.data.8.0.1.nupkg.sha512",
+    "C:\\Users\\Kylej\\.nuget\\packages\\system.net.serversentevents\\9.0.9\\system.net.serversentevents.9.0.9.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Infrastructure\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }

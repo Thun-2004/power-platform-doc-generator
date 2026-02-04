@@ -1,0 +1,11 @@
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Domain\bin\Debug\net9.0\backend.Domain.deps.json
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Domain\bin\Debug\net9.0\backend.Domain.dll
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Domain\bin\Debug\net9.0\backend.Domain.pdb
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Domain\obj\Debug\net9.0\backend.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Domain\obj\Debug\net9.0\backend.Domain.AssemblyInfoInputs.cache
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Domain\obj\Debug\net9.0\backend.Domain.AssemblyInfo.cs
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Domain\obj\Debug\net9.0\backend.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Domain\obj\Debug\net9.0\backend.Domain.dll
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Domain\obj\Debug\net9.0\refint\backend.Domain.dll
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Domain\obj\Debug\net9.0\backend.Domain.pdb
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Domain\obj\Debug\net9.0\ref\backend.Domain.dll

@@ -1,0 +1,15 @@
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\bin\Debug\net9.0\backend.Application.deps.json
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\bin\Debug\net9.0\backend.Application.dll
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\bin\Debug\net9.0\backend.Application.pdb
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\bin\Debug\net9.0\backend.Infrastructure.dll
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\bin\Debug\net9.0\backend.Infrastructure.pdb
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\obj\Debug\net9.0\backend.Application.csproj.AssemblyReference.cache
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\obj\Debug\net9.0\backend.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\obj\Debug\net9.0\backend.Application.AssemblyInfoInputs.cache
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\obj\Debug\net9.0\backend.Application.AssemblyInfo.cs
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\obj\Debug\net9.0\backend.Application.csproj.CoreCompileInputs.cache
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\obj\Debug\net9.0\backend..39599843.Up2Date
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\obj\Debug\net9.0\backend.Application.dll
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\obj\Debug\net9.0\refint\backend.Application.dll
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\obj\Debug\net9.0\backend.Application.pdb
+C:\Users\Kylej\OneDrive\Documents\teamstuff\sh38-main\backend\src\backend.Application\obj\Debug\net9.0\ref\backend.Application.dll
