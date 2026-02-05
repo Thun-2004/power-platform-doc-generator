@@ -12,14 +12,6 @@ public enum JobState
     Failed
 }
 
-public class GeneratedFileMeta
-{
-    public string Type { get; set; } = "";
-    public string FilePath { get; set; } = "";
-    public string FileName { get; set; } = "";
-    public string ContentType { get; set; } = "";
-
-}
 
 public class JobRecord
 {
@@ -28,21 +20,38 @@ public class JobRecord
 
     public Dictionary<string, JobState> Progress { get; set; } = new(); 
 
-    public Dictionary<string, GeneratedFileMeta> Files { get; set; } = new(); 
-
-    public JobRecord Create(List<string> outputTypes)
-    {
-        var job = new JobRecord
-        {
-            JobId = Guid.NewGuid().ToString(),
-            Status = JobState.Processing,
-            // Progress = outputTypes.ToDictionary(
-            //     outtype => 
-            // )
-        }; 
-        return job;
-    }
+    public Dictionary<string, FileMetadata> Files { get; set; } = new(); 
 
 }
+
+public class JobResponse 
+{
+    public required string JobId { get; set; }
+    public required string JobStatus { get; set; }
+    public required string JobStatusUrl { get; set; }
+    public List<FileMetadata>? Files { get; set; }
+}
+
+public class FileMetadata
+{
+    public required string Type { get; set; }
+    public string FileName { get; set; } = "";
+    public required string DownloadUrl { get; set; }
+    public string MimeType { get; set; } = "";
+}
+
+public class StatusResponse 
+{
+    public required string JobId { get; set; }
+    public required string JobStatus { get; set; }
+    public required Dictionary<string, string> Progress { get; set; }
+}
+
+// public class UploadRequest
+// {
+//     public IFormFile File { get; set; } = default!;
+//     public List<string> SelectedOutputTypes { get; set; } = new();
+// }
+
 
 

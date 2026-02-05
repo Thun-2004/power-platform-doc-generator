@@ -9,25 +9,11 @@ using Microsoft.AspNetCore.WebUtilities;
 
 using backend.Domain;
 using backend.Application;
+using backend.Infrastructure;
+
 using System.Reflection.Metadata;
 namespace backend.Controllers; 
 
-
-enum JobStatus
-{
-    Pending,
-    Processing,
-    Completed,
-    Failed
-}
-
-enum DocGenStatus
-{
-    Pending,
-    Processing,
-    Completed,
-    Failed
-}
 
 enum OutputType
 {
@@ -35,6 +21,14 @@ enum OutputType
     Workflows,
     FAQ,
     Diagrams
+
+
+}
+
+public class UploadRequest
+{
+    public IFormFile File { get; set; } = default!;
+    public List<string> SelectedOutputTypes { get; set; } = new();
 }
 
 //TODO: move to DTO folder
@@ -48,33 +42,6 @@ public class ResponseModel<T>
     public List<string>? Errors { get; set; }
 }
 
-public class JobResponse 
-{
-    public required string JobId { get; set; }
-    public required string JobStatus { get; set; }
-    public required string JobStatusUrl { get; set; }
-    public List<FileMetadata>? Files { get; set; }
-}
-
-public class FileMetadata
-{
-    public required string Type { get; set; }
-    public required string DownloadUrl { get; set; }
-}
-
-public class StatusResponse 
-{
-    public required string JobId { get; set; }
-    public required string JobStatus { get; set; }
-    public required Dictionary<string, string> Progress { get; set; }
-}
-
-
-public class UploadRequest
-{
-    public IFormFile File { get; set; } = default!;
-    public List<string> SelectedOutputTypes { get; set; } = new();
-}
 
 [ApiController]
 [Route("api/[controller]")]
@@ -209,16 +176,17 @@ public class FileController : ControllerBase
         );
     }
 
-    //recreateion 
+    //recreateion
     // [HttpPost("generate2")]
     // [Consumes("multipart/form-data")]
-    // public async IActionResult Generate2([FromForm] UploadRequest req){
+    // public async IActionResult Generate2([FromForm] UploadRequest req, [FromServices] IJobStore jobs){
     //     try
-    //     { 
-
+    //     {
     //         IFormFile file = req.File;
     //         Console.WriteLine("Selected output types: {0}", string.Join(",", req.SelectedOutputTypes.GetType()));
-    //         List<string> outputTypes = req.SelectedOutputTypes; 
+    //         List<string> outputTypes = req.SelectedOutputTypes.Select(t => t.Trim()).ToList(); 
+
+    //         var job = jobs.Create(outputTypes);
 
     //         if (file == null || file.Length == 0)
     //             throw BadRequest("File is required");
@@ -229,7 +197,6 @@ public class FileController : ControllerBase
     //         PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext);
     //         if (extType == 0)
     //             throw BadRequest($"File type {ext} not permitted.");
-
 
     //         //check/create dirs
     //         string rawinputDir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
@@ -258,8 +225,12 @@ public class FileController : ControllerBase
 
     //         //file processing
     //         try{
-    //             var response_path = await FileProcessing.ProcessFile(fullFilePath , outputTypes);
-                
+    //             // var response_path = await FileProcessing.ProcessFile(fullFilePath , outputTypes, job.JobId);
+
+    //             _ = Task.Run(() =>
+    //                 FileProcessing.ProcessFile(fullFilePath , outputTypes, job.JobId)
+    //             );
+
     //             if (!System.IO.File.Exists(response_path))
     //                 return BadRequest("Generated file not found.");
 
@@ -267,11 +238,6 @@ public class FileController : ControllerBase
 
     //             FileDescriptor fileDescriptor = CreateFileDescriptor(response_path);
 
-    //             // return File(
-    //             //     bytes,
-    //             //     fileDescriptor.MimeType,
-    //             //     fileDescriptor.DownloadName
-    //             // );
     //         }catch(Exception e)
     //         {
     //             _logger.LogError(e, "FileProcessing failed");
@@ -279,22 +245,23 @@ public class FileController : ControllerBase
     //         }
 
     //         //return output types, file download url
-    //         string jobId = Guid.NewGuid().ToString();
-    //         ResponseModel<JobResponse> response = new ResponseModel<JobResponse>
+    //         ResponseModel<JobRecord> response = new ResponseModel<JobResponse>
     //         {
     //             Status = 200,
     //             Message = "File processing started",
     //             Data = new JobResponse
     //             {
-    //                 JobId = jobId,
-    //                 JobStatus = JobStatus.Processing.ToString(),
-    //                 JobStatusUrl = $"/api/File/jobstatus/{jobId}",
+    //                 JobId = job.JobId,
+    //                 JobStatus = JobState.Processing.ToString(),
+    //                 JobStatusUrl = $"/api/File/jobstatus/{job.JobId}",
 
     //                 Files = outputTypes.Select(
     //                     outType => new FileMetadata
     //                     {
     //                         Type = outType,
-    //                         DownloadUrl = $"/api/File/job/{jobId}/files/{outType}"
+    //                         DownloadUrl = $"/api/File/job/{job.JobId}/files/{outType}", 
+    //                         FileName = jobs[job.JobId].Files[outType].FileName, 
+    //                         MimeType = jobs[job.JobId].Files[outType].MimeType
     //                     }
     //                 ).ToList()
     //             }
@@ -317,36 +284,31 @@ public class FileController : ControllerBase
     // [HttpGet("jobstatus/{jobId}")]
     // public Task<IActionResult> GetJobStatus(string jobId)
     // {
-
     //     try{
-    //         ResponseModel<JobResponse> response = new ResponseModel<JobResponse>
+    //         ResponseModel<StatusResponse> response = new ResponseModel<StatusResponse>
     //             {
     //                 Status = 200,
     //                 Message = "Status fetched successfully",
-    //                 Data = new JobResponse
+    //                 Data = new StatusResponse
     //                 {
     //                     JobId = jobId,
-    //                     JobStatus = JobStatus.Processing.ToString(),
+    //                     JobStatus = jobs.GetJobStatus(jobId).ToString(),
 
-    //                     Progress =
-    //                     {
-    //                         [OutputType.Overview.ToString()] = DocGenStatus.Completed.ToString(),
-    //                         [OutputType.Workflows.ToString()] = DocGenStatus.Processing.ToString(),
-    //                         [OutputType.FAQ.ToString()] = DocGenStatus.Pending.ToString()
-    //                     }
+    //                     Progress = jobs[jobId].Progress.ToDictionary(
+    //                         outType => outType,
+    //                         _ => jobs[jobId].Progress[outType].ToString()
+    //                     )
     //                 }
     //             };
     //         return Ok(response); 
-
     //     }catch(Exception e)
     //     {
-    //         ResponseModel<JobResponse> error = new ResponseModel<JobResponse>
+    //         ResponseModel<StatusResponse> error = new ResponseModel<StatusResponse>
     //         {
     //             Status = 500,
     //             Message = e.ToString(),
     //         };
     //         return BadRequest(error);
-            
     //     }
     // }
 
@@ -356,11 +318,26 @@ public class FileController : ControllerBase
     // {
     //     try
     //     {
-    //         return File; 
+    //         FileMetadata fileMetadata = jobs[jobId].getOutputFile(jobId, outType);
+            
+    //         var bytes = await System.IO.File.ReadAllBytesAsync(fileMetadata.DownloadUrl); 
+    //         FileDescriptor fileDescriptor = CreateFileDescriptor(fileMetadata.DownloadUrl);
+
+    //         ResponseModel<Dictionary<string>> response = new ResponseModel<Dictionary<string>>
+    //         {
+    //             Status = 200,
+    //             Message = "File fetched successfully",
+    //             Data = File(
+    //                 bytes,
+    //                 fileMetadata.MimeType,
+    //                 fileDescriptor
+    //             )
+    //         };
+    //         return Ok(response); 
             
     //     }catch(Exception e)
     //     {
-    //         ResponseModel<JobResponse> error = new ResponseModel<JobResponse>
+    //         ResponseModel error = new ResponseModel
     //         {
     //             Status = 500,
     //             Message = e.ToString(),
@@ -369,21 +346,21 @@ public class FileController : ControllerBase
     //     }
     // }
 
-    [HttpGet("getDocument")]
-    public async Task<IActionResult> GetJobOutput()
-    {
-        var response_path = "/Users/benn/Documents/sh38-main/backend/src/backend.Api/rag_outputs/Replybrary_Overview.docx";
+    // [HttpGet("getDocument")]
+    // public async Task<IActionResult> GetGeneratedFile()
+    // {
+    //     var response_path = "/Users/benn/Documents/sh38-main/backend/src/backend.Api/rag_outputs/Replybrary_Overview.docx";
 
-        var bytes = await System.IO.File.ReadAllBytesAsync(response_path); 
+    //     var bytes = await System.IO.File.ReadAllBytesAsync(response_path); 
 
-        FileDescriptor fileDescriptor = CreateFileDescriptor(response_path);
+    //     FileDescriptor fileDescriptor = CreateFileDescriptor(response_path);
 
-        return File(
-            bytes,
-            fileDescriptor.MimeType,
-            fileDescriptor.DownloadName
-        );
-    }
+    //     return File(
+    //         bytes,
+    //         fileDescriptor.MimeType,
+    //         fileDescriptor.DownloadName
+    //     );
+    // }
 
 } 
     

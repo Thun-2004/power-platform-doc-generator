@@ -34,9 +34,10 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllers();
         builder.Services.AddInfrastructures();
-        //FIX: in memory cache for testing
-        builder.Services.AddSingleton<IUploadStore, UploadStore>();
-        // builder.Services.AddApplication();
+        builder.Services.AddApplication();
+
+        //in memory storage
+        builder.Services.AddSingleton<IJobStore, JobStore>();
 
         builder.Services.AddOpenApi();
 
@@ -47,9 +48,6 @@ public class Program
         );
 
         builder.Services.AddAuthorization(); 
-
-        //setup table (in memory)
-        builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<AppDbContext>(); 
 
         //TODO: set global request time outs
         builder.Services.Configure<KestrelServerOptions>(options =>
