@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FileCheck,Trash2 } from 'lucide-react';
 import axiosPublic from "../api/axios";
 import uploadFile from "../api/file";
+import DocumentPreviewModal from "../components/DocumentPreviewModal";
 
 //temp
 import axios from 'axios';
@@ -16,9 +17,8 @@ const Dashboard = () => {
     { id: "ai", title: "Dummy AI", desc: "Dummy option for assigning some AI task" },
   ];
   
-  const outputFiles = [
-    { id: 1, name: "Client1-ER-diagram.pdf", type: "pdf" }
-  ];
+  const [outputFiles, setOutputFiles] = useState([]);
+  const [previewFile, setPreviewFile] = useState(null);
 
   //FIXME: finish axios private for this
   // const axiosPrivate = useAxiosPrivate();
@@ -103,52 +103,50 @@ const Dashboard = () => {
       }
   };
 
-  const onGenerateOutputFile = () => {
-      if(!selectedFile) return;
-
-      const fd = new FormData(); 
-      fd.append("file", selectedFile); 
-      selectedModes.forEach((m) => fd.append("modes", m)); 
-
-      const controller = new AbortController();
-      abortRef.current = controller; 
-
+    const onGenerateOutputFile = async () => {
+      // Call backend to get generated document and present in Output
       try {
-          setIsUploading(true);
+        setIsUploading(true);
 
-          //FIXME: use axiosPrivate and complete uploadFile function
-          const res = uploadFile()
-      } catch (error) {
-          if (error.name == "CanceledError"){
-              console.log("Upload canceled");
-          } else {
-              console.error(error);
+        const response = await axiosPublic.get('/api/File/getDocument', {
+          responseType: 'blob'
+        });
+
+        console.log(response.data);
+
+        const contentDisposition = response.headers['content-disposition'] || '';
+        let fileName = 'generated_document';
+        const fileNameMatch = /filename=(?:"?)([^;\"]+)/i.exec(contentDisposition);
+        if (fileNameMatch && fileNameMatch[1]) fileName = fileNameMatch[1].replace(/\"/g, '');
+
+        const blob = new Blob([response.data], { type: response.data.type || 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+
+        setOutputFiles(prev => [
+          ...prev,
+          {
+            id: Date.now(),
+            name: fileName,
+            url,
+            blob
           }
+        ]);
+
+      } catch (err) {
+        console.error('Failed to fetch document', err);
       } finally {
-          setIsUploading(false);
+        setIsUploading(false);
       }
-  };
+    };
 
-  const test_call = async () => {
-      const fd = new FormData(); 
-
-      fd.append("File", selectedFile);
-      fd.append("OutputTypes", selectedModes);
-
-      const response = await axiosPublic.post(
-          '/api/File/generate', 
-          fd
-      )
-
-      console.log(response.data);
-  }
+    const test_call = onGenerateOutputFile;
 
   const onCancelUpload = () => {
       abortRef.current?.abort(); 
   }
 
   return (
-    
+      <>
       <main className="flex-1 p-8 bg-white m-4 rounded-xl shadow-sm overflow-y-auto">
         {/* Upload File Section */}
         <section className="mb-8">
@@ -258,7 +256,7 @@ const Dashboard = () => {
           </div>
           <div className="flex flex-col gap-4">
             {outputFiles.map((file) => (
-              <div key={file.id} className="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-lg transition-all hover:shadow-md cursor-pointer">
+              <div key={file.id} className="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-lg transition-all hover:shadow-md">
                 <div className="flex items-center justify-center">
                   <div className="w-10 h-10 flex items-center justify-center bg-blue-50 rounded-lg">
                     <FileCheck color="#3b82f6" size={20} />
@@ -266,14 +264,20 @@ const Dashboard = () => {
                 </div>
                 <span className="flex-1 text-sm text-gray-800 font-medium">{file.name}</span>
                 <div className="flex gap-2">
-                  <button className=" text-gray-500 border border-gray-300 px-3 py-1 rounded-md text-sm cursor-pointer transition-all hover:brightness-110">Preview</button>
-                  <button className="text-gray-500 border border-gray-300 px-3 py-1.5 rounded-md text-sm cursor-pointer transition-all hover:brightness-110">Download</button>
+                  <button onClick={() => setPreviewFile(file)} className=" text-gray-500 border border-gray-300 px-3 py-1 rounded-md text-sm cursor-pointer transition-all hover:brightness-110">Preview</button>
+                  <a href={file.url} download={file.name} className="text-gray-500 border border-gray-300 px-3 py-1.5 rounded-md text-sm cursor-pointer transition-all hover:brightness-110">Download</a>
                 </div>
               </div>
             ))}
           </div>
         </section>
       </main>
+      <DocumentPreviewModal
+        file={previewFile}
+        isOpen={!!previewFile}
+        onClose={() => setPreviewFile(null)}
+      />
+      </>
   );
 };
 
