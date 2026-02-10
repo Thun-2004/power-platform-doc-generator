@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using backend.Data;
 using backend.Domain;
 using backend.Infrastructure;
+using backend.Application;
 
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
@@ -38,6 +39,7 @@ public class Program
 
         //in memory storage
         builder.Services.AddSingleton<IJobStore, JobStore>();
+        // builder.Services.AddSingleton<IUploadStore, UploadStore>();
 
         builder.Services.AddOpenApi();
 
@@ -46,6 +48,7 @@ public class Program
             options.UseInMemoryDatabase("AuthDb"); 
         }
         );
+
 
         builder.Services.AddAuthorization(); 
 
@@ -59,7 +62,7 @@ public class Program
         var app = builder.Build();
 
         //map 
-        app.MapIdentityApi<IdentityUser>(); 
+        // app.MapIdentityApi<IdentityUser>(); 
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

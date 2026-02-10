@@ -1,13 +1,9 @@
 ﻿{
-  "root": "/Users/benn/Documents/sh38-main/Replybrary_1_0_0_20_2",
+  "root": "/var/folders/8x/3j91c4_d4ngch6_z44jb08pc0000gq/T/extract/13f5105b-fc6a-43ee-9d42-8b997438c494",
   "counts": {
     "canvasapps_groups": 2,
     "workflows": 10,
-    "envvars": 16,
-    "screens": 0,
-    "app_connectors": 0,
-    "workflow_connectors": 18,
-    "relationships": 44
+    "envvars": 16
   },
   "top_level": [
     {
