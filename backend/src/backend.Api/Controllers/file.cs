@@ -1,7 +1,7 @@
 
 //git stash pop -> later
 
-//upload file 
+//upload file
 using System.Net;
 using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
@@ -14,15 +14,12 @@ using backend.Infrastructure;
 using System.Reflection.Metadata;
 namespace backend.Controllers; 
 
-
 enum OutputType
 {
     Overview,
     Workflows,
     FAQ,
     Diagrams
-
-
 }
 
 public class UploadRequest
@@ -36,11 +33,11 @@ public class ResponseModel<T>
 {
     public required int Status { get; set; }
     public required string Message { get; set; }
-
     public T? Data { get; set; }
-
     public List<string>? Errors { get; set; }
 }
+
+
 
 
 [ApiController]
@@ -53,10 +50,13 @@ public class FileController : ControllerBase
 
     private readonly ILogger<FileController> _logger;
 
-    private readonly IUploadStore _store;
+    // private readonly IUploadStore _store;
+
+    private readonly IJobStore _jobs;
+
+    private readonly FileProcessing _fileProcessing;
 
     private readonly record struct FileDescriptor(string Extension, string MimeType, string DownloadName);
-
 
     //TODO: fix this 
     private static FileDescriptor CreateFileDescriptor(string path)
@@ -72,93 +72,102 @@ public class FileController : ControllerBase
         };
     }
 
-    public FileController(ILogger<FileController> logger, IUploadStore store) {
+    //constructor injection
+    public FileController(ILogger<FileController> logger, IJobStore jobs) {
         _logger = logger;
-        _store = store;
+        _jobs = jobs;
+        _fileProcessing = new FileProcessing(jobs);
     }
+    // public FileController(ILogger<FileController> logger, IUploadStore store, IJobStore jobs) {
+    //     _logger = logger;
+    //     _store = store;
+    //     _jobs = jobs;
+    //     _fileProcessing = new FileProcessing(jobs);
+    // }
 
-    [HttpPost("generate")]
-    [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Generate([FromForm] UploadRequest req)
-    {
-        try{
-            IFormFile file = req.File;
-            //TODO: set request time out for each end point 
-            Console.WriteLine("Selected output types: {0}", string.Join(",", req.SelectedOutputTypes.GetType()));
-            List<string> outputTypes = req.SelectedOutputTypes; 
+    // [HttpPost("generate")]
+    // [Consumes("multipart/form-data")]
+    // public async Task<IActionResult> Generate([FromForm] UploadRequest req)
+    // {
+    //     try{
+    //         IFormFile file = req.File;
+    //         //TODO: set request time out for each end point
+    //         Console.WriteLine("Selected output types: {0}", string.Join(",", req.SelectedOutputTypes.GetType()));
+    //         List<string> outputTypes = req.SelectedOutputTypes; 
 
-            if (file == null || file.Length == 0)
-                return BadRequest("File is required");
+    //         if (file == null || file.Length == 0)
+    //             return BadRequest("File is required");
 
-            string originalFileName = req.File.FileName;
+    //         string originalFileName = req.File.FileName;
 
-            string ext = Path.GetExtension(originalFileName).ToLowerInvariant();
-            PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext);
-            if (extType == 0)
-                return BadRequest($"File type {ext} not permitted.");
+    //         string ext = Path.GetExtension(originalFileName).ToLowerInvariant();
+    //         PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext);
+    //         if (extType == 0)
+    //             return BadRequest($"File type {ext} not permitted.");
 
 
-            //check/create dirs
-            string rawinputDir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
-            if (!Directory.Exists(rawinputDir))
-            {
-                Directory.CreateDirectory(rawinputDir);
-            }
+    //         //check/create dirs
+    //         string rawinputDir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
+    //         if (!Directory.Exists(rawinputDir))
+    //         {
+    //             Directory.CreateDirectory(rawinputDir);
+    //         }
 
-            string ragoutDir = Path.Combine(Directory.GetCurrentDirectory(), "rag_outputs");
-            if (!Directory.Exists(ragoutDir))
-            {
-                Directory.CreateDirectory(ragoutDir);
-            }
+    //         string ragoutDir = Path.Combine(Directory.GetCurrentDirectory(), "rag_outputs");
+    //         if (!Directory.Exists(ragoutDir))
+    //         {
+    //             Directory.CreateDirectory(ragoutDir);
+    //         }
 
-            string parsedDir = Path.Combine(Directory.GetCurrentDirectory(), "parsed_output");
-            if (!Directory.Exists(parsedDir))
-            {
-                Directory.CreateDirectory(parsedDir);
-            }
+    //         string parsedDir = Path.Combine(Directory.GetCurrentDirectory(), "parsed_output");
+    //         if (!Directory.Exists(parsedDir))
+    //         {
+    //             Directory.CreateDirectory(parsedDir);
+    //         }
 
-            string fullFilePath = Path.Combine(rawinputDir, file.FileName);
+    //         string fullFilePath = Path.Combine(rawinputDir, file.FileName);
 
-            await using (var stream = System.IO.File.Create(fullFilePath)){
-                await file.CopyToAsync(stream);
-            }
+    //         await using (var stream = System.IO.File.Create(fullFilePath)){
+    //             await file.CopyToAsync(stream);
+    //         }
 
-            //create obj
-            UploadedFile uploadedFile = new()
-            {
-                OriginalName = originalFileName,
-                StoredPath = fullFilePath,
-            };
+    //         //create obj
+    //         UploadedFile uploadedFile = new()
+    //         {
+    //             OriginalName = originalFileName,
+    //             StoredPath = fullFilePath,
+    //         };
 
-            _store.Files.Add(uploadedFile); 
+    //         _store.Files.Add(uploadedFile); 
 
-            //file processing
-            try{
-                var response_path = await FileProcessing.ProcessFile(uploadedFile.StoredPath , outputTypes);
+    //         //file processing
+    //         try{
+    //             var response_path = await _fileProcessing.ProcessFile(uploadedFile.StoredPath , outputTypes);
                 
-                if (!System.IO.File.Exists(response_path))
-                    return BadRequest("Generated file not found.");
+    //             if (!System.IO.File.Exists(response_path))
 
-                var bytes = await System.IO.File.ReadAllBytesAsync(response_path); 
+    //                 return BadRequest("Generated file not found.");
 
-                FileDescriptor fileDescriptor = CreateFileDescriptor(response_path);
+    //             var bytes = await System.IO.File.ReadAllBytesAsync(response_path); 
 
-                return File(
-                    bytes,
-                    fileDescriptor.MimeType,
-                    fileDescriptor.DownloadName
-                );
-            }catch(Exception e)
-            {
-                _logger.LogError(e, "FileProcessing failed");
-                return StatusCode(500, new { success = false, message = e.Message });
-            }
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e); 
-        }
-    }
+    //             FileDescriptor fileDescriptor = CreateFileDescriptor(response_path);
+
+    //             return File(
+    //                 bytes,
+    //                 fileDescriptor.MimeType,
+    //                 fileDescriptor.DownloadName
+    //             );
+    //         }catch(Exception e)
+    //         {
+    //             _logger.LogError(e, "FileProcessing failed");
+    //             return StatusCode(500, new { success = false, message = e.Message });
+    //         }
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         return BadRequest(e);
+    //     }
+    // }
 
     [HttpGet("getDocument")]
     public async Task<IActionResult> GetJobOutput()
@@ -176,175 +185,166 @@ public class FileController : ControllerBase
         );
     }
 
-    //recreateion
-    // [HttpPost("generate2")]
-    // [Consumes("multipart/form-data")]
-    // public async IActionResult Generate2([FromForm] UploadRequest req, [FromServices] IJobStore jobs){
-    //     try
-    //     {
-    //         IFormFile file = req.File;
-    //         Console.WriteLine("Selected output types: {0}", string.Join(",", req.SelectedOutputTypes.GetType()));
-    //         List<string> outputTypes = req.SelectedOutputTypes.Select(t => t.Trim()).ToList(); 
+    [HttpPost("generate2")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Generate2([FromForm] UploadRequest req){
+        try
+        {
+            IFormFile file = req.File;
+            Console.WriteLine("Selected output types: {0}", string.Join(",", req.SelectedOutputTypes.GetType()));
+            List<string> outputTypes = req.SelectedOutputTypes.Select(t => t.Trim()).ToList(); 
 
-    //         var job = jobs.Create(outputTypes);
+            if (file == null || file.Length == 0)
+                return BadRequest("File is required");
 
-    //         if (file == null || file.Length == 0)
-    //             throw BadRequest("File is required");
+            string originalFileName = req.File.FileName;
 
-    //         string originalFileName = req.File.FileName;
+            string ext = Path.GetExtension(originalFileName).ToLowerInvariant();
+            PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext);
+            if (extType == 0)
+                return BadRequest($"File type {ext} not permitted.");
 
-    //         string ext = Path.GetExtension(originalFileName).ToLowerInvariant();
-    //         PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext);
-    //         if (extType == 0)
-    //             throw BadRequest($"File type {ext} not permitted.");
+            //check/create dirs
+            string rawinputDir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
+            if (!Directory.Exists(rawinputDir))
+            {
+                Directory.CreateDirectory(rawinputDir);
+            }
 
-    //         //check/create dirs
-    //         string rawinputDir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
-    //         if (!Directory.Exists(rawinputDir))
-    //         {
-    //             Directory.CreateDirectory(rawinputDir);
-    //         }
+            string ragoutDir = Path.Combine(Directory.GetCurrentDirectory(), "rag_outputs");
+            if (!Directory.Exists(ragoutDir))
+            {
+                Directory.CreateDirectory(ragoutDir);
+            }
 
-    //         string ragoutDir = Path.Combine(Directory.GetCurrentDirectory(), "rag_outputs");
-    //         if (!Directory.Exists(ragoutDir))
-    //         {
-    //             Directory.CreateDirectory(ragoutDir);
-    //         }
+            string parsedDir = Path.Combine(Directory.GetCurrentDirectory(), "parsed_outputs");
+            if (!Directory.Exists(parsedDir))
+            {
+                Directory.CreateDirectory(parsedDir);
+            }
 
-    //         string parsedDir = Path.Combine(Directory.GetCurrentDirectory(), "parsed_outputs");
-    //         if (!Directory.Exists(parsedDir))
-    //         {
-    //             Directory.CreateDirectory(parsedDir);
-    //         }
+            string fullFilePath = Path.Combine(rawinputDir, file.FileName);
 
-    //         string fullFilePath = Path.Combine(rawinputDir, file.FileName);
+            await using (var stream = System.IO.File.Create(fullFilePath)){
+                await file.CopyToAsync(stream);
+            }
 
-    //         await using (var stream = System.IO.File.Create(fullFilePath)){
-    //             await file.CopyToAsync(stream);
-    //         }
+            // _store.Files.Add(fullFilePath); 
 
-    //         //file processing
-    //         try{
-    //             // var response_path = await FileProcessing.ProcessFile(fullFilePath , outputTypes, job.JobId);
+            //init job
+            var job = _jobs.Create(outputTypes, fullFilePath);
+            
+            //file processing
+            try{
+                //background task
+                await Task.Run(() =>
+                {
+                    _fileProcessing.ProcessFile(outputTypes, job.JobId); 
+                });
 
-    //             _ = Task.Run(() =>
-    //                 FileProcessing.ProcessFile(fullFilePath , outputTypes, job.JobId)
-    //             );
+            }catch(Exception e)
+            {
+                _logger.LogError(e, "FileProcessing failed");
+                return BadRequest($"FileProcessing failed: {e.Message}");
+            }
 
-    //             if (!System.IO.File.Exists(response_path))
-    //                 return BadRequest("Generated file not found.");
+            Dictionary<string, string> mapOutputFilesMetas = new Dictionary<string, string>();
+            foreach (var outputType in outputTypes)
+            {
+                mapOutputFilesMetas[outputType] = $"/api/File/job/{job.JobId}/files/{outputType}";  
+            }
 
-    //             var bytes = await System.IO.File.ReadAllBytesAsync(response_path); 
+            //return output types, file download url
+            ResponseModel<JobResponse> response = new ResponseModel<JobResponse>
+            {
+                Status = 200,
+                Message = "File processing started",
+                Data = new JobResponse
+                {
+                    JobId = job.JobId,
+                    JobStatus = JobState.Processing.ToString(),
+                    JobStatusUrl = $"/api/File/jobstatus/{job.JobId}",
+                    OutputFilesMetas = mapOutputFilesMetas
+                }
+            };
 
-    //             FileDescriptor fileDescriptor = CreateFileDescriptor(response_path);
+            return Ok(response); 
 
-    //         }catch(Exception e)
-    //         {
-    //             _logger.LogError(e, "FileProcessing failed");
-    //             throw BadRequest($"FileProcessing failed: {e.Message}");
-    //         }
-
-    //         //return output types, file download url
-    //         ResponseModel<JobRecord> response = new ResponseModel<JobResponse>
-    //         {
-    //             Status = 200,
-    //             Message = "File processing started",
-    //             Data = new JobResponse
-    //             {
-    //                 JobId = job.JobId,
-    //                 JobStatus = JobState.Processing.ToString(),
-    //                 JobStatusUrl = $"/api/File/jobstatus/{job.JobId}",
-
-    //                 Files = outputTypes.Select(
-    //                     outType => new FileMetadata
-    //                     {
-    //                         Type = outType,
-    //                         DownloadUrl = $"/api/File/job/{job.JobId}/files/{outType}", 
-    //                         FileName = jobs[job.JobId].Files[outType].FileName, 
-    //                         MimeType = jobs[job.JobId].Files[outType].MimeType
-    //                     }
-    //                 ).ToList()
-    //             }
-    //         };
-
-    //         return Ok(response); 
-
-    //     }catch(Exception e)
-    //     {
-    //         ResponseModel<JobResponse> error = new ResponseModel<JobResponse>
-    //         {
-    //             Status = 500,
-    //             Message = e.ToString(),
-    //         };
-    //         return BadRequest(error);
-    //     }
+        }catch(Exception e)
+        {
+            ResponseModel<object> error = new ResponseModel<object>
+            {
+                Status = 500,
+                Message = e.ToString(),
+            };
+            return BadRequest(error);
+        }
         
-    // }
+    }
 
-    // [HttpGet("jobstatus/{jobId}")]
-    // public Task<IActionResult> GetJobStatus(string jobId)
-    // {
-    //     try{
-    //         ResponseModel<StatusResponse> response = new ResponseModel<StatusResponse>
-    //             {
-    //                 Status = 200,
-    //                 Message = "Status fetched successfully",
-    //                 Data = new StatusResponse
-    //                 {
-    //                     JobId = jobId,
-    //                     JobStatus = jobs.GetJobStatus(jobId).ToString(),
+    [HttpGet("jobstatus/{jobId}")]
+    public async Task<IActionResult> GetJobStatus(string jobId)
+    {
+        Dictionary<string, FileMetadata?> fileMeta = _jobs.Get(jobId).OutputType_FileMeta_Matches;
+        Dictionary<string, string> mapOutputFilesProgresses = new Dictionary<string, string>();
+        foreach(var outputType in fileMeta.Keys)
+        {
+            mapOutputFilesProgresses[outputType] = fileMeta[outputType]?.Status.ToString() ?? "Unknown";
+        }
 
-    //                     Progress = jobs[jobId].Progress.ToDictionary(
-    //                         outType => outType,
-    //                         _ => jobs[jobId].Progress[outType].ToString()
-    //                     )
-    //                 }
-    //             };
-    //         return Ok(response); 
-    //     }catch(Exception e)
-    //     {
-    //         ResponseModel<StatusResponse> error = new ResponseModel<StatusResponse>
-    //         {
-    //             Status = 500,
-    //             Message = e.ToString(),
-    //         };
-    //         return BadRequest(error);
-    //     }
-    // }
+        try{
+            ResponseModel<StatusResponse> response = new ResponseModel<StatusResponse>
+                {
+                    Status = 200,
+                    Message = "Status fetched successfully",
+                    Data = new StatusResponse
+                    {
+                        JobId = jobId,
+                        JobStatus = _jobs.GetJobProgress(jobId).ToString(),
+                        Progress = mapOutputFilesProgresses
+                    }
+                };
+            return Ok(response); 
+        }catch(Exception e)
+        {
+            ResponseModel<object> error = new ResponseModel<object>
+            {
+                Status = 500,
+                Message = e.ToString(),
+            };
+            return BadRequest(error);
+        }
+    }
 
 
-    // [HttpGet("job/{jobId}/files/{outType}")]
-    // public async Task<IActionResult> GetJobOutput(string jobId, string outType)
-    // {
-    //     try
-    //     {
-    //         FileMetadata fileMetadata = jobs[jobId].getOutputFile(jobId, outType);
+    //TODO: not sure about design
+    [HttpGet("job/{jobId}/files/{outputType}")]
+    public async Task<IActionResult> GetJobOutput(string jobId, string outputType)
+    {
+        try
+        {
+            Console.WriteLine($"Fetching output file for job {jobId} and output type {outputType}");
             
-    //         var bytes = await System.IO.File.ReadAllBytesAsync(fileMetadata.DownloadUrl); 
-    //         FileDescriptor fileDescriptor = CreateFileDescriptor(fileMetadata.DownloadUrl);
+            FileMetadata fileMetadata = _jobs.getOutputFile(jobId, outputType);
+            var bytes = await System.IO.File.ReadAllBytesAsync(fileMetadata.FilePath); 
+            FileDescriptor fileDescriptor = CreateFileDescriptor(fileMetadata.FilePath);
 
-    //         ResponseModel<Dictionary<string>> response = new ResponseModel<Dictionary<string>>
-    //         {
-    //             Status = 200,
-    //             Message = "File fetched successfully",
-    //             Data = File(
-    //                 bytes,
-    //                 fileMetadata.MimeType,
-    //                 fileDescriptor
-    //             )
-    //         };
-    //         return Ok(response); 
+            return Ok(File(
+                    bytes,
+                    fileMetadata.MimeType,
+                    fileDescriptor.DownloadName
+                )); 
             
-    //     }catch(Exception e)
-    //     {
-    //         ResponseModel error = new ResponseModel
-    //         {
-    //             Status = 500,
-    //             Message = e.ToString(),
-    //         };
-    //         return BadRequest(error);
-    //     }
-    // }
+        }catch(Exception e)
+        {
+            ResponseModel<object> error = new ResponseModel<object>
+            {
+                Status = 500,
+                Message = e.ToString(),
+            };
+            return BadRequest(error);
+        }
+    }
 
     // [HttpGet("getDocument")]
     // public async Task<IActionResult> GetGeneratedFile()
