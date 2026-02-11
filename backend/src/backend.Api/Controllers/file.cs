@@ -194,6 +194,11 @@ public class FileController : ControllerBase
             Console.WriteLine("Selected output types: {0}", string.Join(",", req.SelectedOutputTypes.GetType()));
             List<string> outputTypes = req.SelectedOutputTypes.Select(t => t.Trim()).ToList(); 
 
+            for (int i = 0; i < outputTypes.Count; i++)
+            {
+                Console.WriteLine(outputTypes[i].ToLowerInvariant());
+            }
+
             if (file == null || file.Length == 0)
                 return BadRequest("File is required");
 
@@ -228,8 +233,6 @@ public class FileController : ControllerBase
             await using (var stream = System.IO.File.Create(fullFilePath)){
                 await file.CopyToAsync(stream);
             }
-
-            // _store.Files.Add(fullFilePath); 
 
             //init job
             var job = _jobs.Create(outputTypes, fullFilePath);
@@ -324,7 +327,7 @@ public class FileController : ControllerBase
         try
         {
             Console.WriteLine($"Fetching output file for job {jobId} and output type {outputType}");
-            
+
             FileMetadata fileMetadata = _jobs.getOutputFile(jobId, outputType);
             var bytes = await System.IO.File.ReadAllBytesAsync(fileMetadata.FilePath); 
             FileDescriptor fileDescriptor = CreateFileDescriptor(fileMetadata.FilePath);

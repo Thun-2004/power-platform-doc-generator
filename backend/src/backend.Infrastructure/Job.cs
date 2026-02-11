@@ -17,9 +17,7 @@ public class JobRecord
 {
     public required string JobId {get; set; } = ""; 
     public required JobState JobStatus {get; set; } = JobState.Pending; 
-
     public string ZipFilePath { get; set; } = "";
-
     public Dictionary<string, FileMetadata?> OutputType_FileMeta_Matches { get; set; } = new(); 
 
 }
