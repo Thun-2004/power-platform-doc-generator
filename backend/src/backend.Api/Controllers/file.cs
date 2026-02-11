@@ -65,9 +65,9 @@ public class FileController : ControllerBase
         return ext switch
         {
             ".docx" => new FileDescriptor(ext, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Generated_Document.docx"),
+            ".xlsx" => new FileDescriptor(ext, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Generated_Document.xlsx"),
             ".pdf" => new FileDescriptor(ext, "application/pdf", "Generated_Document.pdf"),
             ".zip" => new FileDescriptor(ext, "application/zip", "Generated_Document.zip"),
-            ".msapp" => new FileDescriptor(ext, "application/octet-stream", "Generated_Document.msapp"),
             _ => new FileDescriptor(ext, "application/octet-stream", string.IsNullOrEmpty(ext) ? "Generated_Document.bin" : $"Generated_Document{ext}")
         };
     }
@@ -78,96 +78,6 @@ public class FileController : ControllerBase
         _jobs = jobs;
         _fileProcessing = new FileProcessing(jobs);
     }
-    // public FileController(ILogger<FileController> logger, IUploadStore store, IJobStore jobs) {
-    //     _logger = logger;
-    //     _store = store;
-    //     _jobs = jobs;
-    //     _fileProcessing = new FileProcessing(jobs);
-    // }
-
-    // [HttpPost("generate")]
-    // [Consumes("multipart/form-data")]
-    // public async Task<IActionResult> Generate([FromForm] UploadRequest req)
-    // {
-    //     try{
-    //         IFormFile file = req.File;
-    //         //TODO: set request time out for each end point
-    //         Console.WriteLine("Selected output types: {0}", string.Join(",", req.SelectedOutputTypes.GetType()));
-    //         List<string> outputTypes = req.SelectedOutputTypes; 
-
-    //         if (file == null || file.Length == 0)
-    //             return BadRequest("File is required");
-
-    //         string originalFileName = req.File.FileName;
-
-    //         string ext = Path.GetExtension(originalFileName).ToLowerInvariant();
-    //         PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext);
-    //         if (extType == 0)
-    //             return BadRequest($"File type {ext} not permitted.");
-
-
-    //         //check/create dirs
-    //         string rawinputDir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
-    //         if (!Directory.Exists(rawinputDir))
-    //         {
-    //             Directory.CreateDirectory(rawinputDir);
-    //         }
-
-    //         string ragoutDir = Path.Combine(Directory.GetCurrentDirectory(), "rag_outputs");
-    //         if (!Directory.Exists(ragoutDir))
-    //         {
-    //             Directory.CreateDirectory(ragoutDir);
-    //         }
-
-    //         string parsedDir = Path.Combine(Directory.GetCurrentDirectory(), "parsed_output");
-    //         if (!Directory.Exists(parsedDir))
-    //         {
-    //             Directory.CreateDirectory(parsedDir);
-    //         }
-
-    //         string fullFilePath = Path.Combine(rawinputDir, file.FileName);
-
-    //         await using (var stream = System.IO.File.Create(fullFilePath)){
-    //             await file.CopyToAsync(stream);
-    //         }
-
-    //         //create obj
-    //         UploadedFile uploadedFile = new()
-    //         {
-    //             OriginalName = originalFileName,
-    //             StoredPath = fullFilePath,
-    //         };
-
-    //         _store.Files.Add(uploadedFile); 
-
-    //         //file processing
-    //         try{
-    //             var response_path = await _fileProcessing.ProcessFile(uploadedFile.StoredPath , outputTypes);
-                
-    //             if (!System.IO.File.Exists(response_path))
-
-    //                 return BadRequest("Generated file not found.");
-
-    //             var bytes = await System.IO.File.ReadAllBytesAsync(response_path); 
-
-    //             FileDescriptor fileDescriptor = CreateFileDescriptor(response_path);
-
-    //             return File(
-    //                 bytes,
-    //                 fileDescriptor.MimeType,
-    //                 fileDescriptor.DownloadName
-    //             );
-    //         }catch(Exception e)
-    //         {
-    //             _logger.LogError(e, "FileProcessing failed");
-    //             return StatusCode(500, new { success = false, message = e.Message });
-    //         }
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return BadRequest(e);
-    //     }
-    // }
 
     [HttpGet("getDocument")]
     public async Task<IActionResult> GetJobOutput()
@@ -185,9 +95,9 @@ public class FileController : ControllerBase
         );
     }
 
-    [HttpPost("generate2")]
+    [HttpPost("generate")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Generate2([FromForm] UploadRequest req){
+    public async Task<IActionResult> Generate([FromForm] UploadRequest req){
         try
         {
             IFormFile file = req.File;
