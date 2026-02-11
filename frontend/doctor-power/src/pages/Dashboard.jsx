@@ -3,6 +3,7 @@ import { FileCheck,Trash2 } from 'lucide-react';
 import axiosPublic from "../api/axios";
 import uploadFile from "../api/file";
 import DocumentPreviewModal from "../components/DocumentPreviewModal";
+import DiagramSelectionBox from "../components/DiagramSelectionBox";
 
 //temp
 import axios from 'axios';
@@ -11,12 +12,10 @@ import axios from 'axios';
 const Dashboard = () => {
 
   const fileTypes = [
-    { id: "er", title: "ER diagram", desc: "Set fixed price for people to buy your product instantly" },
-    { id: "ui", title: "UI-Hierarchy flow", desc: "Set fixed price for people to buy your product instantly" },
-    { id: "program", title: "Program flow", desc: "Set fixed price for people to buy your product instantly" },
-    { id: "diagram4", title: "diagram4", desc: "Set fixed price for people to buy your product instantly" },
-    { id: "diagram5", title: "diagram5", desc: "Set fixed price for people to buy your product instantly" },
-    { id: "diagram6", title: "diagram6", desc: "Set fixed price for people to buy your product instantly" }
+    { id: "er", title: "ER diagram", desc: "Dummy text for generating an ER diagram"},
+    { id: "ui", title: "UI-Hierarchy flow", desc: "Dummy text for generating a UI-hierarchy"},
+    { id: "program", title: "Program flow", desc: "Dummy text for generating a program-flow"},
+    { id: "ai", title: "Dummy AI", desc: "Dummy option for assigning some AI task"},
   ];
   
   const [outputFiles, setOutputFiles] = useState([]);
@@ -44,14 +43,8 @@ const Dashboard = () => {
       prev => 
         prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     ); 
-
-    
   };
 
-  const togglePromptDisplay = (id) => {
-    console.log(document.getElementById(id).value.length > 0)
-
-  }
 
   useEffect(() => {
       console.log("Selected modes changed:", selectedModes);
@@ -101,6 +94,7 @@ const Dashboard = () => {
 
   //FIXME: might need to change in case multiple files are allowed
   const onRemoveFile = () => {
+
       setSelectedFile(null); 
       setProgress(0); 
       // clear the native input so selecting the same file again will fire change
@@ -116,6 +110,11 @@ const Dashboard = () => {
       try {
         setIsUploading(true);
 
+        //Get prompts from selected output types so that they can be passed to the backend
+        let prompts = {}
+        selectedModes.forEach((m) => prompts[m] = document.getElementById(m).value)
+        console.log(prompts)
+
         const response = await axiosPublic.get('/api/File/getDocument', {
           responseType: 'blob'
         });
@@ -129,18 +128,6 @@ const Dashboard = () => {
 
         const blob = new Blob([response.data], { type: response.data.type || 'application/octet-stream' });
         const url = URL.createObjectURL(blob);
-
-        // ensure fileName has extension, fallback using blob.type
-        if (!fileName.includes('.')) {
-          const mime = blob.type;
-          const mimeToExt = {
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
-            'application/pdf': '.pdf',
-            'application/zip': '.zip'
-          };
-          if (mimeToExt[mime]) fileName += mimeToExt[mime];
-        }
 
         setOutputFiles(prev => [
           ...prev,
@@ -181,12 +168,12 @@ const Dashboard = () => {
           >
             <div className="text-center flex flex-col items-center gap-4">
               <p className="text-base text-gray-600 m-0">Drag and drop your file here</p>
-              <p className="text-sm text-gray-400 m-0">Max 120 MB, PNG, JPEG, MP3, MP4</p>
+              <p className="text-sm text-gray-400 m-0">Max 120 MB, only .ZIP accepted</p>
               <label className="btn-theme">
                 Browse File
                 <input
                   type="file"
-                  accept=".png,.jpeg,.jpg,.mp3,.mp4"
+                  accept=".zip"
                   className="hidden"
                   ref={fileInputRef} //set DOM input
                   onChange={(e) => {
@@ -229,51 +216,7 @@ const Dashboard = () => {
             <h2 className="text-title">Select output file types</h2>
 
             <div className="grid grid-cols-2 gap-4">
-                {fileTypes.map((type) => {
-                    var isSelected = selectedModes.includes(type.id);
-                    // var isPrompted = document.getElementById(type.id).value.length > 0
-
-                    return (
-                      <>
-                        <button 
-                            key={type.id}
-                            type="button"
-                            onClick={() => {
-                              toggleSelected(type.id)
-                              togglePromptDisplay(type.id)
-                            }}
-                            className={`bg-white border-1 rounded-lg p-4 cursor-pointer text-left transition-all hover:shadow-md hover:-translate-y-0.5 ${
-                                isSelected ? "border-blue-600 shadow-sm" : "border-gray-300"
-                            }`}
-                        >
-                            <div className="flex items-start gap-3">
-                                <span
-                                    className={`mt-0.5 w-[18px] h-[18px] rounded-full border-1 flex items-center justify-center transition-all ${
-                                        isSelected ? "border-blue-600" : "border-gray-400"
-                                    }`}
-                                >
-                                    {isSelected && <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />}
-                                </span>
-
-                                <div>
-                                    <div className="font-semibold text-base text-black">{type.title}</div>
-                                    <div className="mt-1 text-xs text-gray-500">{type.desc}</div>
-                                </div>
-                            </div>
-                        </button>
-
-                        <div className="input-ai-prompt">
-                          <button  className={`bg-white border-1 rounded-lg p-4 cursor-pointer text-left transition-all hover:shadow-md hover:-translate-y-0.5 ${
-                                (isSelected) ? "border-blue-600 shadow-sm" : "border-gray-300"
-                            }`}>
-                          <label className="block mb-2.5 text-sm font-small text-gray-600">Additional Prompt for {type.title}</label>
-                          <input type="text" id={type.id} className="bg-neutral-primary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand  w-full px-1 py-2.5 shadow-xs placeholder:text-body" placeholder="Additional prompt" />
-                          </button>
-                        </div>
-
-                        </>
-                    );
-                })}
+              {fileTypes.map((type) => <DiagramSelectionBox type={type} selectedModes={selectedModes} toggleSelected={toggleSelected}/>)}
             </div>
 
             <div className="mt-6">
