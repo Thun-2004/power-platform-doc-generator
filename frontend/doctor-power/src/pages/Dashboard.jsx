@@ -29,6 +29,7 @@ const Dashboard = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
 
+
   const abortRef = useRef(null);//like useState but not rerender 
   const fileInputRef = useRef(null); // to clear the DOM input val
 
@@ -42,8 +43,13 @@ const Dashboard = () => {
         prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     ); 
 
-      // console.log("Selected modes:", selectedModes);
+    
   };
+
+  const togglePromptDisplay = (id) => {
+    console.log(document.getElementById(id).value.length > 0)
+
+  }
 
   useEffect(() => {
       console.log("Selected modes changed:", selectedModes);
@@ -211,13 +217,16 @@ const Dashboard = () => {
             <div className="grid grid-cols-2 gap-4">
                 {fileTypes.map((type) => {
                     var isSelected = selectedModes.includes(type.id);
+                    // var isPrompted = document.getElementById(type.id).value.length > 0
 
                     return (
-                        <button
+                      <>
+                        <button 
                             key={type.id}
                             type="button"
                             onClick={() => {
                               toggleSelected(type.id)
+                              togglePromptDisplay(type.id)
                             }}
                             className={`bg-white border-1 rounded-lg p-4 cursor-pointer text-left transition-all hover:shadow-md hover:-translate-y-0.5 ${
                                 isSelected ? "border-blue-600 shadow-sm" : "border-gray-300"
@@ -238,6 +247,17 @@ const Dashboard = () => {
                                 </div>
                             </div>
                         </button>
+
+                        <div className="input-ai-prompt">
+                          <button  className={`bg-white border-1 rounded-lg p-4 cursor-pointer text-left transition-all hover:shadow-md hover:-translate-y-0.5 ${
+                                (isSelected) ? "border-blue-600 shadow-sm" : "border-gray-300"
+                            }`}>
+                          <label className="block mb-2.5 text-sm font-small text-gray-600">Additional Prompt for {type.title}</label>
+                          <input type="text" id={type.id} className="bg-neutral-primary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand  w-full px-1 py-2.5 shadow-xs placeholder:text-body" placeholder="Additional prompt" />
+                          </button>
+                        </div>
+
+                        </>
                     );
                 })}
             </div>
