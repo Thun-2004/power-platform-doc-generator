@@ -79,21 +79,6 @@ public class FileController : ControllerBase
         _fileProcessing = new FileProcessing(jobs);
     }
 
-    [HttpGet("getDocument")]
-    public async Task<IActionResult> GetJobOutput()
-    {
-        var response_path = "C:/Users/Kylej/OneDrive/Documents/teamstuff/sh38-main/backend/src/backend.Api/rag_outputs/Replybrary_Overview.docx";
- 
-        var bytes = await System.IO.File.ReadAllBytesAsync(response_path);
- 
-        FileDescriptor fileDescriptor = CreateFileDescriptor(response_path);
- 
-        return File(
-            bytes,
-            fileDescriptor.MimeType,
-            fileDescriptor.DownloadName
-        );
-    }
 
     [HttpPost("generate")]
     [Consumes("multipart/form-data")]
@@ -154,7 +139,6 @@ public class FileController : ControllerBase
                 {
                     _fileProcessing.ProcessFile(outputTypes, job.JobId); 
                 });
-
             }catch(Exception e)
             {
                 _logger.LogError(e, "FileProcessing failed");
@@ -259,21 +243,21 @@ public class FileController : ControllerBase
         }
     }
 
-    // [HttpGet("getDocument")]
-    // public async Task<IActionResult> GetGeneratedFile()
-    // {
-    //     var response_path = "/Users/benn/Documents/sh38-main/backend/src/backend.Api/rag_outputs/Replybrary_Overview.docx";
+    [HttpGet("getDocument")]
+    public async Task<IActionResult> GetGeneratedFile()
+    {
+        var response_path = "/Users/benn/Documents/sh38-main/backend/src/backend.Api/rag_outputs/Replybrary_Overview.docx";
 
-    //     var bytes = await System.IO.File.ReadAllBytesAsync(response_path); 
+        var bytes = await System.IO.File.ReadAllBytesAsync(response_path); 
 
-    //     FileDescriptor fileDescriptor = CreateFileDescriptor(response_path);
+        FileDescriptor fileDescriptor = CreateFileDescriptor(response_path);
 
-    //     return File(
-    //         bytes,
-    //         fileDescriptor.MimeType,
-    //         fileDescriptor.DownloadName
-    //     );
-    // }
+        return File(
+            bytes,
+            fileDescriptor.MimeType,
+            fileDescriptor.DownloadName
+        );
+    }
 
 } 
     
