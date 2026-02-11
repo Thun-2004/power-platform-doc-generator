@@ -209,6 +209,7 @@ public class FileController : ControllerBase
         );
     }
 
+    /*
     //recreateion 
     // [HttpPost("generate2")]
     // [Consumes("multipart/form-data")]
@@ -368,22 +369,8 @@ public class FileController : ControllerBase
     //         return BadRequest(error);
     //     }
     // }
+    */
 
-    [HttpGet("getDocument")]
-    public async Task<IActionResult> GetJobOutput()
-    {
-        var response_path = "/Users/benn/Documents/sh38-main/backend/src/backend.Api/rag_outputs/Replybrary_Overview.docx";
-
-        var bytes = await System.IO.File.ReadAllBytesAsync(response_path); 
-
-        FileDescriptor fileDescriptor = CreateFileDescriptor(response_path);
-
-        return File(
-            bytes,
-            fileDescriptor.MimeType,
-            fileDescriptor.DownloadName
-        );
-    }
 
 } 
     
