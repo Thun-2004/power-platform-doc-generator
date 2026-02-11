@@ -23,6 +23,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+#dotnet
+**/bin/
+**/obj/
+
+
 # C extensions
 *.so
 
