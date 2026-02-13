@@ -1,9 +1,9 @@
 ﻿# Solution overview
 
 ## Key counts
-- Workflows: 10   
-- Environment variables: 16   
-- Canvas app groups: 2 
+- Workflows: 10    
+- Environment variables: 16    
+- Canvas app groups: 2  
 
 ## Workflows (10) — source: workflows.json 
 - EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69.json  
@@ -17,7 +17,7 @@
 - Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB.json  
 - UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69.json
 
-## Environment variable names (16) — source: envvars.json 
+## Environment variables (names) — source: envvars.json 
 - wmreply_Replybrary_Admin_List/  
 - wmreply_Replybrary_App_Link/  
 - wmreply_Replybrary_CertificationsTracker_List/  

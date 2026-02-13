@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\tests\\unit\\Domain.Tests\\Domain.Tests.csproj": {}
+    "/Users/benn/Documents/sh38-main/backend/tests/unit/Domain.Tests/Domain.Tests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Domain\\backend.Domain.csproj": {
+    "/Users/benn/Documents/sh38-main/backend/src/backend.Domain/backend.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Domain\\backend.Domain.csproj",
+        "projectUniqueName": "/Users/benn/Documents/sh38-main/backend/src/backend.Domain/backend.Domain.csproj",
         "projectName": "backend.Domain",
-        "projectPath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Domain\\backend.Domain.csproj",
-        "packagesPath": "C:\\Users\\Kylej\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Domain\\obj\\",
+        "projectPath": "/Users/benn/Documents/sh38-main/backend/src/backend.Domain/backend.Domain.csproj",
+        "packagesPath": "/Users/benn/.nuget/packages/",
+        "outputPath": "/Users/benn/Documents/sh38-main/backend/src/backend.Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Kylej\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/benn/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -38,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -59,21 +59,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\tests\\unit\\Domain.Tests\\Domain.Tests.csproj": {
+    "/Users/benn/Documents/sh38-main/backend/tests/unit/Domain.Tests/Domain.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\tests\\unit\\Domain.Tests\\Domain.Tests.csproj",
+        "projectUniqueName": "/Users/benn/Documents/sh38-main/backend/tests/unit/Domain.Tests/Domain.Tests.csproj",
         "projectName": "Domain.Tests",
-        "projectPath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\tests\\unit\\Domain.Tests\\Domain.Tests.csproj",
-        "packagesPath": "C:\\Users\\Kylej\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\tests\\unit\\Domain.Tests\\obj\\",
+        "projectPath": "/Users/benn/Documents/sh38-main/backend/tests/unit/Domain.Tests/Domain.Tests.csproj",
+        "packagesPath": "/Users/benn/.nuget/packages/",
+        "outputPath": "/Users/benn/Documents/sh38-main/backend/tests/unit/Domain.Tests/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Kylej\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/benn/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -85,8 +85,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Domain\\backend.Domain.csproj": {
-                "projectPath": "C:\\Users\\Kylej\\OneDrive\\Documents\\teamstuff\\sh38-main\\backend\\src\\backend.Domain\\backend.Domain.csproj"
+              "/Users/benn/Documents/sh38-main/backend/src/backend.Domain/backend.Domain.csproj": {
+                "projectPath": "/Users/benn/Documents/sh38-main/backend/src/backend.Domain/backend.Domain.csproj"
               }
             }
           }
@@ -101,7 +101,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -140,7 +140,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
