@@ -14,6 +14,9 @@ return SolutionParser.Run(args);
 // ----------------------------
 // Models for JSON output
 // ----------------------------
+
+// /Users/benn/Documents/sh38-main/Replybrary_1_0_0_20_2
+// dotnet run -- --input "/Users/benn/Documents/sh38-main/Replybrary_1_0_0_20_2" --out "/Users/benn/Documents/sh38-main/test-AI-LLM/output"
 public sealed class InventoryEntry
 {
     [JsonPropertyName("name")]

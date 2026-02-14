@@ -2,6 +2,19 @@
   "version": 3,
   "targets": {
     "net9.0": {
+      "CliWrap/3.10.0": {
+        "type": "package",
+        "compile": {
+          "lib/net7.0/CliWrap.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/CliWrap.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "ClosedXML/0.105.0": {
         "type": "package",
         "dependencies": {
@@ -206,6 +219,23 @@
           }
         }
       },
+      "Pandoc/3.3.1": {
+        "type": "package",
+        "dependencies": {
+          "CliWrap": "3.10.0",
+          "Replicant": "2.0.6"
+        },
+        "compile": {
+          "lib/net9.0/Pandoc.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/Pandoc.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "RBush.Signed/4.0.0": {
         "type": "package",
         "compile": {
@@ -215,6 +245,19 @@
         },
         "runtime": {
           "lib/net8.0/RBush.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Replicant/2.0.6": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0/Replicant.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/Replicant.dll": {
             "related": ".xml"
           }
         }
@@ -315,6 +358,28 @@
     }
   },
   "libraries": {
+    "CliWrap/3.10.0": {
+      "sha512": "Igph39WNImUFqQrpTeBDPafcCnM1u/8IooZHqMRF/5JdV5H78p+AbZkeYY1Nkz1WlbI/Gt2Hq/3rYh55jxRF9Q==",
+      "type": "package",
+      "path": "cliwrap/3.10.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "cliwrap.3.10.0.nupkg.sha512",
+        "cliwrap.nuspec",
+        "favicon.png",
+        "lib/net10.0/CliWrap.dll",
+        "lib/net10.0/CliWrap.xml",
+        "lib/net6.0/CliWrap.dll",
+        "lib/net6.0/CliWrap.xml",
+        "lib/net7.0/CliWrap.dll",
+        "lib/net7.0/CliWrap.xml",
+        "lib/netstandard2.0/CliWrap.dll",
+        "lib/netstandard2.0/CliWrap.xml",
+        "lib/netstandard2.1/CliWrap.dll",
+        "lib/netstandard2.1/CliWrap.xml"
+      ]
+    },
     "ClosedXML/0.105.0": {
       "sha512": "U0hAdnYyPvF7TqHMFloxrS7pmozab79tFFF4c/bgPtqeelUs7ILpUd3r3c7C0a/DXsUZb3k1n4Pf7Q2LMyMQOg==",
       "type": "package",
@@ -650,6 +715,26 @@
         "openai.nuspec"
       ]
     },
+    "Pandoc/3.3.1": {
+      "sha512": "19xt0dBTjacuY+FHfo6aKlj6M4GkOH/u+UP+I4GSVXb0CzqG5RekVtLD0MT02feCvZMhA162ujNEs/vOY/ZASA==",
+      "type": "package",
+      "path": "pandoc/3.3.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "_manifest/spdx_2.2/manifest.spdx.json",
+        "_manifest/spdx_2.2/manifest.spdx.json.sha256",
+        "icon.png",
+        "lib/net7.0/Pandoc.dll",
+        "lib/net7.0/Pandoc.xml",
+        "lib/net8.0/Pandoc.dll",
+        "lib/net8.0/Pandoc.xml",
+        "lib/net9.0/Pandoc.dll",
+        "lib/net9.0/Pandoc.xml",
+        "pandoc.3.3.1.nupkg.sha512",
+        "pandoc.nuspec"
+      ]
+    },
     "RBush.Signed/4.0.0": {
       "sha512": "aP5KQxL5RnFNGW1f0euYVBfCatkLw5iEzMRJcXKq8LWWP4Cp3+qoSq1tDDL2vvJ2rM0ychmVMa2VaEKLS6uX4w==",
       "type": "package",
@@ -666,6 +751,30 @@
         "rbush.signed.4.0.0.nupkg.sha512",
         "rbush.signed.nuspec",
         "readme.md"
+      ]
+    },
+    "Replicant/2.0.6": {
+      "sha512": "FVWhlcgEyEukDv7+8h1XHlNJ7thp9bHPtJ0drZhUeE6Afd6IkvfdFBwaNuxfEvxiKiyk5qu3eqUx+wHX1ZhdhQ==",
+      "type": "package",
+      "path": "replicant/2.0.6",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "_manifest/spdx_2.2/manifest.spdx.json",
+        "_manifest/spdx_2.2/manifest.spdx.json.sha256",
+        "icon.png",
+        "lib/net10.0/Replicant.dll",
+        "lib/net10.0/Replicant.xml",
+        "lib/net48/Replicant.dll",
+        "lib/net48/Replicant.xml",
+        "lib/net7.0/Replicant.dll",
+        "lib/net7.0/Replicant.xml",
+        "lib/net8.0/Replicant.dll",
+        "lib/net8.0/Replicant.xml",
+        "lib/net9.0/Replicant.dll",
+        "lib/net9.0/Replicant.xml",
+        "replicant.2.0.6.nupkg.sha512",
+        "replicant.nuspec"
       ]
     },
     "SixLabors.Fonts/1.0.0": {
@@ -803,6 +912,8 @@
   "projectFileDependencyGroups": {
     "net9.0": [
       "ClosedXML >= 0.105.0",
+      "OpenAI >= 2.8.0",
+      "Pandoc >= 3.3.1",
       "backend.Infrastructure >= 1.0.0"
     ]
   },
@@ -856,6 +967,14 @@
           "ClosedXML": {
             "target": "Package",
             "version": "[0.105.0, )"
+          },
+          "OpenAI": {
+            "target": "Package",
+            "version": "[2.8.0, )"
+          },
+          "Pandoc": {
+            "target": "Package",
+            "version": "[3.3.1, )"
           }
         },
         "imports": [

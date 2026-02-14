@@ -1,0 +1,244 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "api": {
+          "name": "shared_sharepointonline"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "wmreply_sharedsharepointonline_f12ce"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_teams": {
+        "api": {
+          "name": "shared_teams"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "wmreply_sharedteams_a045b"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "Replybrary_SP_Site (wmreply_Replybrary_SP_Site)": {
+          "defaultValue": "https://wmreplyukdev.sharepoint.com/sites/ReplybraryDev",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_SP_Site"
+          }
+        },
+        "Replybrary_Project_List (wmreply_Replybrary_Project_List)": {
+          "defaultValue": "98295499-eba6-4d4b-af02-3eb8acc06b48",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_Project_List"
+          }
+        },
+        "Replybrary_App_Link (wmreply_Replybrary_App_Link)": {
+          "defaultValue": "https://apps.powerapps.com/play/e/512bac6d-af73-e544-b4a6-5be90837f2a2/a/faf7e1d2-685b-488a-93b0-18aa09168491?tenantId=0a8f93eb-d1c3-4a4c-a834-06ee3ec8d44c&hint=af928232-012e-4235-ab6a-b6da40c447f8&sourcetime=1747662695760",
+          "type": "String",
+          "metadata": {
+            "schemaName": "wmreply_Replybrary_App_Link"
+          }
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "type": "Recurrence",
+          "recurrence": {
+            "frequency": "Week",
+            "interval": 1,
+            "startTime": "2025-06-05T09:00:00Z",
+            "schedule": {
+              "weekDays": [
+                "Monday"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "c56f5d56-15cc-45bf-9ce1-be04311820a0"
+          }
+        }
+      },
+      "actions": {
+        "Get_items": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+              "table": "@parameters('Replybrary_Project_List (wmreply_Replybrary_Project_List)')",
+              "$filter": "ProjectEndDate ge '@{addDays(utcNow(), -7)}' and ProjectEndDate le '@{utcNow()}'"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetItems",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "f6afd399-7f55-41df-a2d8-1f41ed012bc5"
+          }
+        },
+        "Apply_to_each": {
+          "type": "Foreach",
+          "foreach": "@outputs('Get_items')?['body/value']",
+          "actions": {
+            "Post_adaptive_card_and_wait_for_a_response": {
+              "type": "OpenApiConnectionWebhook",
+              "inputs": {
+                "parameters": {
+                  "poster": "Flow bot",
+                  "location": "Chat with Flow bot",
+                  "body/body/messageBody": "{\n  \"$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",\n  \"type\": \"AdaptiveCard\",\n  \"version\": \"1.4\",\n  \"body\": [\n    {\n      \"type\": \"TextBlock\",\n      \"text\": \"Project Closure\",\n      \"weight\": \"Bolder\",\n      \"size\": \"Large\"\n    },\n    {\n      \"type\": \"TextBlock\",\n      \"text\": \"Project: **@{items('Apply_to_each')?['ProjectName']}**\",\n      \"wrap\": true\n    },\n    {\n      \"type\": \"TextBlock\",\n      \"text\": \"Project End Date: **@{items('Apply_to_each')?['ProjectEndDate']}**\",\n      \"wrap\": true\n    },\n    {\n      \"type\": \"TextBlock\",\n      \"text\": \"Has the project finished? If it's not finished, please pick a new end date.\",\n      \"wrap\": true\n    },\n    {\n      \"type\": \"Input.ChoiceSet\",\n      \"id\": \"action\",\n      \"style\": \"expanded\",\n      \"isMultiSelect\": false,\n      \"choices\": [\n        {\n          \"title\": \"Yes, the project is finished\",\n          \"value\": \"finish\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Input.Date\",\n      \"id\": \"newDate\",\n      \"title\": \"New End Date (if not finished)\"\n    },\n    {\n      \"type\": \"Input.Text\",\n      \"id\": \"itemId\",\n      \"value\": \"@{items('Apply_to_each')?['ID']}\",\n      \"isVisible\": false\n    }\n  ],\n  \"actions\": [\n    {\n      \"type\": \"Action.Submit\",\n      \"title\": \"Submit\"\n    }\n  ]\n}\n\n\n",
+                  "body/body/updateMessage": "Thanks for your response! The project's details will be updated in Replybrary to reflect your submission.",
+                  "body/body/recipient/to": "@{items('Apply_to_each')?['PM/Email']};"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_teams",
+                  "operationId": "PostCardAndWaitForResponse",
+                  "connectionName": "shared_teams"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "5d84edb3-4243-4817-bd39-1acdaa8ea73a"
+              }
+            },
+            "Condition": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@\toutputs('Post_adaptive_card_and_wait_for_a_response')?['body']?['data']?['action']",
+                      "finish"
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Update_item": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                      "table": "@parameters('Replybrary_Project_List (wmreply_Replybrary_Project_List)')",
+                      "id": "@items('Apply_to_each')?['ID']",
+                      "item/Active": false,
+                      "item/Design": false,
+                      "item/ACM": false,
+                      "item/PowerBI": false,
+                      "item/PowerAutomate": false,
+                      "item/CopilotStudio": false,
+                      "item/PowerApps": false,
+                      "item/CustomDev": false,
+                      "item/M365CopilotAdoption": false,
+                      "item/Intranet": false,
+                      "item/VivaEngage": false
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                      "operationId": "PatchItem",
+                      "connectionName": "shared_sharepointonline"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "b85f1cb2-457a-47a9-b133-bd483ad217ca"
+                  }
+                },
+                "Post_card_in_a_chat_or_channel": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "poster": "Flow bot",
+                      "location": "Chat with Flow bot",
+                      "body/recipient": "@outputs('Update_item')?['body/PM/Email']",
+                      "body/messageBody": "{\n  \"$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",\n  \"type\": \"AdaptiveCard\",\n  \"version\": \"1.4\",\n  \"body\": [\n    {\n      \"type\": \"TextBlock\",\n      \"text\": \"✅ Project Closure Confirmed\",\n      \"weight\": \"Bolder\",\n      \"size\": \"Large\",\n      \"wrap\": true\n    },\n    {\n      \"type\": \"TextBlock\",\n      \"text\": \"Thanks for confirming that the project is complete.\",\n      \"wrap\": true\n    },\n    {\n      \"type\": \"TextBlock\",\n      \"text\": \"Please open the **Reply-brary app** to verify and update the project's final details.\",\n      \"wrap\": true\n    }\n  ],\n  \"actions\": [\n    {\n      \"type\": \"Action.OpenUrl\",\n      \"title\": \"Open Reply-brary App\",\n      \"url\": \"@{parameters('Replybrary_App_Link (wmreply_Replybrary_App_Link)')}\"\n    }\n  ]\n}\n"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_teams",
+                      "operationId": "PostCardToConversation",
+                      "connectionName": "shared_teams"
+                    }
+                  },
+                  "runAfter": {
+                    "Update_item": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "25f5cf13-c9c6-4f97-9a3e-2efa671d28e3"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Update_item_1": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "dataset": "@parameters('Replybrary_SP_Site (wmreply_Replybrary_SP_Site)')",
+                        "table": "@parameters('Replybrary_Project_List (wmreply_Replybrary_Project_List)')",
+                        "id": "@items('Apply_to_each')?['ID']",
+                        "item/ProjectEndDate": "@outputs('Post_adaptive_card_and_wait_for_a_response')?['body']?['data']?['newDate']",
+                        "item/Active": true,
+                        "item/Design": false,
+                        "item/ACM": false,
+                        "item/PowerBI": false,
+                        "item/PowerAutomate": false,
+                        "item/CopilotStudio": false,
+                        "item/PowerApps": false,
+                        "item/CustomDev": false,
+                        "item/M365CopilotAdoption": false,
+                        "item/Intranet": false,
+                        "item/VivaEngage": false
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                        "operationId": "PatchItem",
+                        "connectionName": "shared_sharepointonline"
+                      }
+                    },
+                    "metadata": {
+                      "operationMetadataId": "72bded85-4eda-412d-9c1e-4afd3d0fb87c"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Post_adaptive_card_and_wait_for_a_response": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "699ee3ae-e2a5-45d5-a8ed-21ddf36a68c4"
+              }
+            }
+          },
+          "runAfter": {
+            "Get_items": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "24b274b6-f48e-49e9-b8b3-116cf38e79e9"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

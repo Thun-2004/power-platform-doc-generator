@@ -1,0 +1,11 @@
+<botcomponent schemaname="cr6e9_replybraryAgent.topic.Replybraryprojectlist_R_qgsGVIFwjZgW8X124f2">
+  <componenttype>16</componenttype>
+  <description>This knowledge source provides information found in Replybrary project list SharePoint. This SharePoint list contains information about all the projects that WM Reply has worked on.</description>
+  <iscustomizable>0</iscustomizable>
+  <name>Replybrary project list</name>
+  <parentbotid>
+    <schemaname>cr6e9_replybraryAgent</schemaname>
+  </parentbotid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</botcomponent>

@@ -9,10 +9,20 @@
       "backend.Application/1.0.0": {
         "dependencies": {
           "ClosedXML": "0.105.0",
+          "OpenAI": "2.8.0",
+          "Pandoc": "3.3.1",
           "backend.Infrastructure": "1.0.0"
         },
         "runtime": {
           "backend.Application.dll": {}
+        }
+      },
+      "CliWrap/3.10.0": {
+        "runtime": {
+          "lib/net7.0/CliWrap.dll": {
+            "assemblyVersion": "3.10.0.0",
+            "fileVersion": "3.10.0.0"
+          }
         }
       },
       "ClosedXML/0.105.0": {
@@ -141,11 +151,31 @@
           }
         }
       },
+      "Pandoc/3.3.1": {
+        "dependencies": {
+          "CliWrap": "3.10.0",
+          "Replicant": "2.0.6"
+        },
+        "runtime": {
+          "lib/net9.0/Pandoc.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "RBush.Signed/4.0.0": {
         "runtime": {
           "lib/net8.0/RBush.dll": {
             "assemblyVersion": "4.0.0.0",
             "fileVersion": "4.0.0.0"
+          }
+        }
+      },
+      "Replicant/2.0.6": {
+        "runtime": {
+          "lib/net9.0/Replicant.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -213,6 +243,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "CliWrap/3.10.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Igph39WNImUFqQrpTeBDPafcCnM1u/8IooZHqMRF/5JdV5H78p+AbZkeYY1Nkz1WlbI/Gt2Hq/3rYh55jxRF9Q==",
+      "path": "cliwrap/3.10.0",
+      "hashPath": "cliwrap.3.10.0.nupkg.sha512"
     },
     "ClosedXML/0.105.0": {
       "type": "package",
@@ -298,12 +335,26 @@
       "path": "openai/2.8.0",
       "hashPath": "openai.2.8.0.nupkg.sha512"
     },
+    "Pandoc/3.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-19xt0dBTjacuY+FHfo6aKlj6M4GkOH/u+UP+I4GSVXb0CzqG5RekVtLD0MT02feCvZMhA162ujNEs/vOY/ZASA==",
+      "path": "pandoc/3.3.1",
+      "hashPath": "pandoc.3.3.1.nupkg.sha512"
+    },
     "RBush.Signed/4.0.0": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-aP5KQxL5RnFNGW1f0euYVBfCatkLw5iEzMRJcXKq8LWWP4Cp3+qoSq1tDDL2vvJ2rM0ychmVMa2VaEKLS6uX4w==",
       "path": "rbush.signed/4.0.0",
       "hashPath": "rbush.signed.4.0.0.nupkg.sha512"
+    },
+    "Replicant/2.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FVWhlcgEyEukDv7+8h1XHlNJ7thp9bHPtJ0drZhUeE6Afd6IkvfdFBwaNuxfEvxiKiyk5qu3eqUx+wHX1ZhdhQ==",
+      "path": "replicant/2.0.6",
+      "hashPath": "replicant.2.0.6.nupkg.sha512"
     },
     "SixLabors.Fonts/1.0.0": {
       "type": "package",

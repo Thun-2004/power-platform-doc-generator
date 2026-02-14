@@ -1,5 +1,5 @@
 ﻿{
-  "root": "/var/folders/8x/3j91c4_d4ngch6_z44jb08pc0000gq/T/extract/b1d470e8-d5f8-4ea5-95c3-bb2d1407768a",
+  "root": "/var/folders/8x/3j91c4_d4ngch6_z44jb08pc0000gq/T/extract/6574124d-33c3-49b4-b5b9-6fa8490df4f6",
   "top_level": [
     {
       "name": "Assets/",
@@ -161,5 +161,367 @@
         "name": "wmreply_Replybrary_SP_Site/"
       }
     ]
-  }
+  },
+  "canvasapps_detailed": [
+    {
+      "app": "wmreply_replybraryv2_c933c",
+      "screens": [],
+      "connectors": [],
+      "files_seen": []
+    },
+    {
+      "app": "wmreply_replybrary_b320d",
+      "screens": [],
+      "connectors": [],
+      "files_seen": []
+    }
+  ],
+  "workflows_detailed": [
+    {
+      "workflow": "EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69",
+      "file": "EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69.json",
+      "connectors": [
+        "shared_sharepointonline",
+        "shared_teams"
+      ],
+      "env_vars_used": [
+        "wmreply_Replybrary_App_Link",
+        "wmreply_Replybrary_Project_List",
+        "wmreply_Replybrary_SP_Site"
+      ]
+    },
+    {
+      "workflow": "EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69",
+      "file": "EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69.json",
+      "connectors": [
+        "shared_sharepointonline",
+        "shared_teams"
+      ],
+      "env_vars_used": [
+        "wmreply_Replybrary_App_Link",
+        "wmreply_Replybrary_Project_List",
+        "wmreply_Replybrary_SP_Site"
+      ]
+    },
+    {
+      "workflow": "IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69",
+      "file": "IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69.json",
+      "connectors": [
+        "shared_sharepointonline",
+        "shared_teams"
+      ],
+      "env_vars_used": [
+        "wmreply_Replybrary_App_Link",
+        "wmreply_Replybrary_Project_List",
+        "wmreply_Replybrary_SP_Site"
+      ]
+    },
+    {
+      "workflow": "PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB",
+      "file": "PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB.json",
+      "connectors": [
+        "shared_office365groups",
+        "shared_office365users",
+        "shared_sharepointonline"
+      ],
+      "env_vars_used": [
+        "wmreply_Replybrary_M365GroupID",
+        "wmreply_Replybrary_People_List",
+        "wmreply_Replybrary_SP_Site"
+      ]
+    },
+    {
+      "workflow": "PMflow-A3194D5E-D434-F011-8C4C-6045BD0ACADB",
+      "file": "PMflow-A3194D5E-D434-F011-8C4C-6045BD0ACADB.json",
+      "connectors": [
+        "shared_teams"
+      ],
+      "env_vars_used": [
+        "wmreply_Replybrary_App_Link"
+      ]
+    },
+    {
+      "workflow": "PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69",
+      "file": "PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69.json",
+      "connectors": [
+        "shared_sharepointonline",
+        "shared_teams"
+      ],
+      "env_vars_used": [
+        "wmreply_Replybrary_App_Link",
+        "wmreply_Replybrary_Project_List",
+        "wmreply_Replybrary_SP_Site"
+      ]
+    },
+    {
+      "workflow": "ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69",
+      "file": "ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69.json",
+      "connectors": [
+        "shared_office365users",
+        "shared_sharepointonline"
+      ],
+      "env_vars_used": [
+        "wmreply_Replybrary_People_List",
+        "wmreply_Replybrary_Project_List",
+        "wmreply_Replybrary_SP_Site"
+      ]
+    },
+    {
+      "workflow": "Replybrary_GetExchangeRate-4E437A2B-C74D-F011-877B-000D3A0CEB69",
+      "file": "Replybrary_GetExchangeRate-4E437A2B-C74D-F011-877B-000D3A0CEB69.json",
+      "connectors": [
+        "shared_sharepointonline"
+      ],
+      "env_vars_used": [
+        "wmreply_Replybrary_Currency_List",
+        "wmreply_Replybrary_SP_Site"
+      ]
+    },
+    {
+      "workflow": "Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB",
+      "file": "Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB.json",
+      "connectors": [
+        "shared_sharepointonline",
+        "shared_teams"
+      ],
+      "env_vars_used": [
+        "wmreply_Replybrary_App_Link",
+        "wmreply_Replybrary_Project_List",
+        "wmreply_Replybrary_SP_Site"
+      ]
+    },
+    {
+      "workflow": "UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69",
+      "file": "UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69.json",
+      "connectors": [
+        "shared_sharepointonline"
+      ],
+      "env_vars_used": [
+        "wmreply_Replybrary_Client_List",
+        "wmreply_Replybrary_SP_Site"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from": "workflow:EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69",
+      "to": "connector:shared_sharepointonline",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69",
+      "to": "connector:shared_teams",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_App_Link",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_Project_List",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_SP_Site",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69",
+      "to": "connector:shared_sharepointonline",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69",
+      "to": "connector:shared_teams",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_App_Link",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_Project_List",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_SP_Site",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69",
+      "to": "connector:shared_sharepointonline",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69",
+      "to": "connector:shared_teams",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_App_Link",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_Project_List",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_SP_Site",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB",
+      "to": "connector:shared_office365groups",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB",
+      "to": "connector:shared_office365users",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB",
+      "to": "connector:shared_sharepointonline",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB",
+      "to": "env:wmreply_Replybrary_M365GroupID",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB",
+      "to": "env:wmreply_Replybrary_People_List",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB",
+      "to": "env:wmreply_Replybrary_SP_Site",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:PMflow-A3194D5E-D434-F011-8C4C-6045BD0ACADB",
+      "to": "connector:shared_teams",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:PMflow-A3194D5E-D434-F011-8C4C-6045BD0ACADB",
+      "to": "env:wmreply_Replybrary_App_Link",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69",
+      "to": "connector:shared_sharepointonline",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69",
+      "to": "connector:shared_teams",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_App_Link",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_Project_List",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_SP_Site",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69",
+      "to": "connector:shared_office365users",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69",
+      "to": "connector:shared_sharepointonline",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_People_List",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_Project_List",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_SP_Site",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:Replybrary_GetExchangeRate-4E437A2B-C74D-F011-877B-000D3A0CEB69",
+      "to": "connector:shared_sharepointonline",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:Replybrary_GetExchangeRate-4E437A2B-C74D-F011-877B-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_Currency_List",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:Replybrary_GetExchangeRate-4E437A2B-C74D-F011-877B-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_SP_Site",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB",
+      "to": "connector:shared_sharepointonline",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB",
+      "to": "connector:shared_teams",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB",
+      "to": "env:wmreply_Replybrary_App_Link",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB",
+      "to": "env:wmreply_Replybrary_Project_List",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB",
+      "to": "env:wmreply_Replybrary_SP_Site",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69",
+      "to": "connector:shared_sharepointonline",
+      "type": "workflow_to_connector"
+    },
+    {
+      "from": "workflow:UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_Client_List",
+      "type": "workflow_to_env"
+    },
+    {
+      "from": "workflow:UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69",
+      "to": "env:wmreply_Replybrary_SP_Site",
+      "type": "workflow_to_env"
+    }
+  ]
 }

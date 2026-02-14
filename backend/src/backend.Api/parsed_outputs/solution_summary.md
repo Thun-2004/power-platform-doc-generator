@@ -1,33 +1,31 @@
 ﻿# Solution Parse Summary
 
-**Root:** `/var/folders/8x/3j91c4_d4ngch6_z44jb08pc0000gq/T/extract/b1d470e8-d5f8-4ea5-95c3-bb2d1407768a`
+**Root:** `/var/folders/8x/3j91c4_d4ngch6_z44jb08pc0000gq/T/extract/6574124d-33c3-49b4-b5b9-6fa8490df4f6`
 
 ## Key counts
 - Canvas Apps (grouped): **2**
 - Workflows: **10**
 - Environment variables: **16**
+- Screens found (Canvas Apps): **0**
+- App connectors found: **0**
+- Workflow connectors found: **18**
+- Relationship edges inferred: **44**
 
 ## Canvas Apps (grouped)
-- **wmreply_replybraryv2_c933c**
-  - wmreply_replybraryv2_c933c_AdditionalUris0_identity.json
-  - wmreply_replybraryv2_c933c_BackgroundImageUri
-  - wmreply_replybraryv2_c933c_DocumentUri.msapp
-- **wmreply_replybrary_b320d**
-  - wmreply_replybrary_b320d_AdditionalUris0_identity.json
-  - wmreply_replybrary_b320d_BackgroundImageUri
-  - wmreply_replybrary_b320d_DocumentUri.msapp
+- wmreply_replybraryv2_c933c
+- wmreply_replybrary_b320d
 
 ## Workflows
-- EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69.json (11987 bytes)
-- EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69.json (11926 bytes)
-- IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69.json (16671 bytes)
-- PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB.json (22260 bytes)
-- PMflow-A3194D5E-D434-F011-8C4C-6045BD0ACADB.json (3985 bytes)
-- PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69.json (14562 bytes)
-- ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69.json (16662 bytes)
-- Replybrary_GetExchangeRate-4E437A2B-C74D-F011-877B-000D3A0CEB69.json (6796 bytes)
-- Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB.json (5576 bytes)
-- UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69.json (4622 bytes)
+- EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69.json
+- EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69.json
+- IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69.json
+- PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB.json
+- PMflow-A3194D5E-D434-F011-8C4C-6045BD0ACADB.json
+- PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69.json
+- ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69.json
+- Replybrary_GetExchangeRate-4E437A2B-C74D-F011-877B-000D3A0CEB69.json
+- Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB.json
+- UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69.json
 
 ## Environment Variable Definitions
 - wmreply_Replybrary_Admin_List/

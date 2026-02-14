@@ -246,6 +246,7 @@ public class FileController : ControllerBase
     [HttpGet("getDocument")]
     public async Task<IActionResult> GetGeneratedFile()
     {
+        //change this to your excel file path
         var response_path = "/Users/benn/Documents/sh38-main/backend/src/backend.Api/rag_outputs/Replybrary_Overview.docx";
 
         var bytes = await System.IO.File.ReadAllBytesAsync(response_path); 
