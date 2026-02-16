@@ -52,6 +52,10 @@
               "target": "Package",
               "version": "[0.105.0, )"
             },
+            "Microsoft.AspNetCore.Http": {
+              "target": "Package",
+              "version": "[2.2.2, )"
+            },
             "OpenAI": {
               "target": "Package",
               "version": "[2.8.0, )"

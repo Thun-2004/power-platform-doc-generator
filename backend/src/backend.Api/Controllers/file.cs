@@ -38,8 +38,6 @@ public class ResponseModel<T>
 }
 
 
-
-
 [ApiController]
 [Route("api/[controller]")]
 public class FileController : ControllerBase
@@ -87,7 +85,7 @@ public class FileController : ControllerBase
         {
             IFormFile file = req.File;
             Console.WriteLine("Selected output types: {0}", string.Join(",", req.SelectedOutputTypes.GetType()));
-            List<string> outputTypes = req.SelectedOutputTypes.Select(t => t.Trim()).ToList(); 
+            List<string> outputTypes = req.SelectedOutputTypes.Select(t => t.Trim()).ToList();
 
             for (int i = 0; i < outputTypes.Count; i++)
             {
@@ -123,7 +121,8 @@ public class FileController : ControllerBase
                 Directory.CreateDirectory(parsedDir);
             }
 
-            string fullFilePath = Path.Combine(rawinputDir, file.FileName);
+            // string fullFilePath = Path.Combine(rawinputDir, file.FileName);
+            string fullFilePath = _fileProcessing.CreateFile(originalFileName, ext, rawinputDir); 
 
             await using (var stream = System.IO.File.Create(fullFilePath)){
                 await file.CopyToAsync(stream);
@@ -131,13 +130,13 @@ public class FileController : ControllerBase
 
             //init job
             var job = _jobs.Create(outputTypes, fullFilePath);
-            
+
             //file processing
             try{
                 //background task
-                await Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
-                    _fileProcessing.ProcessFile(outputTypes, job.JobId); 
+                    await _fileProcessing.ProcessFile(outputTypes, job.JobId);
                 });
             }catch(Exception e)
             {
@@ -260,5 +259,25 @@ public class FileController : ControllerBase
         );
     }
 
-} 
+    [HttpPost("uploadFile")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadFile([FromForm] UploadRequest req)
+    {
+        IFormFile file = req.File;
+
+        Console.WriteLine($"dir: {Directory.GetCurrentDirectory()}"); 
+
+        string originalFileName = req.File.FileName;
+        string ext = Path.GetExtension(originalFileName).ToLowerInvariant();
+        string rawinputDir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
+        string fullFilePath = _fileProcessing.CreateFile(originalFileName, ext, rawinputDir); 
+
+        await using (var stream = System.IO.File.Create(fullFilePath)){
+            await file.CopyToAsync(stream);
+        }
+
+        return Ok("success"); 
+
+    }
+}
     
