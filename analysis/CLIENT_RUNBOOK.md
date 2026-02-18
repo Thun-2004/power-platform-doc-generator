@@ -1,4 +1,4 @@
-# Client Runbook Replybrary Solution Analysis (Parser + RAG)
+# Client Runbook — Replybrary Solution Analysis (Parser + RAG)
 
 This document explains how to run the Replybrary analysis pipeline end-to-end without developer assistance.
 
@@ -269,7 +269,7 @@ All stored in rag_outputs/.
 
 ⸻
 
-11) Stage 6  Export to Word / PDF / Excel
+11) Stage 6 — Export to Word / PDF / Excel
 
 cd "$REPO_ROOT/test-AI-LLM"
 
