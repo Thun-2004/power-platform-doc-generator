@@ -3,6 +3,7 @@ import { FileCheck,Trash2 } from 'lucide-react';
 import axiosPublic from "../api/axios";
 import uploadFile from "../api/file";
 import DocumentPreviewModal from "../components/DocumentPreviewModal";
+import DiagramSelectionBox from "../components/DiagramSelectionBox";
 
 //temp
 import axios from 'axios';
@@ -11,10 +12,10 @@ import axios from 'axios';
 const Dashboard = () => {
 
   const fileTypes = [
-    { id: "er", title: "ER diagram", desc: "Dummy text for generating an ER diagram" },
-    { id: "ui", title: "UI-Hierarchy flow", desc: "Dummy text for generating a UI-hierarchy" },
-    { id: "program", title: "Program flow", desc: "Dummy text for generating a program-flow" },
-    { id: "ai", title: "Dummy AI", desc: "Dummy option for assigning some AI task" },
+    { id: "er", title: "ER diagram", desc: "Dummy text for generating an ER diagram"},
+    { id: "ui", title: "UI-Hierarchy flow", desc: "Dummy text for generating a UI-hierarchy"},
+    { id: "program", title: "Program flow", desc: "Dummy text for generating a program-flow"},
+    { id: "ai", title: "Dummy AI", desc: "Dummy option for assigning some AI task"},
   ];
   
   const [outputFiles, setOutputFiles] = useState([]);
@@ -29,6 +30,7 @@ const Dashboard = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
 
+
   const abortRef = useRef(null);//like useState but not rerender 
   const fileInputRef = useRef(null); // to clear the DOM input val
 
@@ -41,9 +43,8 @@ const Dashboard = () => {
       prev => 
         prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     ); 
-
-      // console.log("Selected modes:", selectedModes);
   };
+
 
   useEffect(() => {
       console.log("Selected modes changed:", selectedModes);
@@ -93,6 +94,7 @@ const Dashboard = () => {
 
   //FIXME: might need to change in case multiple files are allowed
   const onRemoveFile = () => {
+
       setSelectedFile(null); 
       setProgress(0); 
       // clear the native input so selecting the same file again will fire change
@@ -107,6 +109,11 @@ const Dashboard = () => {
       // Call backend to get generated document and present in Output
       try {
         setIsUploading(true);
+
+        //Get prompts from selected output types so that they can be passed to the backend
+        let prompts = {}
+        selectedModes.forEach((m) => prompts[m] = document.getElementById(m).value)
+        console.log(prompts)
 
         const response = await axiosPublic.get('/api/File/getDocument', {
           responseType: 'blob'
@@ -209,37 +216,7 @@ const Dashboard = () => {
             <h2 className="text-title">Select output file types</h2>
 
             <div className="grid grid-cols-2 gap-4">
-                {fileTypes.map((type) => {
-                    var isSelected = selectedModes.includes(type.id);
-
-                    return (
-                        <button
-                            key={type.id}
-                            type="button"
-                            onClick={() => {
-                              toggleSelected(type.id)
-                            }}
-                            className={`bg-white border-1 rounded-lg p-4 cursor-pointer text-left transition-all hover:shadow-md hover:-translate-y-0.5 ${
-                                isSelected ? "border-blue-600 shadow-sm" : "border-gray-300"
-                            }`}
-                        >
-                            <div className="flex items-start gap-3">
-                                <span
-                                    className={`mt-0.5 w-[18px] h-[18px] rounded-full border-1 flex items-center justify-center transition-all ${
-                                        isSelected ? "border-blue-600" : "border-gray-400"
-                                    }`}
-                                >
-                                    {isSelected && <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />}
-                                </span>
-
-                                <div>
-                                    <div className="font-semibold text-base text-black">{type.title}</div>
-                                    <div className="mt-1 text-xs text-gray-500">{type.desc}</div>
-                                </div>
-                            </div>
-                        </button>
-                    );
-                })}
+              {fileTypes.map((type) => <DiagramSelectionBox type={type} selectedModes={selectedModes} toggleSelected={toggleSelected}/>)}
             </div>
 
             <div className="mt-6">
