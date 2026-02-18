@@ -1,3 +1,5 @@
+#Instructions for running are in the docker-compose.yml in project root
+
 FROM node:25
 
 WORKDIR /app

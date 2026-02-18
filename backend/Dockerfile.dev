@@ -1,5 +1,7 @@
+#Instructions for running are in the docker-compose.yml in project root
 
-# Run : docker run --rm -p 5280:5280 -e ASPNETCORE_ENVIRONMENT=Development wm-backend
+
+# Run : docker run --rm -p 5280:5280 -e ASPNETCORE_ENVIRONMENT=Development dp-backend
 # ---------- DEV STAGE ----------
 FROM mcr.microsoft.com/dotnet/sdk:9.0
 WORKDIR /src

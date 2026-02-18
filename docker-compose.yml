@@ -1,3 +1,8 @@
+# from frontend/doctor-power: docker build -f Dockerfile.dev -t dp-frontend .
+# from backend: docker build -f Dockerfile.dev -t dp-backend .
+# from root: docker compose up --build
+
+
 # Run full app: frontend (dev server) + backend API
 # From repo root: docker compose up --build
 # Frontend: http://localhost:5173  |  Backend API: http://localhost:5280
