@@ -122,6 +122,18 @@ const Dashboard = () => {
         const blob = new Blob([response.data], { type: response.data.type || 'application/octet-stream' });
         const url = URL.createObjectURL(blob);
 
+        // ensure fileName has extension, fallback using blob.type
+        if (!fileName.includes('.')) {
+          const mime = blob.type;
+          const mimeToExt = {
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
+            'application/pdf': '.pdf',
+            'application/zip': '.zip'
+          };
+          if (mimeToExt[mime]) fileName += mimeToExt[mime];
+        }
+
         setOutputFiles(prev => [
           ...prev,
           {
