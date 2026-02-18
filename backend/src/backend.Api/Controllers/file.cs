@@ -91,16 +91,17 @@ public class FileController : ControllerBase
     private readonly record struct FileDescriptor(string Extension, string MimeType, string DownloadName);
 
 
-    //TODO: fix this 
+    //TODO: fix this
+
     private static FileDescriptor CreateFileDescriptor(string path)
     {
         string ext = Path.GetExtension(path).ToLowerInvariant();
         return ext switch
         {
             ".docx" => new FileDescriptor(ext, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Generated_Document.docx"),
+            ".xlsx" => new FileDescriptor(ext, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Generated_Document.xlsx"),
             ".pdf" => new FileDescriptor(ext, "application/pdf", "Generated_Document.pdf"),
             ".zip" => new FileDescriptor(ext, "application/zip", "Generated_Document.zip"),
-            ".msapp" => new FileDescriptor(ext, "application/octet-stream", "Generated_Document.msapp"),
             _ => new FileDescriptor(ext, "application/octet-stream", string.IsNullOrEmpty(ext) ? "Generated_Document.bin" : $"Generated_Document{ext}")
         };
     }
@@ -195,9 +196,9 @@ public class FileController : ControllerBase
     }
 
     [HttpGet("getDocument")]
-    public async Task<IActionResult> GetJobOutput()
+    public async Task<IActionResult> GetJobOutput()  
     {
-        var response_path = "C:/Users/Kylej/OneDrive/Documents/teamstuff/sh38-main/backend/src/backend.Api/rag_outputs/Replybrary_Overview.docx";
+        var response_path = "C:/Users/Kylej/OneDrive/Documents/Uni_Compci/test.xlsx";
  
         var bytes = await System.IO.File.ReadAllBytesAsync(response_path);
  
