@@ -26,11 +26,4 @@
     <ProjectReference Include="../backend.Application/backend.Application.csproj"/>
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="**/obj/**/*.cs" />
-    <Compile Remove="**/bin/**/*.cs" />
-    <Compile Remove="backend.Infrastructure/**/*.cs" />
-  </ItemGroup>
-
-
 </Project>
