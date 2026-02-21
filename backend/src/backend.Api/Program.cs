@@ -9,6 +9,9 @@ using backend.Infrastructure;
 using backend.Application;
 
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using backend.Application.Interfaces;
+using backend.Application.Services;
+using backend.Infrastructure.Storage;
 
 namespace backend.Api;
 
@@ -17,7 +20,7 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        var AllowFrontend = "_myAllowSpecificOrigins"; //cors rule's name
+        var AllowFrontend = "_myAllowSpecificOrigins"; 
 
         builder.Services.AddCors(options =>
         {
@@ -32,23 +35,23 @@ public class Program
                             });
         });
         
-        // Add services to the container.
+        // Add services
         builder.Services.AddControllers();
-        builder.Services.AddInfrastructures();
+        builder.Services.AddInfrastructure();
+        builder.Services.AddDomain();
         builder.Services.AddApplication();
 
         //in memory storage
         builder.Services.AddSingleton<IJobStore, JobStore>();
-        // builder.Services.AddSingleton<IUploadStore, UploadStore>();
 
+        //DI
+        builder.Services.AddScoped<FileProcessing>(); 
+        builder.Services.AddScoped<IUploadService, UploadService>();
+        builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
+        builder.Services.AddScoped<IJobStatusService, JobStatusService>();
+
+        //scalar UI
         builder.Services.AddOpenApi();
-
-        builder.Services.AddDbContext<AppDbContext>(options =>
-        {
-            options.UseInMemoryDatabase("AuthDb"); 
-        }
-        );
-
 
         builder.Services.AddAuthorization(); 
 
@@ -61,18 +64,21 @@ public class Program
 
         var app = builder.Build();
 
-        //map 
+        //Authentication -> later
+        // builder.Services.AddDbContext<AppDbContext>(options =>
+        // {
+        //     options.UseInMemoryDatabase("AuthDb"); 
+        // }
+        // );
         // app.MapIdentityApi<IdentityUser>(); 
+        
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
             app.MapScalarApiReference();
-
-            // Automatically redirect to Scalar documentation (only in dev)
             app.MapGet("/", () => Results.Redirect("/scalar")); 
-            
         }
 
         app.UseAuthentication();
