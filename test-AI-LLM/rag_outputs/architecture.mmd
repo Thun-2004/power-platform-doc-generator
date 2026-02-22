@@ -1,0 +1,92 @@
+﻿%% Sources:   
+flowchart LR
+  subgraph CanvasApps
+    CA1["wmreply_replybraryv2_c933c"]
+    CA2["wmreply_replybrary_b320d"]
+  end
+
+  subgraph Workflows
+    W1["EndFormFlow (EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69)"]
+    W2["EndFormFlowReminder (EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69)"]
+    W3["IdentifierReminderFlow (IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69)"]
+    W4["PeopleListFlow (PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB)"]
+    W5["PMflow (PMflow-A3194D5E-D434-F011-8C4C-6045BD0ACADB)"]
+    W6["PMFormReminderFlow (PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69)"]
+    W7["ReplybraryDailyPipedrivecheck (ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69)"]
+    W8["Replybrary_GetExchangeRate (Replybrary_GetExchangeRate-4E437A2B-C74D-F011-877B-000D3A0CEB69)"]
+    W9["Replybrary_Identifier_Flow (Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB)"]
+    W10["UploadLogo (UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69)"]
+  end
+
+  subgraph EnvironmentVariables
+    EVH["Environment Variables (shared)"]
+    E1["wmreply_Replybrary_Admin_List"]
+    E2["wmreply_Replybrary_App_Link"]
+    E3["wmreply_Replybrary_CertificationsTracker_List"]
+    E4["wmreply_Replybrary_ClientContacts_List"]
+    E5["wmreply_Replybrary_Client_List"]
+    E6["wmreply_Replybrary_Currency_List"]
+    E7["wmreply_Replybrary_LessonsLearnt_List"]
+    E8["wmreply_Replybrary_Links_List"]
+    E9["wmreply_Replybrary_M365GroupID"]
+    E10["wmreply_Replybrary_People_List"]
+    E11["wmreply_Replybrary_ProjectHistory_List"]
+    E12["wmreply_Replybrary_Project_List"]
+    E13["wmreply_Replybrary_ReusableIdeas_List"]
+    E14["wmreply_Replybrary_SkillLevels_List"]
+    E15["wmreply_Replybrary_SMEs_List"]
+    E16["wmreply_Replybrary_SP_Site"]
+  end
+
+  %% Canvas Apps -> Workflows
+  CA1 --> W1
+  CA1 --> W2
+  CA1 --> W3
+  CA1 --> W4
+  CA1 --> W5
+  CA1 --> W6
+  CA1 --> W7
+  CA1 --> W8
+  CA1 --> W9
+  CA1 --> W10
+
+  CA2 --> W1
+  CA2 --> W2
+  CA2 --> W3
+  CA2 --> W4
+  CA2 --> W5
+  CA2 --> W6
+  CA2 --> W7
+  CA2 --> W8
+  CA2 --> W9
+  CA2 --> W10
+
+  %% Workflows -> Env hub
+  W1 --> EVH
+  W2 --> EVH
+  W3 --> EVH
+  W4 --> EVH
+  W5 --> EVH
+  W6 --> EVH
+  W7 --> EVH
+  W8 --> EVH
+  W9 --> EVH
+  W10 --> EVH
+
+  %% Env hub -> all env vars
+  EVH --> E1
+  EVH --> E2
+  EVH --> E3
+  EVH --> E4
+  EVH --> E5
+  EVH --> E6
+  EVH --> E7
+  EVH --> E8
+  EVH --> E9
+  EVH --> E10
+  EVH --> E11
+  EVH --> E12
+  EVH --> E13
+  EVH --> E14
+  EVH --> E15
+  EVH --> E16
