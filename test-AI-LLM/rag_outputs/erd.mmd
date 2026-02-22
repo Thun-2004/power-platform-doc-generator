@@ -1,0 +1,95 @@
+﻿flowchart LR
+%% Data sources: relationships.json  workflows_detailed.json  canvasapps_detailed.json 
+
+%% Connectors
+con_sharepoint["shared_sharepointonline"]
+con_teams["shared_teams"]
+con_office365users["shared_office365users"]
+con_office365groups["shared_office365groups"]
+
+%% Environment variables
+env_AppLink["wmreply_Replybrary_App_Link"]
+env_ProjectList["wmreply_Replybrary_Project_List"]
+env_SP_Site["wmreply_Replybrary_SP_Site"]
+env_M365GroupID["wmreply_Replybrary_M365GroupID"]
+env_PeopleList["wmreply_Replybrary_People_List"]
+env_CurrencyList["wmreply_Replybrary_Currency_List"]
+env_ClientList["wmreply_Replybrary_Client_List"]
+
+%% Workflows
+wf_EndFormFlow_8292["EndFormFlow (EndFormFlow-82921763-2342-F011-8779-000D3A0CEB69)"]
+wf_EndFormFlowReminder_128F82AA["EndFormFlowReminder (EndFormFlowReminder-128F82AA-B942-F011-877A-000D3A0CEB69)"]
+wf_IdentifierReminderFlow_D4AE74B0["IdentifierReminderFlow (IdentifierReminderFlow-D4AE74B0-DA42-F011-877A-000D3A0CEB69)"]
+wf_PeopleListFlow_3CE0853C["PeopleListFlow (PeopleListFlow-3CE0853C-4C36-F011-8C4C-6045BD0ACADB)"]
+wf_PMflow_A3194D5E["PMflow (PMflow-A3194D5E-D434-F011-8C4C-6045BD0ACADB)"]
+wf_PMFormReminderFlow_B025C04D["PMFormReminderFlow (PMFormReminderFlow-B025C04D-D342-F011-877A-000D3A0CEB69)"]
+wf_ReplybraryDailyPipedrivecheck_5898F434["ReplybraryDailyPipedrivecheck (ReplybraryDailyPipedrivecheck-5898F434-A147-F011-8779-000D3A0CEB69)"]
+wf_Replybrary_GetExchangeRate_4E437A2B["Replybrary_GetExchangeRate (Replybrary_GetExchangeRate-4E437A2B-C74D-F011-877B-000D3A0CEB69)"]
+wf_Replybrary_Identifier_Flow_38CA161E["Replybrary_Identifier_Flow (Replybrary_Identifier_Flow-38CA161E-BA34-F011-8C4C-6045BD0ACADB)"]
+wf_UploadLogo_F9309D25["UploadLogo (UploadLogo-F9309D25-C742-F011-877A-000D3A0CEB69)"]
+
+%% Edges (workflow -> connectors)
+wf_EndFormFlow_8292 --> con_sharepoint
+wf_EndFormFlow_8292 --> con_teams
+
+wf_EndFormFlowReminder_128F82AA --> con_sharepoint
+wf_EndFormFlowReminder_128F82AA --> con_teams
+
+wf_IdentifierReminderFlow_D4AE74B0 --> con_sharepoint
+wf_IdentifierReminderFlow_D4AE74B0 --> con_teams
+
+wf_PeopleListFlow_3CE0853C --> con_office365groups
+wf_PeopleListFlow_3CE0853C --> con_office365users
+wf_PeopleListFlow_3CE0853C --> con_sharepoint
+
+wf_PMflow_A3194D5E --> con_teams
+
+wf_PMFormReminderFlow_B025C04D --> con_sharepoint
+wf_PMFormReminderFlow_B025C04D --> con_teams
+
+wf_ReplybraryDailyPipedrivecheck_5898F434 --> con_office365users
+wf_ReplybraryDailyPipedrivecheck_5898F434 --> con_sharepoint
+
+wf_Replybrary_GetExchangeRate_4E437A2B --> con_sharepoint
+
+wf_Replybrary_Identifier_Flow_38CA161E --> con_sharepoint
+wf_Replybrary_Identifier_Flow_38CA161E --> con_teams
+
+wf_UploadLogo_F9309D25 --> con_sharepoint
+
+%% Edges (workflow -> environment variables)
+wf_EndFormFlow_8292 --> env_AppLink
+wf_EndFormFlow_8292 --> env_ProjectList
+wf_EndFormFlow_8292 --> env_SP_Site
+
+wf_EndFormFlowReminder_128F82AA --> env_AppLink
+wf_EndFormFlowReminder_128F82AA --> env_ProjectList
+wf_EndFormFlowReminder_128F82AA --> env_SP_Site
+
+wf_IdentifierReminderFlow_D4AE74B0 --> env_AppLink
+wf_IdentifierReminderFlow_D4AE74B0 --> env_ProjectList
+wf_IdentifierReminderFlow_D4AE74B0 --> env_SP_Site
+
+wf_PeopleListFlow_3CE0853C --> env_M365GroupID
+wf_PeopleListFlow_3CE0853C --> env_PeopleList
+wf_PeopleListFlow_3CE0853C --> env_SP_Site
+
+wf_PMflow_A3194D5E --> env_AppLink
+
+wf_PMFormReminderFlow_B025C04D --> env_AppLink
+wf_PMFormReminderFlow_B025C04D --> env_ProjectList
+wf_PMFormReminderFlow_B025C04D --> env_SP_Site
+
+wf_ReplybraryDailyPipedrivecheck_5898F434 --> env_PeopleList
+wf_ReplybraryDailyPipedrivecheck_5898F434 --> env_ProjectList
+wf_ReplybraryDailyPipedrivecheck_5898F434 --> env_SP_Site
+
+wf_Replybrary_GetExchangeRate_4E437A2B --> env_CurrencyList
+wf_Replybrary_GetExchangeRate_4E437A2B --> env_SP_Site
+
+wf_Replybrary_Identifier_Flow_38CA161E --> env_AppLink
+wf_Replybrary_Identifier_Flow_38CA161E --> env_ProjectList
+wf_Replybrary_Identifier_Flow_38CA161E --> env_SP_Site
+
+wf_UploadLogo_F9309D25 --> env_ClientList
+wf_UploadLogo_F9309D25 --> env_SP_Site

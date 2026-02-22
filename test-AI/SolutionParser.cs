@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 
-namespace SolutionParserApp;
+namespace SolutionParser;
 
 public static class SolutionParser
 {

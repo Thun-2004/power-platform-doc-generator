@@ -17,7 +17,8 @@ public static class Program
     {
         try
         {
-            var apiKey = Env.MustEnv("OPENAI_API_KEY");
+            // var apiKey = Env.MustEnv("OPENAI_API_KEY");
+            var apiKey = "REMOVED_OPENAI_KEY";
 
             // Default vector store id (override with --vs)
             string defaultVs = "vs_6972909f03948191a19a88a9fd13e234";

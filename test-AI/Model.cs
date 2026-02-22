@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace SolutionParserApp;
+namespace SolutionParser;
 
 // ----------------------------
 // Models for JSON output

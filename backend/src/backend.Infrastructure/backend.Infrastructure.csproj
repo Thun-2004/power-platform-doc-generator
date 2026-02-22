@@ -12,4 +12,9 @@
     <PackageReference Include="OpenAI" Version="2.8.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../backend.Domain/backend.Domain.csproj" />
+    <ProjectReference Include="../backend.Application/backend.Application.csproj" />
+  </ItemGroup>
+
 </Project>

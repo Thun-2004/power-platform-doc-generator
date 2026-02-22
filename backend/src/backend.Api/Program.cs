@@ -7,6 +7,7 @@ using backend.Data;
 using backend.Domain;
 using backend.Infrastructure;
 using backend.Application;
+using backend.Application.LLM;
 
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using backend.Application.Interfaces;
