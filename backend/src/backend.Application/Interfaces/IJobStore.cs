@@ -1,7 +1,7 @@
 
 using backend.Domain; 
 
-namespace backend.Application; 
+namespace backend.Application.Interfaces; 
 
 public interface IJobStore
 {
