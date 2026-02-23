@@ -24,8 +24,6 @@ class Diagram
 {
     public static void construct_table(HashSet<EnvironmentVariableValue> parsedJsonRes, string file_path)
     {
-        //convert string to json object
-        //loop through json object and create table
 
         //table specifications
         string[] columns = { "Environment Variable Name", "Type", "Description", "Dev Value - *Name of Dev Environment* - DEV", "Test Value -  * Name of UAT Environment* - UAT", "Production Value - *Name of Production Environment*" };

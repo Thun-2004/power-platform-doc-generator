@@ -17,30 +17,14 @@ namespace backend.Api.Controllers;
 [Route("api/[controller]")]
 public class FileController : ControllerBase
 {
-    private readonly IJobStore _jobs;
     private readonly IUploadService _uploadService;
     private readonly IJobStatusService _jobStatusService;
+    private readonly IJobOutputService _jobOutputService; 
 
-    private readonly record struct FileDescriptor(string Extension, string MimeType, string DownloadName);
-
-    //TODO: fix this 
-    private static FileDescriptor CreateFileDescriptor(string path)
-    {
-        string ext = Path.GetExtension(path).ToLowerInvariant();
-        return ext switch
-        {
-            ".docx" => new FileDescriptor(ext, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Generated_Document.docx"),
-            ".xlsx" => new FileDescriptor(ext, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Generated_Document.xlsx"),
-            ".pdf" => new FileDescriptor(ext, "application/pdf", "Generated_Document.pdf"),
-            ".zip" => new FileDescriptor(ext, "application/zip", "Generated_Document.zip"),
-            _ => new FileDescriptor(ext, "application/octet-stream", string.IsNullOrEmpty(ext) ? "Generated_Document.bin" : $"Generated_Document{ext}")
-        };
-    }
-
-    public FileController(IJobStore jobs, IUploadService uploadService, IJobStatusService jobStatusService) {
-        _jobs = jobs;
+    public FileController(IUploadService uploadService, IJobStatusService jobStatusService, IJobOutputService jobOutputService) {
         _uploadService = uploadService; 
         _jobStatusService = jobStatusService;
+        _jobOutputService = jobOutputService; 
     }
 
     [HttpPost("generate")]
@@ -101,22 +85,17 @@ public class FileController : ControllerBase
         }
     }
 
-
     [HttpGet("job/{jobId}/files/{outputType}")]
-    public async Task<IActionResult> GetJobOutput(string jobId, string outputType)
+    public async Task<IActionResult> GetJobOutput(string jobId, string outputType, CancellationToken ct)
     {
         try
         {
-            Console.WriteLine($"Fetching output file for job {jobId} and output type {outputType}");
-
-            FileMetadata fileMetadata = _jobs.getOutputFile(jobId, outputType);
-            var bytes = await System.IO.File.ReadAllBytesAsync(fileMetadata.FilePath); 
-            FileDescriptor fileDescriptor = CreateFileDescriptor(fileMetadata.FilePath);
+            var jobOutput = await _jobOutputService.GetJobOutputAsync(jobId, outputType, ct); 
 
             return Ok(File(
-                    bytes,
-                    fileMetadata.MimeType,
-                    fileDescriptor.DownloadName
+                    jobOutput.Content,
+                    jobOutput.MimeType,
+                    jobOutput.DownloadName
                 )); 
             
         }catch(Exception e)
@@ -129,6 +108,35 @@ public class FileController : ControllerBase
             return BadRequest(error);
         }
     }
+
+
+    // [HttpGet("job/{jobId}/files/{outputType}")]
+    // public async Task<IActionResult> GetJobOutput(string jobId, string outputType)
+    // {
+    //     try
+    //     {
+    //         Console.WriteLine($"Fetching output file for job {jobId} and output type {outputType}");
+
+    //         FileMetadata fileMetadata = _jobs.getOutputFile(jobId, outputType);
+    //         var bytes = await System.IO.File.ReadAllBytesAsync(fileMetadata.FilePath); 
+    //         FileDescriptor fileDescriptor = CreateFileDescriptor(fileMetadata.FilePath);
+
+    //         return Ok(File(
+    //                 bytes,
+    //                 fileMetadata.MimeType,
+    //                 fileDescriptor.DownloadName
+    //             )); 
+            
+    //     }catch(Exception e)
+    //     {
+    //         ResponseModel<object> error = new ResponseModel<object>
+    //         {
+    //             Status = 500,
+    //             Message = e.ToString(),
+    //         };
+    //         return BadRequest(error);
+    //     }
+    // }
 
     // test function
     // [HttpGet("getDocument")]

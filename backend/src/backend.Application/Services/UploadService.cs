@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using backend.Application.DTO;
 using backend.Application.Interfaces;
 using backend.Domain;
-using backend.Infrastructure;
 using backend.Application.LLM; 
 
 namespace backend.Application.Services;
