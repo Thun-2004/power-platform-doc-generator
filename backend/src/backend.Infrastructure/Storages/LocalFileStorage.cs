@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 using backend.Application.Interfaces;
 using backend.Application.LLM; // if FileProcessing is in backend.Application
 
-namespace backend.Infrastructure.Storage;
+namespace backend.Infrastructure.Storages;
 
 public class LocalFileStorage : IFileStorage
 {
@@ -19,15 +19,15 @@ public class LocalFileStorage : IFileStorage
         var ext = Path.GetExtension(originalFileName).ToLowerInvariant();
 
         // dirs
-        string rawinputDir = Path.Combine(Environment.CurrentDirectory, "TestFiles");
+        string rawinputDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "UploadedFiles");
         if (!Directory.Exists(rawinputDir))
             Directory.CreateDirectory(rawinputDir);
 
-        string ragoutDir = Path.Combine(Directory.GetCurrentDirectory(), "rag_outputs");
+        string ragoutDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "RAGOutputs");
         if (!Directory.Exists(ragoutDir))
             Directory.CreateDirectory(ragoutDir);
 
-        string parsedDir = Path.Combine(Directory.GetCurrentDirectory(), "parsed_outputs");
+        string parsedDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "ParsedOutputs");
         if (!Directory.Exists(parsedDir))
             Directory.CreateDirectory(parsedDir);
 

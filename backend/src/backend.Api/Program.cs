@@ -1,17 +1,12 @@
 using Scalar.AspNetCore;
 
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using backend.Domain;
 using backend.Infrastructure;
 using backend.Application;
-using backend.Application.LLM;
-
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using backend.Application.Interfaces;
-using backend.Application.Services;
-using backend.Infrastructure.Storage;
 
 namespace backend.Api;
 
@@ -40,17 +35,6 @@ public class Program
         builder.Services.AddInfrastructure();
         builder.Services.AddDomain();
         builder.Services.AddApplication();
-
-        //in memory storage
-        builder.Services.AddSingleton<IJobStore, JobStore>();
-
-        //DI
-        builder.Services.AddScoped<FileProcessing>(); 
-        builder.Services.AddScoped<IUploadService, UploadService>();
-        builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
-        //TODO: should've be called inside one of the DI like Application , no seperate call
-        builder.Services.AddScoped<IJobStatusService, JobStatusService>();
-        builder.Services.AddScoped<IJobOutputService, JobOutputService>();
 
         //scalar UI
         builder.Services.AddOpenApi();

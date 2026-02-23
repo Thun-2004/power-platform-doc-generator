@@ -1,6 +1,8 @@
 using backend.Domain; 
-using backend.Application;
+using backend.Application.Interfaces;
 using System.Collections.Concurrent;
+
+namespace backend.Infrastructure.Storages; 
 
 
 public class JobStore : IJobStore
