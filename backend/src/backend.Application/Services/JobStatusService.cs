@@ -1,6 +1,5 @@
 using backend.Application.DTO;
 using backend.Application.Interfaces;
-using backend.Infrastructure;
 
 namespace backend.Application.Services;
 

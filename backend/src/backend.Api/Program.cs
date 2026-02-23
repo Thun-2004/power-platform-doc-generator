@@ -3,7 +3,6 @@ using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-using backend.Data;
 using backend.Domain;
 using backend.Infrastructure;
 using backend.Application;
@@ -49,7 +48,9 @@ public class Program
         builder.Services.AddScoped<FileProcessing>(); 
         builder.Services.AddScoped<IUploadService, UploadService>();
         builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
+        //TODO: should've be called inside one of the DI like Application , no seperate call
         builder.Services.AddScoped<IJobStatusService, JobStatusService>();
+        builder.Services.AddScoped<IJobOutputService, JobOutputService>();
 
         //scalar UI
         builder.Services.AddOpenApi();
@@ -79,7 +80,7 @@ public class Program
         {
             app.MapOpenApi();
             app.MapScalarApiReference();
-            app.MapGet("/", () => Results.Redirect("/scalar")); 
+            app.MapGet("/", () => Results.Redirect("/scalar"));
         }
 
         app.UseAuthentication();
