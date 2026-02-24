@@ -12,37 +12,48 @@ public enum JobState
     Failed
 }
 
-public class GeneratedFileMeta
-{
-    public string Type { get; set; } = "";
-    public string FilePath { get; set; } = "";
-    public string FileName { get; set; } = "";
-    public string ContentType { get; set; } = "";
-
-}
 
 public class JobRecord
 {
-    public string JobId {get; set; } = ""; 
-    public JobState Status {get; set; } = JobState.Pending; 
-
-    public Dictionary<string, JobState> Progress { get; set; } = new(); 
-
-    public Dictionary<string, GeneratedFileMeta> Files { get; set; } = new(); 
-
-    public JobRecord Create(List<string> outputTypes)
-    {
-        var job = new JobRecord
-        {
-            JobId = Guid.NewGuid().ToString(),
-            Status = JobState.Processing,
-            // Progress = outputTypes.ToDictionary(
-            //     outtype => 
-            // )
-        }; 
-        return job;
-    }
+    public required string JobId {get; set; } = ""; 
+    public required JobState JobStatus {get; set; } = JobState.Pending; 
+    public string ZipFilePath { get; set; } = "";
+    public Dictionary<string, FileMetadata?> OutputType_FileMeta_Matches { get; set; } = new(); 
 
 }
+
+public class JobResponse 
+{
+    public required string JobId { get; set; }
+    public required string JobStatus { get; set; }
+    public required string JobStatusUrl { get; set; }
+    public Dictionary<string, string>? OutputFilesMetas { get; set; }
+}
+
+public class FileMetadata
+{
+    public required JobState Status { get; set; }
+    public required string Type { get; set; }
+    // public int Byte { get; set; } = 0;
+
+    public string? FilePath { get; set; }
+    
+    // public required string DownloadUrl { get; set; }
+    public string MimeType { get; set; } = "";
+}
+
+public class StatusResponse 
+{
+    public required string JobId { get; set; }
+    public required string JobStatus { get; set; }
+    public required Dictionary<string, string> Progress { get; set; }
+}
+
+// public class UploadRequest
+// {
+//     public IFormFile File { get; set; } = default!;
+//     public List<string> SelectedOutputTypes { get; set; } = new();
+// }
+
 
 

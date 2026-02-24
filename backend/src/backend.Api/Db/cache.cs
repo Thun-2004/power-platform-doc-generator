@@ -1,9 +1,9 @@
 using backend.Domain; 
 
 public interface IUploadStore {
-    List<UploadedFile> Files { get; }
+    UploadedFile File { get; }
 }
 
 public class UploadStore : IUploadStore {
-    public List<UploadedFile> Files { get; } = new();
+    public UploadedFile File { get; set; } = default!;
 }

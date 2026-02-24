@@ -1,0 +1,34 @@
+#Instructions for running are in the docker-compose.yml in project root
+
+
+# Run : docker run --rm -p 5280:5280 -e ASPNETCORE_ENVIRONMENT=Development dp-backend
+# ---------- DEV STAGE ----------
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+WORKDIR /src
+
+# Copy solution file
+COPY backend.sln ./
+
+# Copy project files (for layer caching)
+COPY src/backend.Api/backend.csproj src/backend.Api/
+COPY src/backend.Application/backend.Application.csproj src/backend.Application/
+COPY src/backend.Domain/backend.Domain.csproj src/backend.Domain/
+COPY src/backend.Infrastructure/backend.Infrastructure.csproj src/backend.Infrastructure/
+COPY tests/unit/Domain.Tests/Domain.Tests.csproj tests/unit/Domain.Tests/
+COPY tests/unit/Application.Tests/Application.Tests.csproj tests/unit/Application.Tests/
+
+# Restore all projects : backend sln
+RUN dotnet restore
+
+# Copy the rest of the source code
+COPY . .
+
+# Move to API project folder
+WORKDIR /src/src/backend.Api
+
+# Expose dev port
+ENV ASPNETCORE_URLS=http://0.0.0.0:5280
+EXPOSE 5280
+
+# Run in watch mode (like your local dotnet watch)
+CMD ["dotnet", "watch", "run", "--urls", "http://0.0.0.0:5280"]
