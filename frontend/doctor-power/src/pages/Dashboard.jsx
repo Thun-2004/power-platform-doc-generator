@@ -13,10 +13,13 @@ import axios from 'axios';
 const Dashboard = () => {
 
   const fileTypes = [
-    { id: "overview", title: "Overview", desc: "Dummy text for generating an ER diagram"},
-    { id: "workflows", title: "Workflows", desc: "Dummy text for generating a UI-hierarchy"},
-    { id: "faq", title: "Frequently Asked Questions", desc: "Dummy text for generating a program-flow"},
-    { id: "diagrams", title: "Diagrams", desc: "Dummy option for assigning some AI task"},
+    { id: "erd", title: "ER diagram", desc: "Dummy text for generating an ER diagram"},
+    { id: "ui", title: "UI-Hierarchy flow", desc: "Dummy text for generating a UI-hierarchy"},
+    { id: "program", title: "Program flow", desc: "Dummy text for generating a program-flow"},
+    { id: "ai", title: "Dummy AI", desc: "Dummy option for assigning some AI task"},
+    { id: "overview", title: "Overview", desc: "Dummy option for generating an overview"},
+    { id: "faq", title: "FAQS", desc: "Dummy option for generating faqs"},
+    { id: "environment-variables", title: "Environment variables", desc: "Dummy option for generating environment variables"}
   ];
 
   const statusSymbols = {
