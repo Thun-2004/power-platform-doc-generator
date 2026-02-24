@@ -12,9 +12,21 @@ public static class OpenAIHttp
 {
     public static async Task<JsonElement> ReadJson(HttpResponseMessage res)
     {
-        var text = await res.Content.ReadAsStringAsync();
+        var text = res.Content == null ? "" : await res.Content.ReadAsStringAsync();
         if (!res.IsSuccessStatusCode)
-            throw new Exception($"HTTP {(int)res.StatusCode}:\n{text}");
+        {
+            var req = res.RequestMessage;
+            var wwwAuth = res.Headers.WwwAuthenticate == null
+                ? ""
+                : string.Join(", ", res.Headers.WwwAuthenticate.Select(x => x.ToString()));
+
+            throw new Exception(
+                $"HTTP {(int)res.StatusCode} {res.ReasonPhrase}\n" +
+                $"Request: {req?.Method} {req?.RequestUri}\n" +
+                (string.IsNullOrWhiteSpace(wwwAuth) ? "" : $"WWW-Authenticate: {wwwAuth}\n") +
+                $"Body:\n{text}"
+            );
+        }
         return JsonDocument.Parse(text).RootElement;
     }
 

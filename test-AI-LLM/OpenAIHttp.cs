@@ -12,9 +12,17 @@ public static class OpenAIHttp
 {
     public static async Task<JsonElement> ReadJson(HttpResponseMessage res)
     {
+        // var text = await res.Content.ReadAsStringAsync();
+        // if (!res.IsSuccessStatusCode)
+        //     throw new Exception($"HTTP {(int)res.StatusCode}:\n{text}");
+        // return JsonDocument.Parse(text).RootElement;
         var text = await res.Content.ReadAsStringAsync();
+        Console.WriteLine($"OpenAI raw response status={(int)res.StatusCode}");
+        Console.WriteLine($"OpenAI raw response body={text}");
+
         if (!res.IsSuccessStatusCode)
             throw new Exception($"HTTP {(int)res.StatusCode}:\n{text}");
+
         return JsonDocument.Parse(text).RootElement;
     }
 
