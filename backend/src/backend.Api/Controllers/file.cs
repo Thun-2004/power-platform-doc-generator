@@ -1,4 +1,3 @@
-
 //git stash pop -> later
 
 //upload file
@@ -235,19 +234,24 @@ public class FileController : ControllerBase
             FileMetadata fileMetadata = _jobs.getOutputFile(jobId, outputType);
 
 
-
             Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition"); //Safelists content-disposition for the frontend
+            var response_path = fileMetadata.FilePath;
+            Console.WriteLine(response_path);
+            
+
+            var bytes = await System.IO.File.ReadAllBytesAsync(response_path); 
+            FileDescriptor fileDescriptor = CreateFileDescriptor(response_path);
+
+            Console.WriteLine(fileDescriptor.MimeType);
+            Console.WriteLine(fileDescriptor.DownloadName);
 
 
-            var bytes = await System.IO.File.ReadAllBytesAsync(fileMetadata.FilePath); 
-            FileDescriptor fileDescriptor = CreateFileDescriptor(fileMetadata.FilePath);
 
-
-            return Ok(File(
+            return File(
                     bytes,
-                    fileMetadata.MimeType,
+                    fileDescriptor.MimeType,
                     fileDescriptor.DownloadName
-                )); 
+                ); 
             
         }catch(Exception e)
         {
@@ -264,13 +268,13 @@ public class FileController : ControllerBase
     public async Task<IActionResult> GetGeneratedFile(string outputType)
     {
         //change this to your excel file path
-        Console.WriteLine("=========================================");
         Dictionary<string,string> doc_paths = new Dictionary<string,string>();
-        doc_paths.Add("overview", "C:\\Workspace\\sh38-main\\backend\\src\\backend.Api\\rag_outputs\\replybrary_overview.docx");
-        doc_paths.Add("workflows", "C:\\Workspace\\sh38-main\\backend\\src\\backend.Api\\rag_outputs\\replybrary_workflows.xlsx");
-        doc_paths.Add("erd", "C:\\Workspace\\sh38-main\\backend\\src\\backend.Api\\rag_outputs\\replybrary_erd.pdf");
+        doc_paths.Add("overview", "C:\\Workspace\\sh38-main\\backend\\src\\rag_outputs\\replybrary_overview.docx");
+        doc_paths.Add("workflows", "C:\\Workspace\\sh38-main\\backend\\src\\rag_outputs\\replybrary_workflows.xlsx");
+        doc_paths.Add("erd", "C:\\Workspace\\sh38-main\\backend\\src\\rag_outputs\\replybrary_erd.pdf");
 
         var response_path = doc_paths[outputType];
+        Console.WriteLine(response_path);
         // var response_path = "/Users/benn/Documents/sh38-main/backend/src/backend.Api/rag_outputs/Replybrary_Overview.docx";
 
         Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition");
@@ -307,4 +311,3 @@ public class FileController : ControllerBase
 
     }
 }
-    

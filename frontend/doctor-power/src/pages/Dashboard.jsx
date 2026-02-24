@@ -17,6 +17,8 @@ const Dashboard = () => {
     { id: "workflows", title: "Workflows", desc: "Dummy text for generating a UI-hierarchy"},
     { id: "faq", title: "Frequently Asked Questions", desc: "Dummy text for generating a program-flow"},
     { id: "diagrams", title: "Diagrams", desc: "Dummy option for assigning some AI task"},
+    { id: "erd", title: "ER diagram", desc: "Dummy text for generating an ER diagram"},
+    { id: "environment-variables", title: "Environment variables", desc: "Dummy option for generating environment variables"}
   ];
 
   const statusSymbols = {
@@ -164,7 +166,7 @@ const Dashboard = () => {
         if (status == 'Failed'){
           console.log('Failed');
           updateStatusSymbol(status)
-          //Figure out how to display the retryOutputButton here
+          // TODO Figure out how to display the retryOutputButton here
         }
         else {
           //Call the outputAPI
