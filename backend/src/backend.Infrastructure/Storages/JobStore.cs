@@ -11,9 +11,8 @@ public class JobStore : IJobStore
     //link job id to job for fast look up : O(1)
     private readonly ConcurrentDictionary<string, JobRecord> _jobs = new(); 
 
-    public JobRecord Create(List<string> outputTypes, string zipFilePath)
+    public JobRecord Create(List<string> outputTypes, string zipFileName, string zipFilePath)
     {
-
         var map = new Dictionary<string, FileMetadata>();
         foreach (var outType in outputTypes)
         {
@@ -29,10 +28,10 @@ public class JobStore : IJobStore
         var job = new JobRecord
         {
             JobId = Guid.NewGuid().ToString(),
+            ZipFileName = zipFileName, 
             JobStatus = JobState.Pending,
             ZipFilePath = zipFilePath, 
             OutputType_FileMeta_Matches = map
-        
         }; 
 
         _jobs[job.JobId] = job;
@@ -44,6 +43,12 @@ public class JobStore : IJobStore
         return _jobs.TryGetValue(jobId, out var job) ? job : null;
     }
 
+    public string GetUploadedFileName(string jobId)
+    {
+        JobRecord? job = Get(jobId); 
+        return job!.ZipFileName; 
+    }
+
     public void Update(JobRecord job)
     {
         _jobs[job.JobId] = job;
@@ -52,7 +57,7 @@ public class JobStore : IJobStore
     public void setJobZipFilePath(string jobId, string filePath)
     {
         JobRecord job; 
-        if (!_jobs.TryGetValue(jobId, out job))
+        if (!_jobs.TryGetValue(jobId, out job!))
             throw new Exception("Job not found");
 
         job.ZipFilePath = filePath;

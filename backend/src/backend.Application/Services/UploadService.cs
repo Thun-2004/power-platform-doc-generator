@@ -51,7 +51,7 @@ public class UploadService : IUploadService
         var fullFilePath = await _storage.SaveUploadAsync(file, ct);
 
         // create job
-        var job = _jobs.Create(outputTypes, fullFilePath);
+        var job = _jobs.Create(outputTypes, Path.GetFileNameWithoutExtension(originalFileName), fullFilePath);
 
         // background job
         _ = Task.Run(async () =>

@@ -19,7 +19,7 @@ public class JobOutputService : IJobOutputService
     {
         FileMetadata fileMetadata = _jobs.getOutputFile(jobId, outputType);
         string filePath = fileMetadata.FilePath ?? throw new InvalidOperationException("Output file path is not available.");
-        FileDescriptor fileDescriptor = CreateFileDescriptor(filePath);
+        FileDescriptor fileDescriptor = CreateFileDescriptor(jobId, outputType,  filePath);
         var bytes = await System.IO.File.ReadAllBytesAsync(filePath, ct);
 
         return new JobOutputResult(
@@ -29,39 +29,41 @@ public class JobOutputService : IJobOutputService
         ); 
     }
 
-    private static FileDescriptor CreateFileDescriptor(string path)
+    private FileDescriptor CreateFileDescriptor(string jobId, string outputType,  string path)
     {
+
+        string originalfileName = _jobs.GetUploadedFileName(jobId); 
         string ext = Path.GetExtension(path);
 
         if (string.IsNullOrEmpty(ext))
         {
-            return new FileDescriptor("application/octet-stream", "Generated_Document.bin");
+            return new FileDescriptor("application/octet-stream", $"{originalfileName}_{ext}.bin");
         }
 
         if (ext.Equals(".docx", StringComparison.OrdinalIgnoreCase))
         {
             return new FileDescriptor(
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                "Generated_Document.docx");
+                $"{originalfileName}_{outputType}.docx");
         }
 
         if (ext.Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
         {
             return new FileDescriptor(
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Generated_Document.xlsx");
+                $"{originalfileName}_{outputType}.xlsx");
         }
 
         if (ext.Equals(".pdf", StringComparison.OrdinalIgnoreCase))
         {
-            return new FileDescriptor("application/pdf", "Generated_Document.pdf");
+            return new FileDescriptor("application/pdf", $"{originalfileName}_{outputType}.pdf");
         }
 
         if (ext.Equals(".zip", StringComparison.OrdinalIgnoreCase))
         {
-            return new FileDescriptor("application/zip", "Generated_Document.zip");
+            return new FileDescriptor("application/zip", $"{originalfileName}_{outputType}.zip");
         }
 
-        return new FileDescriptor("application/octet-stream", string.Concat("Generated_Document", ext));
+        return new FileDescriptor("application/octet-stream", $"{originalfileName}_{outputType}");
     }
 }
