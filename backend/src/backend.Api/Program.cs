@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using backend.Data;
 using backend.Domain;
 using backend.Infrastructure;
+using backend.Application;
 
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
@@ -16,7 +17,7 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        var AllowFrontend = "_myAllowSpecificOrigins"; //cors rule's name
+        var AllowFrontend = "content-disposition"; //cors rule's name
 
         builder.Services.AddCors(options =>
         {
@@ -34,9 +35,11 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllers();
         builder.Services.AddInfrastructures();
-        //FIX: in memory cache for testing
-        builder.Services.AddSingleton<IUploadStore, UploadStore>();
-        // builder.Services.AddApplication();
+        builder.Services.AddApplication();
+
+        //in memory storage
+        builder.Services.AddSingleton<IJobStore, JobStore>();
+        // builder.Services.AddSingleton<IUploadStore, UploadStore>();
 
         builder.Services.AddOpenApi();
 
@@ -46,10 +49,8 @@ public class Program
         }
         );
 
-        builder.Services.AddAuthorization(); 
 
-        //setup table (in memory)
-        builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<AppDbContext>(); 
+        builder.Services.AddAuthorization(); 
 
         //TODO: set global request time outs
         builder.Services.Configure<KestrelServerOptions>(options =>
@@ -61,7 +62,7 @@ public class Program
         var app = builder.Build();
 
         //map 
-        app.MapIdentityApi<IdentityUser>(); 
+        // app.MapIdentityApi<IdentityUser>(); 
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
