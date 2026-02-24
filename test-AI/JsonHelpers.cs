@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json;
 
-namespace SolutionParser;
+namespace SolutionParserApp;
 
 public static class JsonHelpers
 {

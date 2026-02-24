@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace SolutionParser;
+namespace SolutionParserApp;
 
 public static class CanvasAppsParsing
 {
@@ -193,7 +193,7 @@ public static class CanvasAppsParsing
         try
         {
             using var doc = JsonDocument.Parse(text);
-            JsonHelpers.WalkJson(doc.RootElement, (_, val) =>
+            SolutionParserApp.JsonHelpers.WalkJson(doc.RootElement, (_, val) =>
             {
                 if (val.ValueKind == JsonValueKind.String)
                 {
