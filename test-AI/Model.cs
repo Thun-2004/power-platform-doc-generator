@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
+<<<<<<< HEAD
 namespace SolutionParserApp;
+=======
+namespace SolutionParser;
+>>>>>>> feature/AI
 
 // ----------------------------
 // Models for JSON output

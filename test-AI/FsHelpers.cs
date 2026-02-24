@@ -4,7 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+<<<<<<< HEAD
 namespace SolutionParserApp;
+=======
+namespace SolutionParser;
+>>>>>>> feature/AI
 
 public static class FsHelpers
 {

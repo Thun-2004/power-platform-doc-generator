@@ -5,7 +5,11 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
+<<<<<<< HEAD
 namespace SolutionParserApp;
+=======
+namespace SolutionParser;
+>>>>>>> feature/AI
 
 public static class WorkflowsParsing
 {
