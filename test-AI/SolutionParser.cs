@@ -4,23 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-<<<<<<< HEAD
-<<<<<<<< HEAD:test-AI/SolutionParser.cs
 
 namespace SolutionParserApp;
 
-========
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-
-namespace backend.Application.Parser;
->>>>>>>> feature/AI:test-AI/Parser/SolutionParser.cs
-=======
-
-namespace SolutionParser;
-
->>>>>>> feature/AI
 public static class SolutionParser
 {
     public static int Run(string[] args)
@@ -39,18 +25,8 @@ public static class SolutionParser
 
         if (string.IsNullOrWhiteSpace(input) || string.IsNullOrWhiteSpace(output))
         {
-<<<<<<< HEAD
-<<<<<<<< HEAD:test-AI/SolutionParser.cs
             Console.Error.WriteLine("Usage: dotnet run -- --input <solution_folder> --out <output_folder>");
             return 1;
-========
-            Console.Error.WriteLine("input or output path can not be null");
-            return "";
->>>>>>>> feature/AI:test-AI/Parser/SolutionParser.cs
-=======
-            Console.Error.WriteLine("Usage: dotnet run -- --input <solution_folder> --out <output_folder>");
-            return 1;
->>>>>>> feature/AI
         }
 
         var root = new DirectoryInfo(Path.GetFullPath(Environment.ExpandEnvironmentVariables(input)));
@@ -211,15 +187,7 @@ public static class SolutionParser
         Console.WriteLine($"Reports written to: {outDirPath}");
         Console.WriteLine($"Chunks written to: {chunksDir}");
 
-<<<<<<< HEAD
-<<<<<<<< HEAD:test-AI/SolutionParser.cs
         return 0;
-========
-        return chunksDir;
->>>>>>>> feature/AI:test-AI/Parser/SolutionParser.cs
-=======
-        return 0;
->>>>>>> feature/AI
     }
 
     // ----------------------------

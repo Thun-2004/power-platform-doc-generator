@@ -5,11 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-<<<<<<< HEAD
 namespace SolutionParserApp;
-=======
-namespace SolutionParser;
->>>>>>> feature/AI
 
 public static class CanvasAppsParsing
 {
@@ -197,11 +193,7 @@ public static class CanvasAppsParsing
         try
         {
             using var doc = JsonDocument.Parse(text);
-<<<<<<< HEAD
             SolutionParserApp.JsonHelpers.WalkJson(doc.RootElement, (_, val) =>
-=======
-            JsonHelpers.WalkJson(doc.RootElement, (_, val) =>
->>>>>>> feature/AI
             {
                 if (val.ValueKind == JsonValueKind.String)
                 {

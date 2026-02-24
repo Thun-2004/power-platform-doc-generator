@@ -1,11 +1,7 @@
 using System;
 using System.Text.Json;
 
-<<<<<<< HEAD
 namespace SolutionParserApp;
-=======
-namespace SolutionParser;
->>>>>>> feature/AI
 
 public static class JsonHelpers
 {

@@ -2,11 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-<<<<<<<< HEAD:test-parser/test-AI-LLM.csproj
     <TargetFramework>net8.0</TargetFramework>
-========
-    <TargetFramework>net9.0</TargetFramework>
->>>>>>>> feature/AI:test-AI-LLM/test-AI-LLM.csproj
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
