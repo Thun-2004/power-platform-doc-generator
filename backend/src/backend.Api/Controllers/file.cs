@@ -11,7 +11,7 @@ using System.Reflection.Metadata;
 using backend.Api.DTO;
 using backend.Application.Interfaces;
 
-namespace backend.Api.Controllers;
+namespace backend.Api.Controllers; 
 
 [ApiController]
 [Route("api/[controller]")]
@@ -19,26 +19,24 @@ public class FileController : ControllerBase
 {
     private readonly IUploadService _uploadService;
     private readonly IJobStatusService _jobStatusService;
-    private readonly IJobOutputService _jobOutputService;
+    private readonly IJobOutputService _jobOutputService; 
 
-    public FileController(IUploadService uploadService, IJobStatusService jobStatusService, IJobOutputService jobOutputService)
-    {
-        _uploadService = uploadService;
+    public FileController(IUploadService uploadService, IJobStatusService jobStatusService, IJobOutputService jobOutputService) {
+        _uploadService = uploadService; 
         _jobStatusService = jobStatusService;
-        _jobOutputService = jobOutputService;
+        _jobOutputService = jobOutputService; 
     }
 
     [HttpPost("generate")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Generate([FromForm] UploadRequest req, CancellationToken ct)
-    {
+    public async Task<IActionResult> Generate([FromForm] UploadRequest req,  CancellationToken ct){
         if (req.File == null || req.File.Length == 0)
             return BadRequest("File is required");
 
         List<string> outputTypes = req.SelectedOutputTypes.Select(t => t.Trim()).ToList();
         try
         {
-            var job = await _uploadService.StartJobAsync(req.File, outputTypes, ct);
+            var job = await _uploadService.StartJobAsync(req.File, outputTypes, ct); 
             return Ok(new ResponseModel<JobResponse>
             {
                 Status = 200,
@@ -92,16 +90,15 @@ public class FileController : ControllerBase
     {
         try
         {
-            var jobOutput = await _jobOutputService.GetJobOutputAsync(jobId, outputType, ct);
+            var jobOutput = await _jobOutputService.GetJobOutputAsync(jobId, outputType, ct); 
 
             return Ok(File(
                     jobOutput.Content,
                     jobOutput.MimeType,
                     jobOutput.DownloadName
-                ));
-
-        }
-        catch (Exception e)
+                )); 
+            
+        }catch(Exception e)
         {
             ResponseModel<object> error = new ResponseModel<object>
             {
@@ -129,7 +126,7 @@ public class FileController : ControllerBase
     //                 fileMetadata.MimeType,
     //                 fileDescriptor.DownloadName
     //             )); 
-
+            
     //     }catch(Exception e)
     //     {
     //         ResponseModel<object> error = new ResponseModel<object>
@@ -159,4 +156,4 @@ public class FileController : ControllerBase
     //     );
     // }
 }
-
+    
