@@ -12,10 +12,13 @@ import axios from 'axios';
 const Dashboard = () => {
 
   const fileTypes = [
-    { id: "er", title: "ER diagram", desc: "Dummy text for generating an ER diagram"},
+    { id: "erd", title: "ER diagram", desc: "Dummy text for generating an ER diagram"},
     { id: "ui", title: "UI-Hierarchy flow", desc: "Dummy text for generating a UI-hierarchy"},
     { id: "program", title: "Program flow", desc: "Dummy text for generating a program-flow"},
     { id: "ai", title: "Dummy AI", desc: "Dummy option for assigning some AI task"},
+    { id: "overview", title: "Overview", desc: "Dummy option for generating an overview"},
+    { id: "faq", title: "FAQS", desc: "Dummy option for generating faqs"},
+    { id: "environment-variables", title: "Environment variables", desc: "Dummy option for generating environment variables"}
   ];
   
   const [outputFiles, setOutputFiles] = useState([]);
