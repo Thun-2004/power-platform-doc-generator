@@ -5,8 +5,9 @@ namespace backend.Application.Interfaces;
 
 public interface IJobStore
 {
-    JobRecord Create(List<string> outputTypes, string zipFilePath);
+    JobRecord Create(List<string> outputTypes, string zipFileName, string zipFilePath);
     JobRecord? Get(string jobId); 
+    string GetUploadedFileName(string jobId); 
     void Update(JobRecord job); 
     void setJobZipFilePath(string jobId, string filePath); 
     string getJobFilePath(string jobId);
