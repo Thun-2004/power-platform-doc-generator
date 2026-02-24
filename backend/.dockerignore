@@ -1,0 +1,11 @@
+**/bin
+**/obj
+**/.git
+**/.vs
+**/TestFiles
+**/parsed_output
+*.user
+*.md
+.env*
+Dockerfile*
+docker-compose*.yml

@@ -4,6 +4,7 @@ import axiosPublic from "../api/axios";
 import uploadFile from "../api/file";
 import DocumentPreviewModal from "../components/DocumentPreviewModal";
 import DiagramSelectionBox from "../components/DiagramSelectionBox";
+import DocumentOutputPreview from "../components/DocumentOutputPreview";
 
 //temp
 import axios from 'axios';
@@ -12,11 +13,18 @@ import axios from 'axios';
 const Dashboard = () => {
 
   const fileTypes = [
-    { id: "er", title: "ER diagram", desc: "Dummy text for generating an ER diagram"},
-    { id: "ui", title: "UI-Hierarchy flow", desc: "Dummy text for generating a UI-hierarchy"},
-    { id: "program", title: "Program flow", desc: "Dummy text for generating a program-flow"},
-    { id: "ai", title: "Dummy AI", desc: "Dummy option for assigning some AI task"},
+    { id: "overview", title: "Overview", desc: "Dummy text for generating an ER diagram"},
+    { id: "workflows", title: "Workflows", desc: "Dummy text for generating a UI-hierarchy"},
+    { id: "faq", title: "Frequently Asked Questions", desc: "Dummy text for generating a program-flow"},
+    { id: "diagrams", title: "Diagrams", desc: "Dummy option for assigning some AI task"},
   ];
+
+  const statusSymbols = {
+    'Pending': "⭘ Uploading Files",
+    'Processing': "🔘 File is being processed by LLM",
+    'Completed': "✅ Output should be produced",
+    'Failed': "❌ request failed",
+  }
   
   const [outputFiles, setOutputFiles] = useState([]);
   const [previewFile, setPreviewFile] = useState(null);
@@ -33,6 +41,10 @@ const Dashboard = () => {
 
   const abortRef = useRef(null);//like useState but not rerender 
   const fileInputRef = useRef(null); // to clear the DOM input val
+ 
+  const delay = ms => new Promise(res => setTimeout(res, ms)); //call await delay(n) to wait n ms
+  const tickLength = 100; //Tick length for calling API to check job status
+
 
   const isZipFile = (file) => {
     return file && file.name.toLowerCase().endsWith('.zip');
@@ -108,48 +120,106 @@ const Dashboard = () => {
     const onGenerateOutputFile = async () => {
       // Call backend to get generated document and present in Output
       try {
+        const selectedModesClone = new Array();
+        selectedModes.forEach((m) => {
+          selectedModesClone.push(m);
+        }) //Lock the modes that we work with
+
         setIsUploading(true);
 
         //Get prompts from selected output types so that they can be passed to the backend
         let prompts = {}
-        selectedModes.forEach((m) => prompts[m] = document.getElementById(m).value)
-        console.log(prompts)
+        selectedModesClone.forEach((m) => prompts[m] = document.getElementById(m).value);
 
-        const response = await axiosPublic.get('/api/File/getDocument', {
-          responseType: 'blob'
-        });
+        console.log(selectedModesClone);
+        console.log(prompts);
 
-        console.log(response.data);
+        let formData = new FormData();
 
-        const contentDisposition = response.headers['content-disposition'] || '';
-        let fileName = 'generated_document';
-        const fileNameMatch = /filename=(?:"?)([^;\"]+)/i.exec(contentDisposition);
-        if (fileNameMatch && fileNameMatch[1]) fileName = fileNameMatch[1].replace(/\"/g, '');
+      
+        formData.append('File', selectedFile);
+        formData.append('SelectedOutputTypes', selectedModes);
+        // formData.append('additionalPrompts', prompts); //
 
-        const blob = new Blob([response.data], { type: response.data.type || 'application/octet-stream' });
-        const url = URL.createObjectURL(blob);
+        const response = await axiosPublic.post('/api/File/generate', formData)
+ 
+        
+        // //Retrieve data from API response
+        let status = response.data.data['jobStatus'];
+        let statusUrl = response.data.data['jobStatusUrl'];
+        let outputApiUrls = response.data.data['outputFilesMetas']; //list of APIs to call that generate the document
+        selectedModesClone.forEach((m) => console.log(outputApiUrls[m]));
 
-        // ensure fileName has extension, fallback using blob.type
-        if (!fileName.includes('.')) {
-          const mime = blob.type;
-          const mimeToExt = {
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
-            'application/pdf': '.pdf',
-            'application/zip': '.zip'
-          };
-          if (mimeToExt[mime]) fileName += mimeToExt[mime];
+
+        // // let i = 0;
+        while(status != 'Failed' && status != 'Completed'){
+          await delay(tickLength);
+          status = (await axiosPublic.get(statusUrl)).data.data['jobStatus'];
+          console.log(status);
+          updateStatusSymbol(status);
+        //   // i++;
+        }
+        // var status;
+        // status = 'Completed';
+        if (status == 'Failed'){
+          console.log('Failed');
+          updateStatusSymbol(status)
+          //Figure out how to display the retryOutputButton here
+        }
+        else {
+          //Call the outputAPI
+            
+          selectedModesClone.forEach(async (m) =>  
+          {
+            console.log(outputApiUrls[m])
+            // const response = await axiosPublic.get("api/File/getDocument/" + m, {responseType: 'blob'});
+            const response = await axiosPublic.get(outputApiUrls[m], {responseType: 'blob'});
+            console.log(response);
+            const contentDisposition = response.headers['content-disposition'] || '';
+            console.log(contentDisposition);
+
+            let fileName = "generated_document";
+            // let fileName = "generated_document";
+            console.log(fileName)
+            const fileNameMatch = /filename=(?:"?)([^;\"]+)/i.exec(contentDisposition);
+            console.log(fileNameMatch);
+            if (fileNameMatch && fileNameMatch[1]) fileName = fileNameMatch[1].replace(/\"/g, '');
+            console.log(fileName);
+            const blob = new Blob([response.data], { type: response.data.type || 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+
+
+            // ensure fileName has extension, fallback using blob.type
+            if (!fileName.includes('.')) {
+              const mime = blob.type;
+              const mimeToExt = {
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
+                'application/pdf': '.pdf',
+                'application/zip': '.zip'
+              };
+              if (mimeToExt[mime]) fileName += mimeToExt[mime];
+            }
+            // console.log(mime);
+
+            setOutputFiles(prev => [
+              ...prev,
+              {
+                id: Date.now(),
+                name: fileName,
+                url,
+                blob
+              }
+            ]);
+            }
+            
+          )
+          
         }
 
-        setOutputFiles(prev => [
-          ...prev,
-          {
-            id: Date.now(),
-            name: fileName,
-            url,
-            blob
-          }
-        ]);
+
+
+
 
       } catch (err) {
         console.error('Failed to fetch document', err);
@@ -158,11 +228,14 @@ const Dashboard = () => {
       }
     };
 
-    const test_call = onGenerateOutputFile;
 
   const onCancelUpload = () => {
       abortRef.current?.abort(); 
-  }
+  };
+
+  const updateStatusSymbol = (status) => {
+    document.getElementById("jobStatus").innerText = statusSymbols[status];
+  } ;
 
   return (
       <>
@@ -232,7 +305,8 @@ const Dashboard = () => {
             </div>
 
             <div className="mt-6">
-                <button onClick={test_call} className="btn-theme">Generate</button>
+                <button onClick={onGenerateOutputFile} className="btn-theme">Generate</button>
+                <h2 id="jobStatus"></h2>
             </div>
         </div>
         </section>
@@ -243,21 +317,8 @@ const Dashboard = () => {
             <h2 className="text-title">Output(2)</h2>
             <button className="btn-theme">Download all(2)</button>
           </div>
-          <div className="flex flex-col gap-4">
-            {outputFiles.map((file) => (
-              <div key={file.id} className="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-lg transition-all hover:shadow-md">
-                <div className="flex items-center justify-center">
-                  <div className="w-10 h-10 flex items-center justify-center bg-blue-50 rounded-lg">
-                    <FileCheck color="#3b82f6" size={20} />
-                  </div>
-                </div>
-                <span className="flex-1 text-sm text-gray-800 font-medium">{file.name}</span>
-                <div className="flex gap-2">
-                  <button onClick={() => setPreviewFile(file)} className=" text-gray-500 border border-gray-300 px-3 py-1 rounded-md text-sm cursor-pointer transition-all hover:brightness-110">Preview</button>
-                  <a href={file.url} download={file.name} className="text-gray-500 border border-gray-300 px-3 py-1.5 rounded-md text-sm cursor-pointer transition-all hover:brightness-110">Download</a>
-                </div>
-              </div>
-            ))}
+          <div id="file-display" className="flex flex-col gap-4">
+              <DocumentOutputPreview outputFiles={outputFiles} setPreviewFile={setPreviewFile}/>
           </div>
         </section>
       </main>

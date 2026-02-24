@@ -7,6 +7,11 @@
 *.pyc
 .venv/
 
+#Local testfiles
+backend/src/backend.Api/parsed_outputs/
+backend/src/backend.Api/TestFiles/
+backend/src/backend.Api/rag_outputs/
+
 #React
 node_modules/
 build/

@@ -1,0 +1,30 @@
+# from frontend/doctor-power: docker build -f Dockerfile.dev -t dp-frontend .
+# from backend: docker build -f Dockerfile.dev -t dp-backend .
+# from root: docker compose up --build
+
+
+# Run full app: frontend (dev server) + backend API
+# From repo root: docker compose up --build
+# Frontend: http://localhost:5173  |  Backend API: http://localhost:5280
+
+services:
+  frontend:
+    build:
+      context: ./frontend/doctor-power
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/doctor-power:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5280:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
