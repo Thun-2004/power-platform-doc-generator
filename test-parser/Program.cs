@@ -11,19 +11,7 @@ using System.Threading.Tasks;
 
 namespace RagCliApp;
 
-<<<<<<< HEAD:test-parser/Program.cs
-return SolutionParser.Run(args);
-
-// ----------------------------
-// Models for JSON output
-// ----------------------------
-
-// /Users/benn/Documents/sh38-main/Replybrary_1_0_0_20_2
-// dotnet run -- --input "/Users/benn/Documents/sh38-main/Replybrary_1_0_0_20_2" --out "/Users/benn/Documents/sh38-main/test-AI-LLM/output"
-public sealed class InventoryEntry
-=======
 public static class Program
->>>>>>> 98d9b66663245dbfaa0f9a1368e9709cd0fa93cd:test-AI-LLM/Program.cs
 {
     public static async Task<int> Main(string[] args)
     {

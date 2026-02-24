@@ -1,9 +1,5 @@
-﻿{
-<<<<<<<< HEAD:test-parser/output/chunks/overview.json
+{
   "root": "/Users/benn/Documents/sh38-main/Replybrary_1_0_0_20_2",
-========
-  "root": "/var/folders/8x/3j91c4_d4ngch6_z44jb08pc0000gq/T/extract/87b39a83-5811-455a-bfc5-4d0c529ff3b4",
->>>>>>>> feature/AI:backend/src/backend.Infrastructure/FileStorages/ParsedOutputs/4b0fd8f2-ad33-4799-96b7-217874edc13e/chunks/overview.json
   "counts": {
     "canvasapps_groups": 2,
     "workflows": 10,
