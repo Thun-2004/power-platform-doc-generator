@@ -9,7 +9,6 @@ import DocumentOutputPreview from "../components/DocumentOutputPreview";
 //temp
 import axios from 'axios';
 
-
 const Dashboard = () => {
 
   const fileTypes = [
@@ -122,6 +121,7 @@ const Dashboard = () => {
     const onGenerateOutputFile = async () => {
       // Call backend to get generated document and present in Output
       try {
+        console.log("click")
         const selectedModesClone = new Array();
         selectedModes.forEach((m) => {
           selectedModesClone.push(m);
@@ -136,11 +136,12 @@ const Dashboard = () => {
         console.log(selectedModesClone);
         console.log(prompts);
 
+        // let formData = new FormData();
+        // formData.append('File', selectedFile);
+        // formData.append('SelectedOutputTypes', selectedModes);
         let formData = new FormData();
-
-      
         formData.append('File', selectedFile);
-        formData.append('SelectedOutputTypes', selectedModes);
+        selectedModes.forEach(t => formData.append('SelectedOutputTypes', t));
         // formData.append('additionalPrompts', prompts); //
 
         const response = await axiosPublic.post('/api/File/generate', formData)
@@ -316,8 +317,8 @@ const Dashboard = () => {
         {/* Output Section */}
         <section className="mt-8">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-title">Output(2)</h2>
-            <button className="btn-theme">Download all(2)</button>
+            <h2 className="text-title">Output</h2>
+            <button className="btn-theme">Download all</button>
           </div>
           <div id="file-display" className="flex flex-col gap-4">
               <DocumentOutputPreview outputFiles={outputFiles} setPreviewFile={setPreviewFile}/>

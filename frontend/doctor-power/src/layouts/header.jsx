@@ -13,8 +13,8 @@ const Header = () => {
             </div>
             </div>
             <div className="flex gap-4">
-            <button className="w-30 h-10 btn-theme">Login</button>
-            <button className="w-30 h-10 btn-theme">Signin</button>
+            {/* <button className="w-30 h-10 btn-theme">Login</button>
+            <button className="w-30 h-10 btn-theme">Signin</button> */}
             </div>
         </header>
     )

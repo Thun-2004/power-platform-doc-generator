@@ -1,0 +1,53 @@
+﻿{
+  "exists": true,
+  "items": [
+    {
+      "name": "wmreply_Replybrary_Admin_List/"
+    },
+    {
+      "name": "wmreply_Replybrary_App_Link/"
+    },
+    {
+      "name": "wmreply_Replybrary_CertificationsTracker_List/"
+    },
+    {
+      "name": "wmreply_Replybrary_ClientContacts_List/"
+    },
+    {
+      "name": "wmreply_Replybrary_Client_List/"
+    },
+    {
+      "name": "wmreply_Replybrary_Currency_List/"
+    },
+    {
+      "name": "wmreply_Replybrary_LessonsLearnt_List/"
+    },
+    {
+      "name": "wmreply_Replybrary_Links_List/"
+    },
+    {
+      "name": "wmreply_Replybrary_M365GroupID/"
+    },
+    {
+      "name": "wmreply_Replybrary_People_List/"
+    },
+    {
+      "name": "wmreply_Replybrary_ProjectHistory_List/"
+    },
+    {
+      "name": "wmreply_Replybrary_Project_List/"
+    },
+    {
+      "name": "wmreply_Replybrary_ReusableIdeas_List/"
+    },
+    {
+      "name": "wmreply_Replybrary_SkillLevels_List/"
+    },
+    {
+      "name": "wmreply_Replybrary_SMEs_List/"
+    },
+    {
+      "name": "wmreply_Replybrary_SP_Site/"
+    }
+  ]
+}
