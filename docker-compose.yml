@@ -17,14 +17,18 @@ services:
     volumes:
       - ./frontend/doctor-power:/app
       - /app/node_modules
+    environment:
+      - VITE_POWERDOCU_BACKEND_URL=http://localhost:5280
     stdin_open: true
     tty: true
 
   backend:
+    platform: linux/amd64
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
     ports:
-      - "5280:8080"
+      - "5280:5280"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - OPENAI_API_KEY=${OPENAI_API_KEY}

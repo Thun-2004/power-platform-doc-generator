@@ -18,6 +18,7 @@ public class JobOutputService : IJobOutputService
     public async Task<JobOutputResult> GetJobOutputAsync(string jobId, string outputType, CancellationToken ct)
     {
         FileMetadata fileMetadata = _jobs.getOutputFile(jobId, outputType);
+        
         string filePath = fileMetadata.FilePath ?? throw new InvalidOperationException("Output file path is not available.");
         FileDescriptor fileDescriptor = CreateFileDescriptor(jobId, outputType,  filePath);
         var bytes = await System.IO.File.ReadAllBytesAsync(filePath, ct);
@@ -28,6 +29,7 @@ public class JobOutputService : IJobOutputService
             DownloadName: fileDescriptor.DownloadName
         ); 
     }
+
 
     private FileDescriptor CreateFileDescriptor(string jobId, string outputType,  string path)
     {

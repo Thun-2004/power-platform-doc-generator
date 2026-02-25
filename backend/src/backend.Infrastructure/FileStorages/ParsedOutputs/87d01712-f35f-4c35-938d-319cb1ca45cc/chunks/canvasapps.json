@@ -1,0 +1,15 @@
+﻿{
+  "exists": true,
+  "groups": {
+    "wmreply_replybraryv2_c933c": [
+      "wmreply_replybraryv2_c933c_AdditionalUris0_identity.json",
+      "wmreply_replybraryv2_c933c_BackgroundImageUri",
+      "wmreply_replybraryv2_c933c_DocumentUri.msapp"
+    ],
+    "wmreply_replybrary_b320d": [
+      "wmreply_replybrary_b320d_AdditionalUris0_identity.json",
+      "wmreply_replybrary_b320d_BackgroundImageUri",
+      "wmreply_replybrary_b320d_DocumentUri.msapp"
+    ]
+  }
+}

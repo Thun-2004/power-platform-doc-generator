@@ -92,11 +92,13 @@ public class FileController : ControllerBase
         {
             var jobOutput = await _jobOutputService.GetJobOutputAsync(jobId, outputType, ct); 
 
-            return Ok(File(
+            Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition");
+
+            return File(
                     jobOutput.Content,
                     jobOutput.MimeType,
                     jobOutput.DownloadName
-                )); 
+                ); 
             
         }catch(Exception e)
         {
