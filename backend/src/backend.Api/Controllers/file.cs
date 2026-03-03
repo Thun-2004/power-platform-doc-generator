@@ -36,7 +36,7 @@ public class FileController : ControllerBase
         List<string> outputTypes = req.SelectedOutputTypes.Select(t => t.Trim()).ToList();
         try
         {
-            var job = await _uploadService.StartJobAsync(req.File, outputTypes, ct); 
+            var job = await _uploadService.StartJobAsync(req.File, outputTypes, req.UseLLM, ct); 
             return Ok(new ResponseModel<JobResponse>
             {
                 Status = 200,
