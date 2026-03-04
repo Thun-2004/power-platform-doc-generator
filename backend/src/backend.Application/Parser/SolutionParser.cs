@@ -32,6 +32,8 @@ public static class SolutionParser
         // ----------------------------
         // Pac unzipped file
         // ----------------------------
+        var canvasDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasApps");
+
         string pacDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "PPCliJobs");
 
         // var canvasAppsDir = Path.Combine(root.FullName, "CanvasApps");
@@ -62,7 +64,6 @@ public static class SolutionParser
         // ----------------------------
         // Parser
         // ----------------------------
-        var canvasDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasApps");
         var workflowsDir = FsHelpers.FindDirCaseInsensitive(root, "Workflows");
         var envDir = FsHelpers.FindDirCaseInsensitive(root, "environmentvariabledefinitions");
         var canvasSrcDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasAppsSrc");

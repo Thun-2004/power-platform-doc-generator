@@ -10,7 +10,6 @@ import DocumentOutputPreview from "../components/DocumentOutputPreview";
 import axios from 'axios';
 
 const Dashboard = () => {
-
   const fileTypes = [
     { id: "overview", title: "Overview", desc: "Dummy text for generating an ER diagram"},
     { id: "workflows", title: "Workflows", desc: "Dummy text for generating a UI-hierarchy"},
