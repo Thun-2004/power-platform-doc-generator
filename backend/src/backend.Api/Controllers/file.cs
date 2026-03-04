@@ -49,10 +49,20 @@ public class FileController : ControllerBase
                     OutputFilesMetas = job.OutputFilesMetas
                 }
             });
+        }catch (DirectoryNotFoundException e){
+            return Problem(
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Invalid request"
+            );
         }
         catch (ArgumentException e)
         {
-            return BadRequest(e.Message);
+            return Problem(
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Invalid request"
+            );
         }
     }
 
