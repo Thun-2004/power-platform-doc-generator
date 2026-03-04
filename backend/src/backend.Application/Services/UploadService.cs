@@ -60,9 +60,11 @@ public class UploadService : IUploadService
             {
                 await _fileProcessing.ProcessFile(outputTypes, job.JobId, useLLM);
             }
+            //TODO: more descriptive error handling
             catch (Exception e)
             {
                 _logger.LogError(e, "FileProcessing failed for job {JobId}", job.JobId);
+                throw new ArgumentException($"{e.Message}");
             }
         }, CancellationToken.None);
 
