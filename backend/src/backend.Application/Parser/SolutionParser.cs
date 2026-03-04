@@ -26,22 +26,6 @@ public static class SolutionParser
 
         var root = new DirectoryInfo(Path.GetFullPath(Environment.ExpandEnvironmentVariables(input)));
         
-        // ----------------------------
-        // Detect incorrect file type
-        // ----------------------------
-        var canvasDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasApps");
-        var workflowsDir = FsHelpers.FindDirCaseInsensitive(root, "Workflows");
-        var envDir = FsHelpers.FindDirCaseInsensitive(root, "environmentvariabledefinitions");
-
-        //Scanned folder
-        if(canvasDir == null){
-            throw new DirectoryNotFoundException($"CanvasApps folder not found");
-        }else if(workflowsDir == null){
-            throw new DirectoryNotFoundException($"WorkflowsDir folder not found");
-        }else if(envDir == null){
-            throw new DirectoryNotFoundException($"Environmentvariabledefinitions folder not found");
-        }
-        
         var outDirPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(output));
         Directory.CreateDirectory(outDirPath);
 
@@ -78,6 +62,9 @@ public static class SolutionParser
         // ----------------------------
         // Parser
         // ----------------------------
+        var canvasDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasApps");
+        var workflowsDir = FsHelpers.FindDirCaseInsensitive(root, "Workflows");
+        var envDir = FsHelpers.FindDirCaseInsensitive(root, "environmentvariabledefinitions");
         var canvasSrcDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasAppsSrc");
         //TODO: should doc with 0 screen be able to be parsed ? 
 

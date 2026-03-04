@@ -151,4 +151,14 @@ public class JobStore : IJobStore
 
         return fileMeta;
     }
+
+    public void FailJob(string jobId, string message, string? outputType = null)
+    {
+        if (!_jobs.TryGetValue(jobId, out var job))
+            return;
+
+        job.JobStatus = JobState.Failed;
+        job.ErrorMessage = message;
+        job.FailedOutputType.Add(outputType)
+    }
 }

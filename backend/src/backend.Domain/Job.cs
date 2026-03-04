@@ -21,6 +21,8 @@ public class JobRecord
     public required JobState JobStatus {get; set; } = JobState.Pending; 
     public string ZipFilePath { get; set; } = "";
     public Dictionary<string, FileMetadata?> OutputType_FileMeta_Matches { get; set; } = new(); 
+    public string? ErrorMessage { get; set; }
+    public List<string>? FailedOutputType { get; set; } = []
 }
 
 public class FileMetadata

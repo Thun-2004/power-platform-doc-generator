@@ -67,6 +67,7 @@ public class UploadService : IUploadService
             catch (Exception e)
             {
                 _logger.LogError(e, "FileProcessing failed for job {JobId}", job.JobId);
+                _jobs.FailJob(job.JobId, e.Message);
             }
         }, CancellationToken.None);
 
