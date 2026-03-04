@@ -8,9 +8,10 @@
 .venv/
 
 #Local testfiles
-backend/src/backend.Api/parsed_outputs/
-backend/src/backend.Api/TestFiles/
-backend/src/backend.Api/rag_outputs/
+backend/src/backend.Infrastructure/FileStorages/ParsedOutputs/
+backend/src/backend.Infrastructure/FileStorages/PPCliJobs/
+backend/src/backend.Infrastructure/FileStorages/RAGOutputs/
+backend/src/backend.Infrastructure/FileStorages/UploadedFiles/
 
 #React
 node_modules/
