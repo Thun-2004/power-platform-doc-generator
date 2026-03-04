@@ -4,6 +4,7 @@ using backend.Application.DTO;
 using backend.Application.Interfaces;
 using backend.Domain;
 using backend.Application.LLM; 
+using backend.Application.Helpers; 
 
 namespace backend.Application.Services;
 
@@ -53,6 +54,8 @@ public class UploadService : IUploadService
         // create job
         var job = _jobs.Create(outputTypes, Path.GetFileNameWithoutExtension(originalFileName), fullFilePath);
 
+        //validate test before background job
+        FileOperation.ValidateSolutionZipOrThrow(job.ZipFilePath);
         // background job
         _ = Task.Run(async () =>
         {
@@ -64,7 +67,6 @@ public class UploadService : IUploadService
             catch (Exception e)
             {
                 _logger.LogError(e, "FileProcessing failed for job {JobId}", job.JobId);
-                throw new ArgumentException($"{e.Message}");
             }
         }, CancellationToken.None);
 
