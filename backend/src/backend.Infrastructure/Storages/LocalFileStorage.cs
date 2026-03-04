@@ -18,7 +18,11 @@ public class LocalFileStorage : IFileStorage
         var originalFileName = file.FileName;
         var ext = Path.GetExtension(originalFileName).ToLowerInvariant();
 
-        // dirs
+        //dirs
+        string pacDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "PPCliJobs");
+        if (!Directory.Exists(pacDir))
+            Directory.CreateDirectory(pacDir);
+
         string rawinputDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "UploadedFiles");
         if (!Directory.Exists(rawinputDir))
             Directory.CreateDirectory(rawinputDir);
@@ -30,6 +34,7 @@ public class LocalFileStorage : IFileStorage
         string parsedDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "ParsedOutputs");
         if (!Directory.Exists(parsedDir))
             Directory.CreateDirectory(parsedDir);
+
 
         // unique file path
         string fullFilePath = _fileProcessing.CreateFile(originalFileName, ext, rawinputDir);
