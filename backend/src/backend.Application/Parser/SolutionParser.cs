@@ -7,11 +7,13 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using backend.Application.LLM;
+using backend.Application.Helpers;
 
 namespace backend.Application.Parser;
 public static class SolutionParser
 {
-    public static string Run(string input_path, string output_path)
+    public static string Run(string input_path, string output_path, string jobId)
     {
         string input = input_path;
         string output = output_path;
@@ -26,6 +28,38 @@ public static class SolutionParser
         var outDirPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(output));
         Directory.CreateDirectory(outDirPath);
 
+        // ----------------------------
+        // Pac unzipped file
+        // ----------------------------
+        string pacDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "PPCliJobs");
+
+        var canvasAppsDir = Path.Combine(root.FullName, "CanvasApps");
+        if (!Directory.Exists(canvasAppsDir))
+            throw new DirectoryNotFoundException($"CanvasApps folder not found: {canvasAppsDir}");
+
+        var newPacFolderDir = Path.Combine(pacDir, jobId); 
+        if (!Directory.Exists(newPacFolderDir))
+            Directory.CreateDirectory(newPacFolderDir);
+
+        var newPacSolutionFileDir = Path.Combine(root.FullName, "CanvasAppsSrc"); 
+        if (!Directory.Exists(newPacSolutionFileDir))
+            Directory.CreateDirectory(newPacSolutionFileDir);
+
+        //Loop through .msapp file in Canvasapp & pac
+        foreach (var msappPath in Directory.EnumerateFiles(canvasAppsDir, "*.msapp", SearchOption.TopDirectoryOnly)){
+            Exporting.RunProcess(
+                "pac",
+                $"canvas unpack --msapp \"{msappPath}\" --sources CanvasAppsSrc",
+                newPacFolderDir,  // working directory
+                true
+            );
+        }
+        FileOperation.CopyDirectory(newPacFolderDir, newPacSolutionFileDir); 
+        FileOperation.RemoveDirectory(newPacFolderDir); 
+
+        // ----------------------------
+        // Parser
+        // ----------------------------
         var canvasDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasApps");
         var canvasSrcDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasAppsSrc");
         var workflowsDir = FsHelpers.FindDirCaseInsensitive(root, "Workflows");
