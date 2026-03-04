@@ -27,7 +27,7 @@ public class UploadService : IUploadService
         _storage = storage;
     }
 
-    public async Task<JobStartResult> StartJobAsync(IFormFile file, List<string> outputTypes, bool useLLM, CancellationToken ct)
+    public async Task<JobStartResult> StartJobAsync(IFormFile file, List<string> outputTypes, bool useLLM, IReadOnlyDictionary<string, string>? outputPrompts, CancellationToken ct)
     {
         // normalize
         outputTypes = outputTypes
@@ -61,13 +61,13 @@ public class UploadService : IUploadService
         {
             try
             {
-                await _fileProcessing.ProcessFile(outputTypes, job.JobId, useLLM);
+                await _fileProcessing.ProcessFile(outputTypes, job.JobId, useLLM, outputPrompts);
             }
             //TODO: more descriptive error handling
             catch (Exception e)
             {
                 _logger.LogError(e, "FileProcessing failed for job {JobId}", job.JobId);
-                _jobs.FailJob(job.JobId, e.Message);
+                // _jobs.FailJob(job.JobId, e.Message);
             }
         }, CancellationToken.None);
 

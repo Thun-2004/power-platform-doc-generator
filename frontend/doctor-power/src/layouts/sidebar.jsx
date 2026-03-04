@@ -46,21 +46,7 @@ const Sidebar = () => {
             }}
           >
             <Bookmark size={20}/>
-            <span className="text-menu">Your collections</span>
-          </div>
-          <div 
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all ${
-              activeMenu === 'profile' 
-                ? 'bg-blue-600 text-white' 
-                : 'text-gray-600 hover:bg-gray-200'
-            }`}
-            onClick= {() => {
-              setActiveMenu('userprofile')
-              navigate('/userprofile', { replace: true });
-            }}
-          >
-            <User size={20}/>
-            <span className="text-menu">User Profile</span>
+            <span className="text-menu">User handbook</span>
           </div>
         </nav>
       </aside>

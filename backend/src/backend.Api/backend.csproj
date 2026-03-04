@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
@@ -21,9 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../backend.Infrastructure/backend.Infrastructure.csproj"/>
-    <ProjectReference Include="../backend.Domain/backend.Domain.csproj"/>
-    <ProjectReference Include="../backend.Application/backend.Application.csproj"/>
+    <ProjectReference Include="../backend.Infrastructure/backend.Infrastructure.csproj" />
+    <ProjectReference Include="../backend.Domain/backend.Domain.csproj" />
+    <ProjectReference Include="../backend.Application/backend.Application.csproj" />
   </ItemGroup>
 
 </Project>

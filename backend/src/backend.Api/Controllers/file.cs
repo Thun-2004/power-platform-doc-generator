@@ -33,10 +33,31 @@ public class FileController : ControllerBase
         if (req.File == null || req.File.Length == 0)
             return BadRequest("File is required");
 
-        List<string> outputTypes = req.SelectedOutputTypes.Select(t => t.Trim()).ToList();
+        // Parse "overview" or "overview: add conclusion at the end" into types + per-type prompts
+        var outputTypes = new List<string>();
+        var outputPrompts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var item in req.SelectedOutputTypes.Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)))
+        {
+            var colonIdx = item.IndexOf(':');
+            string type;
+            string? promptPart = null;
+            if (colonIdx > 0)
+            {
+                type = item.Substring(0, colonIdx).Trim().ToLowerInvariant();
+                promptPart = item.Substring(colonIdx + 1).Trim();
+            }
+            else
+                type = item.ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(type)) continue;
+            if (!outputTypes.Contains(type))
+                outputTypes.Add(type);
+            if (!string.IsNullOrWhiteSpace(promptPart))
+                outputPrompts[type] = promptPart;
+        }
+
         try
         {
-            var job = await _uploadService.StartJobAsync(req.File, outputTypes, req.UseLLM, ct); 
+            var job = await _uploadService.StartJobAsync(req.File, outputTypes, req.UseLLM, outputPrompts, ct); 
             return Ok(new ResponseModel<JobResponse>
             {
                 Status = 200,
@@ -109,8 +130,26 @@ public class FileController : ControllerBase
                     jobOutput.MimeType,
                     jobOutput.DownloadName
                 ); 
-            
-        }catch(Exception e)
+        }
+        catch (JobOutputFailedException e)
+        {
+            var error = new ResponseModel<object>
+            {
+                Status = 500,
+                Message = e.Message,
+            };
+            return StatusCode(500, error);
+        }
+        catch (JobOutputNotReadyException e)
+        {
+            var error = new ResponseModel<object>
+            {
+                Status = 409,
+                Message = e.Message,
+            };
+            return StatusCode(409, error);
+        }
+        catch(Exception e)
         {
             ResponseModel<object> error = new ResponseModel<object>
             {
