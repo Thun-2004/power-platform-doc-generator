@@ -32,6 +32,8 @@ const Dashboard = () => {
   const [previewFile, setPreviewFile] = useState(null);
   // Banner when whole job finishes: 'Completed' | 'Failed' | null
   const [jobCompleteStatus, setJobCompleteStatus] = useState(null);
+  // Optional message for Failed (e.g. backend error text)
+  const [jobCompleteMessage, setJobCompleteMessage] = useState(null);
 
   //FIXME: finish axios private for this
   // const axiosPrivate = useAxiosPrivate();
@@ -63,6 +65,7 @@ const Dashboard = () => {
       return [];
     });
     setJobCompleteStatus(null);
+    setJobCompleteMessage(null);
     setPreviewFile(null);
     fileTypes.forEach((type) => {
       const el = document.getElementById(type.id);
@@ -141,9 +144,36 @@ const Dashboard = () => {
       }
   };
 
+    const getErrorMessage = (err) => {
+      const d = err?.response?.data;
+      if (!d) return err?.message || 'Something went wrong';
+      if (typeof d === 'string') return d;
+      return d.detail ?? d.Detail ?? d.message ?? d.Message ?? d.title ?? err?.message ?? 'Something went wrong';
+    };
+
     const onGenerateOutputFile = async () => {
       try {
         setJobCompleteStatus(null);
+        setJobCompleteMessage(null);
+
+        const hasFile = !!selectedFile;
+        const hasOptions = selectedModes.length > 0;
+        if (!hasFile && !hasOptions) {
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage('Please select a file and at least one output type.');
+          return;
+        }
+        if (!hasFile) {
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage('Please select a file.');
+          return;
+        }
+        if (!hasOptions) {
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage('Please select at least one output type.');
+          return;
+        }
+
         const selectedModesClone = [...selectedModes];
         setIsUploading(true);
 
@@ -154,7 +184,16 @@ const Dashboard = () => {
           formData.append('SelectedOutputTypes', prompt ? `${t}: ${prompt}` : t);
         });
 
-        const response = await axiosPublic.post('/api/File/generate', formData);
+        let response;
+        try {
+          response = await axiosPublic.post('/api/File/generate', formData);
+        } catch (postErr) {
+          const msg = getErrorMessage(postErr);
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage(msg);
+          return;
+        }
+
         const data = response.data?.data ?? response.data;
         const jobId = data.JobId ?? data.jobId;
         const statusUrl = data.JobStatusUrl ?? data.jobStatusUrl;
@@ -251,10 +290,14 @@ const Dashboard = () => {
             setJobCompleteStatus(
               normalizedJobStatus === 'Failed' ? 'Failed' : 'Completed'
             );
+            if (normalizedJobStatus === 'Failed') setJobCompleteMessage(null);
           }
         }
       } catch (err) {
         console.error('Failed to generate document', err);
+        const msg = getErrorMessage(err);
+        setJobCompleteStatus('Failed');
+        setJobCompleteMessage(msg);
       } finally {
         setIsUploading(false);
       }
@@ -282,7 +325,11 @@ const Dashboard = () => {
       {jobCompleteStatus && (
         <JobCompleteBanner
           status={jobCompleteStatus}
-          onDismiss={() => setJobCompleteStatus(null)}
+          message={jobCompleteMessage}
+          onDismiss={() => {
+            setJobCompleteStatus(null);
+            setJobCompleteMessage(null);
+          }}
         />
       )}
       <main className="flex-1 p-8 bg-white m-4 rounded-xl shadow-sm overflow-y-auto">
