@@ -5,12 +5,12 @@ import uploadFile from "../api/file";
 import DocumentPreviewModal from "../components/DocumentPreviewModal";
 import DiagramSelectionBox from "../components/DiagramSelectionBox";
 import DocumentOutputPreview from "../components/DocumentOutputPreview";
+import JobCompleteBanner from "../components/JobCompleteBanner";
 
 //temp
 import axios from 'axios';
 
 const Dashboard = () => {
-
   const fileTypes = [
     { id: "overview", title: "Overview", desc: "Dummy text for generating an ER diagram"},
     { id: "workflows", title: "Workflows", desc: "Dummy text for generating a UI-hierarchy"},
@@ -27,8 +27,11 @@ const Dashboard = () => {
     'Failed': "❌ request failed",
   }
   
-  const [outputFiles, setOutputFiles] = useState([]);
+  // Each item: { id, outputType, displayName, status, jobId, downloadUrl, name?, url?, blob? }
+  const [outputItems, setOutputItems] = useState([]);
   const [previewFile, setPreviewFile] = useState(null);
+  // Banner when whole job finishes: 'Completed' | 'Failed' | null
+  const [jobCompleteStatus, setJobCompleteStatus] = useState(null);
 
   //FIXME: finish axios private for this
   // const axiosPrivate = useAxiosPrivate();
@@ -97,7 +100,7 @@ const Dashboard = () => {
             try {
                 if (fileInputRef.current) fileInputRef.current.value = "";
             } catch (e) {
-                
+                console.error('Failed to clear file input', e);
             }
           } else {
             alert('Please select a .zip file only.');
@@ -119,116 +122,130 @@ const Dashboard = () => {
   };
 
     const onGenerateOutputFile = async () => {
-      // Call backend to get generated document and present in Output
       try {
-        console.log("click")
-        const selectedModesClone = new Array();
-        selectedModes.forEach((m) => {
-          selectedModesClone.push(m);
-        }) //Lock the modes that we work with
-
+        setJobCompleteStatus(null);
+        const selectedModesClone = [...selectedModes];
         setIsUploading(true);
 
-        //Get prompts from selected output types so that they can be passed to the backend
-        let prompts = {}
-        selectedModesClone.forEach((m) => prompts[m] = document.getElementById(m).value);
-
-        console.log(selectedModesClone);
-        console.log(prompts);
-
-        // let formData = new FormData();
-        // formData.append('File', selectedFile);
-        // formData.append('SelectedOutputTypes', selectedModes);
-        let formData = new FormData();
+        const formData = new FormData();
         formData.append('File', selectedFile);
-        selectedModes.forEach(t => formData.append('SelectedOutputTypes', t));
-        // formData.append('additionalPrompts', prompts); //
+        selectedModes.forEach((t) => {
+          const prompt = document.getElementById(t)?.value?.trim() ?? '';
+          formData.append('SelectedOutputTypes', prompt ? `${t}: ${prompt}` : t);
+        });
 
-        const response = await axiosPublic.post('/api/File/generate', formData)
- 
-        
-        // //Retrieve data from API response
-        let status = response.data.data['jobStatus'];
-        let statusUrl = response.data.data['jobStatusUrl'];
-        let outputApiUrls = response.data.data['outputFilesMetas']; //list of APIs to call that generate the document
-        selectedModesClone.forEach((m) => console.log(outputApiUrls[m]));
+        const response = await axiosPublic.post('/api/File/generate', formData);
+        const data = response.data?.data ?? response.data;
+        const jobId = data.JobId ?? data.jobId;
+        const statusUrl = data.JobStatusUrl ?? data.jobStatusUrl;
+        const outputApiUrls = data.OutputFilesMetas ?? data.outputFilesMetas ?? {};
 
+        // Show one box per output type from the start
+        const initialItems = selectedModesClone.map((outputType) => {
+          const typeInfo = fileTypes.find((t) => t.id === outputType);
+          return {
+            id: `${jobId}-${outputType}-${Date.now()}`,
+            outputType,
+            displayName: typeInfo?.title ?? outputType,
+            status: 'Pending',
+            jobId,
+            downloadUrl: outputApiUrls[outputType],
+          };
+        });
+        setOutputItems(initialItems);
 
-        // // let i = 0;
-        while(status != 'Failed' && status != 'Completed'){
+        // Poll job status and fetch files when Completed
+        let done = false;
+        const fetched = new Set(); // outputTypes we've already fetched
+        while (!done) {
           await delay(tickLength);
-          status = (await axiosPublic.get(statusUrl)).data.data['jobStatus'];
-          console.log(status);
-          updateStatusSymbol(status);
-        //   // i++;
-        }
-        // var status;
-        // status = 'Completed';
-        if (status == 'Failed'){
-          console.log('Failed');
-          updateStatusSymbol(status)
-          // TODO Figure out how to display the retryOutputButton here
-        }
-        else {
-          //Call the outputAPI
-            
-          selectedModesClone.forEach(async (m) =>  
-          {
-            console.log(outputApiUrls[m])
-            // const response = await axiosPublic.get("api/File/getDocument/" + m, {responseType: 'blob'});
-            const response = await axiosPublic.get(outputApiUrls[m], {responseType: 'blob'});
-            console.log(response);
-            const contentDisposition = response.headers['content-disposition'] || '';
-            console.log(contentDisposition);
+          const statusRes = await axiosPublic.get(statusUrl);
+          const statusData = statusRes.data?.data ?? statusRes.data ?? {};
+          const jobStatus = statusData.JobStatus ?? statusData.jobStatus ?? '';
+          const progressRaw = statusData.Progress ?? statusData.progress ?? {};
+          const progress = typeof progressRaw === 'object' && progressRaw !== null ? progressRaw : {};
+          if (document.getElementById('jobStatus')) updateStatusSymbol(jobStatus);
 
-            let fileName = "generated_document";
-            // let fileName = "generated_document";
-            console.log(fileName)
-            const fileNameMatch = /filename=(?:"?)([^;\"]+)/i.exec(contentDisposition);
-            console.log(fileNameMatch);
-            if (fileNameMatch && fileNameMatch[1]) fileName = fileNameMatch[1].replace(/\"/g, '');
-            console.log(fileName);
-            const blob = new Blob([response.data], { type: response.data.type || 'application/octet-stream' });
-            const url = URL.createObjectURL(blob);
+          setOutputItems((prev) =>
+            prev.map((item) => {
+              const raw = progress[item.outputType];
+              const status = (raw && String(raw).trim()) || item.status;
+              return { ...item, status };
+            })
+          );
 
-
-            // ensure fileName has extension, fallback using blob.type
-            if (!fileName.includes('.')) {
-              const mime = blob.type;
-              const mimeToExt = {
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
-                'application/pdf': '.pdf',
-                'application/zip': '.zip'
-              };
-              if (mimeToExt[mime]) fileName += mimeToExt[mime];
-            }
-            // console.log(mime);
-
-            setOutputFiles(prev => [
-              ...prev,
-              {
-                id: Date.now(),
-                name: fileName,
-                url,
-                blob
+          // Fetch file for any output type that is now Completed and not yet fetched
+          for (const outputType of selectedModesClone) {
+            const statusForType = (progress[outputType] && String(progress[outputType]).trim()) || '';
+            if (statusForType !== 'Completed' || fetched.has(outputType)) continue;
+            fetched.add(outputType);
+            const downloadUrl = outputApiUrls[outputType];
+            if (!downloadUrl) continue;
+            try {
+              const fileRes = await axiosPublic.get(downloadUrl, {
+                responseType: 'blob',
+              });
+              const contentDisposition =
+                fileRes.headers['content-disposition'] || '';
+              let fileName = 'generated_document';
+              const fileNameMatch = /filename=(?:"?)([^;\"]+)/i.exec(
+                contentDisposition
+              );
+              if (fileNameMatch?.[1]) fileName = fileNameMatch[1].replace(/"/g, "");
+              const blob = new Blob([fileRes.data], {
+                type: fileRes.data.type || 'application/octet-stream',
+              });
+              if (!fileName.includes('.')) {
+                const mimeToExt = {
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                    '.docx',
+                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                    '.xlsx',
+                  'application/pdf': '.pdf',
+                  'application/zip': '.zip',
+                };
+                if (mimeToExt[blob.type]) fileName += mimeToExt[blob.type];
               }
-            ]);
+              const url = URL.createObjectURL(blob);
+              setOutputItems((prev) =>
+                prev.map((item) =>
+                  item.outputType === outputType
+                    ? { ...item, name: fileName, url, blob, status: 'Completed' }
+                    : item
+                )
+              );
+            } catch (e) {
+              console.error('Failed to fetch output file', outputType, e);
             }
-            
-          )
-          
+          }
+
+          const normalizedJobStatus = (jobStatus && String(jobStatus).trim()) || '';
+          done =
+            normalizedJobStatus === 'Failed' ||
+            normalizedJobStatus === 'Completed' ||
+            selectedModesClone.every((t) => {
+              const s = (progress[t] && String(progress[t]).trim()) || '';
+              return s === 'Completed' || s === 'Failed';
+            });
+          if (done) {
+            setJobCompleteStatus(
+              normalizedJobStatus === 'Failed' ? 'Failed' : 'Completed'
+            );
+          }
         }
-
-
-
-
-
       } catch (err) {
-        console.error('Failed to fetch document', err);
+        console.error('Failed to generate document', err);
       } finally {
         setIsUploading(false);
       }
+    };
+
+    const onDismissOutputItem = (id) => {
+      setOutputItems((prev) => {
+        const item = prev.find((i) => i.id === id);
+        if (item?.url) URL.revokeObjectURL(item.url);
+        return prev.filter((i) => i.id !== id);
+      });
     };
 
 
@@ -242,6 +259,12 @@ const Dashboard = () => {
 
   return (
       <>
+      {jobCompleteStatus && (
+        <JobCompleteBanner
+          status={jobCompleteStatus}
+          onDismiss={() => setJobCompleteStatus(null)}
+        />
+      )}
       <main className="flex-1 p-8 bg-white m-4 rounded-xl shadow-sm overflow-y-auto">
         {/* Upload File Section */}
         <section className="mb-8">
@@ -309,7 +332,7 @@ const Dashboard = () => {
 
             <div className="mt-6">
                 <button onClick={onGenerateOutputFile} className="btn-theme">Generate</button>
-                <h2 id="jobStatus"></h2>
+                {/* <h2 id="jobStatus"></h2> */}
             </div>
         </div>
         </section>
@@ -321,7 +344,11 @@ const Dashboard = () => {
             <button className="btn-theme">Download all</button>
           </div>
           <div id="file-display" className="flex flex-col gap-4">
-              <DocumentOutputPreview outputFiles={outputFiles} setPreviewFile={setPreviewFile}/>
+              <DocumentOutputPreview
+                outputItems={outputItems}
+                setPreviewFile={setPreviewFile}
+                onDismiss={onDismissOutputItem}
+              />
           </div>
         </section>
       </main>

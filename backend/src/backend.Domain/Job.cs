@@ -30,5 +30,33 @@ public class FileMetadata
     public string? FilePath { get; set; }
     public string MimeType { get; set; } = "";
 }
+ 
+public class JobOutputException : Exception
+{
+    public string JobId { get; }
+    public string OutputType { get; }
 
+    public JobOutputException(string jobId, string outputType, string message)
+        : base(message)
+    {
+        JobId = jobId;
+        OutputType = outputType;
+    }
+}
+
+public sealed class JobOutputNotReadyException : JobOutputException
+{
+    public JobOutputNotReadyException(string jobId, string outputType, string message)
+        : base(jobId, outputType, message)
+    {
+    }
+}
+
+public sealed class JobOutputFailedException : JobOutputException
+{
+    public JobOutputFailedException(string jobId, string outputType, string message)
+        : base(jobId, outputType, message)
+    {
+    }
+}
 

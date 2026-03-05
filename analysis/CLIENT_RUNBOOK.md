@@ -99,6 +99,15 @@ export REPORT_DIR="$HOME/Replybrary_reports"
 export CHUNKS_DIR="$REPORT_DIR/chunks"
 export RAG_OUT_DIR="$REPO_ROOT/test-AI-LLM/rag_outputs"
 
+#mine
+# /Users/benn/Desktop/sh38-main/test-AI-LLM
+export REPO_ROOT="/Users/benn/Desktop/sh38-main"
+export SOLUTION_DIR="/Users/benn/Downloads/Replybrary_1_0_0_20_2"
+export UNPACK_DIR="$HOME/pp_cli_jobs/replybrary_unpacked"
+export REPORT_DIR="$HOME/Replybrary_reports"
+export CHUNKS_DIR="$REPORT_DIR/chunks"
+export RAG_OUT_DIR="$REPO_ROOT/test-AI-LLM/rag_outputs"
+
 
 ⸻
 

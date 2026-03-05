@@ -29,6 +29,7 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - "5280:5280"
+  
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - OPENAI_API_KEY=${OPENAI_API_KEY}

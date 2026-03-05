@@ -25,15 +25,19 @@ public static class SolutionParser
         }
 
         var root = new DirectoryInfo(Path.GetFullPath(Environment.ExpandEnvironmentVariables(input)));
+        
         var outDirPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(output));
         Directory.CreateDirectory(outDirPath);
 
         // ----------------------------
         // Pac unzipped file
         // ----------------------------
+        var canvasDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasApps");
+
         string pacDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "PPCliJobs");
 
-        var canvasAppsDir = Path.Combine(root.FullName, "CanvasApps");
+        // var canvasAppsDir = Path.Combine(root.FullName, "CanvasApps");
+        var canvasAppsDir = canvasDir.FullName;
         if (!Directory.Exists(canvasAppsDir))
             throw new DirectoryNotFoundException($"CanvasApps folder not found: {canvasAppsDir}");
 
@@ -46,7 +50,7 @@ public static class SolutionParser
             Directory.CreateDirectory(newPacSolutionFileDir);
 
         //Loop through .msapp file in Canvasapp & pac
-        foreach (var msappPath in Directory.EnumerateFiles(canvasAppsDir, "*.msapp", SearchOption.TopDirectoryOnly)){
+        foreach (var msappPath in Directory.EnumerateFiles(canvasDir.FullName, "*.msapp", SearchOption.TopDirectoryOnly)){
             Exporting.RunProcess(
                 "pac",
                 $"canvas unpack --msapp \"{msappPath}\" --sources CanvasAppsSrc",
@@ -60,10 +64,10 @@ public static class SolutionParser
         // ----------------------------
         // Parser
         // ----------------------------
-        var canvasDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasApps");
-        var canvasSrcDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasAppsSrc");
         var workflowsDir = FsHelpers.FindDirCaseInsensitive(root, "Workflows");
         var envDir = FsHelpers.FindDirCaseInsensitive(root, "environmentvariabledefinitions");
+        var canvasSrcDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasAppsSrc");
+        //TODO: should doc with 0 screen be able to be parsed ? 
 
         var report = new SolutionReport
         {

@@ -3,6 +3,7 @@ using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
 
 using backend.Domain;
 using backend.Infrastructure;
@@ -14,6 +15,8 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        Env.Load(Path.Combine("..", "..", ".." ,".env"));
+
         var builder = WebApplication.CreateBuilder(args);
         var AllowFrontend = "_myAllowSpecificOrigins"; 
 

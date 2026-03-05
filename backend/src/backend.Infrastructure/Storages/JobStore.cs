@@ -147,8 +147,24 @@ public class JobStore : IJobStore
             throw new Exception("Output type not found");
 
         if (fileMeta == null)
-            throw new Exception("Output not yet avaiable"); 
+            throw new Exception("Output not yet available");
+
+        if (fileMeta.Status == JobState.Failed)
+            throw new JobOutputFailedException(jobId, outputType, "Output generation failed.");
+
+        if (fileMeta.Status == JobState.Pending || fileMeta.Status == JobState.Processing || string.IsNullOrWhiteSpace(fileMeta.FilePath))
+            throw new JobOutputNotReadyException(jobId, outputType, "Output is not yet available.");
 
         return fileMeta;
     }
+
+    // public void FailJob(string jobId, string message, string? outputType = null)
+    // {
+    //     if (!_jobs.TryGetValue(jobId, out var job))
+    //         return;
+
+    //     job.JobStatus = JobState.Failed;
+    //     job.ErrorMessage = message;
+    //     job.FailedOutputType.Add(outputType)
+    // }
 }

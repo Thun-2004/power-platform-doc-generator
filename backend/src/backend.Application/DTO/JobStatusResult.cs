@@ -4,4 +4,5 @@ public record JobStatusResult(
     string JobId,
     string JobStatus,
     IReadOnlyDictionary<string, string> Progress
+
 );
