@@ -299,12 +299,27 @@ const Dashboard = () => {
           done = normalizedJobStatus === 'Completed' || allOutputsDone;
 
           if (done) {
-            const anyFailed = selectedModesClone.some((t) => {
+            const failedTypes = selectedModesClone.filter((t) => {
               const s = (progress[t] && String(progress[t]).trim()) || '';
               return s === 'Failed';
             });
-            setJobCompleteStatus(anyFailed ? 'Failed' : 'Completed');
-            if (anyFailed) setJobCompleteMessage(null);
+            const anyFailed = failedTypes.length > 0;
+
+            if (!anyFailed) {
+              setJobCompleteStatus('Completed');
+              setJobCompleteMessage(null);
+            } else if (failedTypes.length === selectedModesClone.length) {
+              // all requested outputs failed
+              setJobCompleteStatus('Failed');
+              setJobCompleteMessage(null);
+            } else {
+              // partial failure: some completed, some failed
+              const label = failedTypes.join(', ');
+              setJobCompleteStatus('PartialFailed');
+              setJobCompleteMessage(
+                `Generation partially completed but ${label} failed. Click Regenerate to try again.`
+              );
+            }
           }
         }
       } catch (err) {

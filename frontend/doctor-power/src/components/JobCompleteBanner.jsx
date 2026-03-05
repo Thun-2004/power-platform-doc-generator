@@ -8,11 +8,19 @@ import '../styles/App.css';
  */
 const JobCompleteBanner = ({ status, message, onDismiss }) => {
   const isFailed = status === 'Failed';
+  const isPartial = status === 'PartialFailed';
   const accentWord = isFailed ? 'failed' : 'completed';
-  const circleColor = isFailed
-    ? 'bg-red-500 ring-2 ring-red-300'
-    : 'bg-green-500 ring-2 ring-green-300';
-  const accentTextColor = isFailed ? 'text-red-500' : 'text-green-500';
+
+  let circleColor = 'bg-green-500 ring-2 ring-green-300';
+  let accentTextColor = 'text-green-500';
+
+  if (isFailed) {
+    circleColor = 'bg-red-500 ring-2 ring-red-300';
+    accentTextColor = 'text-red-500';
+  } else if (isPartial) {
+    circleColor = 'bg-yellow-400 ring-2 ring-yellow-300';
+    accentTextColor = 'text-yellow-500';
+  }
   const displayMessage = (message && String(message).trim()) || null;
 
   useEffect(() => {
@@ -33,11 +41,20 @@ const JobCompleteBanner = ({ status, message, onDismiss }) => {
         aria-hidden
       />
       <div className="flex flex-col gap-0.5">
-        <p className="text-sm font-bold text-gray-900 m-0">
-          Document Generation has <span className={accentTextColor}>{accentWord}</span>
-        </p>
-        {isFailed && displayMessage && (
-          <p className="text-sm text-gray-600 m-0 font-normal">{displayMessage}</p>
+        {isPartial && displayMessage ? (
+          <p className="text-sm font-bold text-gray-900 m-0">{displayMessage}</p>
+        ) : (
+          <>
+            <p className="text-sm font-bold text-gray-900 m-0">
+              Document Generation has{' '}
+              <span className={accentTextColor}>{accentWord}</span>
+            </p>
+            {isFailed && displayMessage && (
+              <p className="text-sm text-gray-600 m-0 font-normal">
+                {displayMessage}
+              </p>
+            )}
+          </>
         )}
       </div>
       {onDismiss && (
