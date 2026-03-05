@@ -16,8 +16,8 @@ Requirements
     .env
 
     Add the following:
-
-        OPENAI_API_KEY=your_openai_api_key_here
+        AZURE_OPENAI_ENDPOINT=your endpoint
+        AZURE_OPENAI_API_KEY=your key
 
     Replace your_openai_api_key_here with your actual OpenAI API key.
 
@@ -62,3 +62,13 @@ Requirements
 
 
 ⸻
+
+If you want to run it locally, the output should be in backend/src/backend.Infrastructure/FileStorages
+
+Here is the order of storing output: 
+UploadedFile -> store uploaded document 
+PPCliJobs -> temporarily store output from pac cli
+ParsedOutput -> store output being parsed
+RAGOutput -> store fina output 
+
+
