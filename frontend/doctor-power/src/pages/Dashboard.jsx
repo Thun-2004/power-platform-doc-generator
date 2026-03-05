@@ -234,14 +234,20 @@ const Dashboard = () => {
           const statusData = statusRes.data?.data ?? statusRes.data ?? {};
           const jobStatus = statusData.JobStatus ?? statusData.jobStatus ?? '';
           const progressRaw = statusData.Progress ?? statusData.progress ?? {};
+          const errorsRaw = statusData.Errors ?? statusData.errors ?? {};
           const progress = typeof progressRaw === 'object' && progressRaw !== null ? progressRaw : {};
           if (document.getElementById('jobStatus')) updateStatusSymbol(jobStatus);
 
           setOutputItems((prev) =>
             prev.map((item) => {
               const raw = progress[item.outputType];
+              const err =
+                (errorsRaw &&
+                  typeof errorsRaw === 'object' &&
+                  errorsRaw[item.outputType]) ||
+                item.error;
               const status = (raw && String(raw).trim()) || item.status;
-              return { ...item, status };
+              return { ...item, status, error: err };
             })
           );
 
@@ -291,18 +297,48 @@ const Dashboard = () => {
           }
 
           const normalizedJobStatus = (jobStatus && String(jobStatus).trim()) || '';
-          done =
-            normalizedJobStatus === 'Failed' ||
-            normalizedJobStatus === 'Completed' ||
-            selectedModesClone.every((t) => {
-              const s = (progress[t] && String(progress[t]).trim()) || '';
-              return s === 'Completed' || s === 'Failed';
-            });
+          const allOutputsDone = selectedModesClone.every((t) => {
+            const s = (progress[t] && String(progress[t]).trim()) || '';
+            return s === 'Completed' || s === 'Failed';
+          });
+
+          done = normalizedJobStatus === 'Completed' || allOutputsDone;
+
           if (done) {
-            setJobCompleteStatus(
-              normalizedJobStatus === 'Failed' ? 'Failed' : 'Completed'
-            );
-            if (normalizedJobStatus === 'Failed') setJobCompleteMessage(null);
+            const failedTypes = selectedModesClone.filter((t) => {
+              const s = (progress[t] && String(progress[t]).trim()) || '';
+              return s === 'Failed';
+            });
+            const anyFailed = failedTypes.length > 0;
+
+            if (!anyFailed) {
+              setJobCompleteStatus('Completed');
+              setJobCompleteMessage(null);
+            } else if (failedTypes.length === selectedModesClone.length) {
+              // all requested outputs failed
+              const firstType = failedTypes[0];
+              const firstError =
+                (errorsRaw &&
+                  typeof errorsRaw === 'object' &&
+                  errorsRaw[firstType]) ||
+                null;
+              setJobCompleteStatus('Failed');
+              setJobCompleteMessage(firstError);
+            } else {
+              // partial failure: some completed, some failed
+              const label = failedTypes.join(', ');
+              const firstType = failedTypes[0];
+              const firstError =
+                (errorsRaw &&
+                  typeof errorsRaw === 'object' &&
+                  errorsRaw[firstType]) ||
+                null;
+              const base =
+                `Generation partially completed but ${label} failed. Click Regenerate to try again.`;
+              const msg = firstError ? `${base} (${firstError})` : base;
+              setJobCompleteStatus('PartialFailed');
+              setJobCompleteMessage(msg);
+            }
           }
         }
       } catch (err) {
@@ -336,6 +372,130 @@ const Dashboard = () => {
           document.body.removeChild(a);
         }, index * 200);
       });
+    };
+
+    const onRegenerateOutput = async (outputType) => {
+      try {
+        setJobCompleteStatus(null);
+        setJobCompleteMessage(null);
+
+        if (!selectedFile) {
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage('Please select a file before regenerating.');
+          return;
+        }
+        if (!selectedLLM) {
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage('Please select an LLM model before regenerating.');
+          return;
+        }
+
+        const prompt = document.getElementById(outputType)?.value?.trim() ?? '';
+        const formData = new FormData();
+        formData.append('File', selectedFile);
+        formData.append(
+          'SelectedOutputTypes',
+          prompt ? `${outputType}: ${prompt}` : outputType
+        );
+        formData.append('UseLLM', selectedLLM === 'gpt-4.1' ? 'true' : 'false');
+
+        let response;
+        try {
+          response = await axiosPublic.post('/api/File/generate', formData);
+        } catch (postErr) {
+          const msg = getErrorMessage(postErr);
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage(msg);
+          return;
+        }
+
+        const data = response.data?.data ?? response.data;
+        const jobId = data.JobId ?? data.jobId;
+        const statusUrl = data.JobStatusUrl ?? data.jobStatusUrl;
+        const outputApiUrls = data.OutputFilesMetas ?? data.outputFilesMetas ?? {};
+        const downloadUrl = outputApiUrls[outputType];
+
+        // mark this output as regenerating
+        setOutputItems((prev) =>
+          prev.map((item) =>
+            item.outputType === outputType
+              ? {
+                  ...item,
+                  status: 'Pending',
+                  jobId,
+                  downloadUrl,
+                  // keep existing name/url until new one is ready
+                }
+              : item
+          )
+        );
+
+        let done = false;
+        while (!done) {
+          await delay(tickLength);
+          const statusRes = await axiosPublic.get(statusUrl);
+          const statusData = statusRes.data?.data ?? statusRes.data ?? {};
+          const progressRaw = statusData.Progress ?? statusData.progress ?? {};
+          const rawStatus = progressRaw[outputType];
+          const status =
+            (rawStatus && String(rawStatus).trim()) || 'Processing';
+
+          setOutputItems((prev) =>
+            prev.map((item) =>
+              item.outputType === outputType ? { ...item, status } : item
+            )
+          );
+
+          if (status === 'Completed' || status === 'Failed') {
+            done = true;
+
+            if (status === 'Completed' && downloadUrl) {
+              try {
+                const fileRes = await axiosPublic.get(downloadUrl, {
+                  responseType: 'blob',
+                });
+                const contentDisposition =
+                  fileRes.headers['content-disposition'] || '';
+                let fileName = 'generated_document';
+                const fileNameMatch = /filename=(?:"?)([^;\"]+)/i.exec(
+                  contentDisposition
+                );
+                if (fileNameMatch?.[1])
+                  fileName = fileNameMatch[1].replace(/"/g, '');
+                const blob = new Blob([fileRes.data], {
+                  type: fileRes.data.type || 'application/octet-stream',
+                });
+                if (!fileName.includes('.')) {
+                  const mimeToExt = {
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                      '.docx',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                      '.xlsx',
+                    'application/pdf': '.pdf',
+                    'application/zip': '.zip',
+                  };
+                  if (mimeToExt[blob.type]) fileName += mimeToExt[blob.type];
+                }
+                const url = URL.createObjectURL(blob);
+                setOutputItems((prev) =>
+                  prev.map((item) =>
+                    item.outputType === outputType
+                      ? { ...item, name: fileName, url, blob, status: 'Completed' }
+                      : item
+                  )
+                );
+              } catch (e) {
+                console.error('Failed to fetch regenerated output file', outputType, e);
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to regenerate output', err);
+        const msg = getErrorMessage(err);
+        setJobCompleteStatus('Failed');
+        setJobCompleteMessage(msg);
+      }
     };
 
 
@@ -471,6 +631,7 @@ const Dashboard = () => {
                 outputItems={outputItems}
                 setPreviewFile={setPreviewFile}
                 onDismiss={onDismissOutputItem}
+                onRegenerate={onRegenerateOutput}
               />
           </div>
         </section>

@@ -23,10 +23,18 @@ public class JobStatusService : IJobStatusService
             kvp => kvp.Value?.Status.ToString() ?? "Unknown"
         );
 
+        var errors = job.OutputType_FileMeta_Matches
+            .Where(kvp => !string.IsNullOrWhiteSpace(kvp.Value?.ErrorMessage))
+            .ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value!.ErrorMessage ?? string.Empty
+            );
+
         return new JobStatusResult(
             JobId: jobId,
             JobStatus: _jobs.GetJobProgress(jobId).ToString(),
-            Progress: progress
+            Progress: progress,
+            Errors: errors
         );
     }
 }

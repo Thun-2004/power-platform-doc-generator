@@ -114,12 +114,18 @@ public class JobStore : IJobStore
 
         List<JobState> allProgress = job.OutputType_FileMeta_Matches.Values.Select(meta => meta.Status).ToList();
 
-        if (allProgress.Any(p => p == JobState.Failed))
-        {
-            job.JobStatus = JobState.Failed; 
-        }else if (allProgress.All(p => p == JobState.Completed))
+        // Overall job status:
+        // - Completed: all outputs completed
+        // - Failed: all outputs are either Completed or Failed, and at least one Failed
+        // - Processing: otherwise (some Pending/Processing remain)
+        if (allProgress.All(p => p == JobState.Completed))
         {
             job.JobStatus = JobState.Completed; 
+        }
+        else if (allProgress.All(p => p == JobState.Completed || p == JobState.Failed)
+                 && allProgress.Any(p => p == JobState.Failed))
+        {
+            job.JobStatus = JobState.Failed; 
         }
         else
         {
@@ -135,6 +141,18 @@ public class JobStore : IJobStore
 
         job.OutputType_FileMeta_Matches[outputType].FilePath = filepath;
 
+        _jobs[job.JobId] = job;
+    }
+
+    public void SetOutputError(string jobId, string outputType, string message)
+    {
+        if (!_jobs.TryGetValue(jobId, out var job))
+            return;
+
+        if (!job.OutputType_FileMeta_Matches.TryGetValue(outputType, out var fileMeta) || fileMeta == null)
+            return;
+
+        fileMeta.ErrorMessage = message;
         _jobs[job.JobId] = job;
     }
 

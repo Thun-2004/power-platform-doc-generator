@@ -29,6 +29,7 @@ public class FileMetadata
     public required string Type { get; set; }
     public string? FilePath { get; set; }
     public string MimeType { get; set; } = "";
+    public string? ErrorMessage { get; set; }
 }
  
 public class JobOutputException : Exception
