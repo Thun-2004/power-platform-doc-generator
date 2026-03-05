@@ -93,14 +93,15 @@ const DocumentPreviewModal = ({ file, isOpen, onClose }) => {
   const fileType = getFileType(file?.name);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 outline-none">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col outline-none">
         {/* Header for doc */}
         <div className="flex justify-between items-center p-4 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-800">{file?.name}</h3>
           <button
+            type="button"
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 transition-colors"
+            className="text-gray-500 hover:text-gray-700 transition-colors focus:outline-none"
           >
             <X size={24} />
           </button>
@@ -111,22 +112,22 @@ const DocumentPreviewModal = ({ file, isOpen, onClose }) => {
           {fileType === 'docx' && (
             <div
               ref={containerRef}
-              className="bg-white p-8 mx-auto max-w-3xl shadow-sm"
+              className="docx-preview-container bg-white p-8 mx-auto max-w-3xl border-0 outline-none"
             />
           )}
 
           {fileType === 'pdf' && (
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-4 border-0 outline-none">
               <Document
                 file={file.blob}
                 onLoadSuccess={handlePdfLoadSuccess}
-                className="flex flex-col items-center"
+                className="flex flex-col items-center border-0 outline-none"
               >
                 <Page
                   pageNumber={pdfPageNumber}
                   renderTextLayer={false}
                   renderAnnotationLayer={false}
-                  className="shadow-sm max-w-full"
+                  className="max-w-full border-0 outline-none [&_canvas]:outline-none"
                   scale={1.5}
                 />
               </Document>

@@ -311,6 +311,21 @@ const Dashboard = () => {
       });
     };
 
+    const onDownloadAll = () => {
+      const completed = outputItems.filter((item) => item.url && item.name);
+      if (completed.length === 0) return;
+      completed.forEach((item, index) => {
+        setTimeout(() => {
+          const a = document.createElement('a');
+          a.href = item.url;
+          a.download = item.name ?? `document-${item.outputType}`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, index * 200);
+      });
+    };
+
 
   const onCancelUpload = () => {
       abortRef.current?.abort(); 
@@ -408,7 +423,14 @@ const Dashboard = () => {
         <section className="mt-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-title">Output</h2>
-            <button className="btn-theme">Download all</button>
+            <button
+              type="button"
+              onClick={onDownloadAll}
+              disabled={!outputItems.some((item) => item.url)}
+              className="btn-theme disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Download all
+            </button>
           </div>
           <div id="file-display" className="flex flex-col gap-4">
               <DocumentOutputPreview
