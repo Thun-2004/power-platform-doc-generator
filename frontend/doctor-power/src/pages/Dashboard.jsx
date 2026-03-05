@@ -150,7 +150,9 @@ const Dashboard = () => {
     const getErrorMessage = (err) => {
       const d = err?.response?.data;
       if (!d) return err?.message || 'Something went wrong';
-      if (typeof d === 'string') return d;
+      if (d.title === 'One or more validation errors occurred.') {
+        return 'Invalid or corrupted zip file. Please upload a valid Power Platform solution package (.zip).';
+      }
       return d.detail ?? d.Detail ?? d.message ?? d.Message ?? d.title ?? err?.message ?? 'Something went wrong';
     };
 
