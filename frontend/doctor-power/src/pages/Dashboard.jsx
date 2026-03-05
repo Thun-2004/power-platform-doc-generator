@@ -40,6 +40,8 @@ const Dashboard = () => {
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedModes, setSelectedModes] = useState([]);
+  // LLM model: '' = not selected yet, 'gpt-4.1' or 'No LLM'
+  const [selectedLLM, setSelectedLLM] = useState('');
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -58,6 +60,7 @@ const Dashboard = () => {
 
   const resetToDefault = () => {
     setSelectedModes([]);
+    setSelectedLLM('');
     setOutputItems((prev) => {
       prev.forEach((item) => {
         if (item.url) URL.revokeObjectURL(item.url);
@@ -158,6 +161,7 @@ const Dashboard = () => {
 
         const hasFile = !!selectedFile;
         const hasOptions = selectedModes.length > 0;
+        const hasLLM = !!selectedLLM;
         if (!hasFile && !hasOptions) {
           setJobCompleteStatus('Failed');
           setJobCompleteMessage('Please select a file and at least one output type.');
@@ -173,6 +177,11 @@ const Dashboard = () => {
           setJobCompleteMessage('Please select at least one output type.');
           return;
         }
+        if (!hasLLM) {
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage('Please select an LLM model.');
+          return;
+        }
 
         const selectedModesClone = [...selectedModes];
         setIsUploading(true);
@@ -183,6 +192,7 @@ const Dashboard = () => {
           const prompt = document.getElementById(t)?.value?.trim() ?? '';
           formData.append('SelectedOutputTypes', prompt ? `${t}: ${prompt}` : t);
         });
+        formData.append('UseLLM', selectedLLM === 'gpt-4.1' ? 'true' : 'false');
 
         let response;
         try {
@@ -412,12 +422,34 @@ const Dashboard = () => {
               {fileTypes.map((type) => <DiagramSelectionBox type={type} selectedModes={selectedModes} toggleSelected={toggleSelected}/>)}
             </div>
 
+        </div>
+        </section>
+
+        <section className="mb-8">
+          <div className="w-full">
+            <div className="flex items-center max-w-md">
+              <h2 className="text-title m-0">Select LLM model</h2>
+              <select
+                value={selectedLLM}
+                onChange={(e) => setSelectedLLM(e.target.value)}
+                className="ml-4 w-40 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="">Select model</option>
+                <option value="gpt-4.1">gpt-4.1</option>
+                <option value="No LLM">No LLM</option>
+              </select>
+            </div>
+
             <div className="mt-6">
-                <button onClick={onGenerateOutputFile} className="btn-theme">Generate</button>
+                <button onClick={onGenerateOutputFile} className="btn-theme text-title text-white">Generate</button>
                 {/* <h2 id="jobStatus"></h2> */}
             </div>
         </div>
         </section>
+
+        
+
+
 
         {/* Output Section */}
         <section className="mt-8">
