@@ -16,6 +16,7 @@ public interface IJobStore
     void UpdateSingleOutputFileProgress(string jobId, string outputType, JobState outputfileProgress); 
     void setOutputFile(string jobId, string outputType, string filepath);
     FileMetadata getOutputFile(string jobId, string outputType); 
+    void SetOutputError(string jobId, string outputType, string message);
     // void FailJob(string jobId, string message, string? outputType = null);
 }
 
