@@ -234,14 +234,20 @@ const Dashboard = () => {
           const statusData = statusRes.data?.data ?? statusRes.data ?? {};
           const jobStatus = statusData.JobStatus ?? statusData.jobStatus ?? '';
           const progressRaw = statusData.Progress ?? statusData.progress ?? {};
+          const errorsRaw = statusData.Errors ?? statusData.errors ?? {};
           const progress = typeof progressRaw === 'object' && progressRaw !== null ? progressRaw : {};
           if (document.getElementById('jobStatus')) updateStatusSymbol(jobStatus);
 
           setOutputItems((prev) =>
             prev.map((item) => {
               const raw = progress[item.outputType];
+              const err =
+                (errorsRaw &&
+                  typeof errorsRaw === 'object' &&
+                  errorsRaw[item.outputType]) ||
+                item.error;
               const status = (raw && String(raw).trim()) || item.status;
-              return { ...item, status };
+              return { ...item, status, error: err };
             })
           );
 
@@ -310,15 +316,28 @@ const Dashboard = () => {
               setJobCompleteMessage(null);
             } else if (failedTypes.length === selectedModesClone.length) {
               // all requested outputs failed
+              const firstType = failedTypes[0];
+              const firstError =
+                (errorsRaw &&
+                  typeof errorsRaw === 'object' &&
+                  errorsRaw[firstType]) ||
+                null;
               setJobCompleteStatus('Failed');
-              setJobCompleteMessage(null);
+              setJobCompleteMessage(firstError);
             } else {
               // partial failure: some completed, some failed
               const label = failedTypes.join(', ');
+              const firstType = failedTypes[0];
+              const firstError =
+                (errorsRaw &&
+                  typeof errorsRaw === 'object' &&
+                  errorsRaw[firstType]) ||
+                null;
+              const base =
+                `Generation partially completed but ${label} failed. Click Regenerate to try again.`;
+              const msg = firstError ? `${base} (${firstError})` : base;
               setJobCompleteStatus('PartialFailed');
-              setJobCompleteMessage(
-                `Generation partially completed but ${label} failed. Click Regenerate to try again.`
-              );
+              setJobCompleteMessage(msg);
             }
           }
         }

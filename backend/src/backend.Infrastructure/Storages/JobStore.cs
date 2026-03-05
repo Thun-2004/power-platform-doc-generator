@@ -144,6 +144,18 @@ public class JobStore : IJobStore
         _jobs[job.JobId] = job;
     }
 
+    public void SetOutputError(string jobId, string outputType, string message)
+    {
+        if (!_jobs.TryGetValue(jobId, out var job))
+            return;
+
+        if (!job.OutputType_FileMeta_Matches.TryGetValue(outputType, out var fileMeta) || fileMeta == null)
+            return;
+
+        fileMeta.ErrorMessage = message;
+        _jobs[job.JobId] = job;
+    }
+
     public FileMetadata getOutputFile(string jobId, string outputType){
         JobRecord job; 
         if (!_jobs.TryGetValue(jobId, out job))

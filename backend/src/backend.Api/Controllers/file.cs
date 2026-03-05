@@ -112,7 +112,8 @@ public class FileController : ControllerBase
                 {
                     JobId = result.JobId,
                     JobStatus = result.JobStatus,
-                    Progress = result.Progress.ToDictionary(k => k.Key, v => v.Value)
+                    Progress = result.Progress.ToDictionary(k => k.Key, v => v.Value),
+                    Errors = result.Errors.ToDictionary(k => k.Key, v => v.Value)
                 }
             });
         }
