@@ -32,8 +32,15 @@ const DocumentOutputPreview = ({ outputItems, setPreviewFile, onDismiss, onRegen
             key={item.id}
             className="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-lg transition-all hover:shadow-md"
           >
-            <div className="shrink-0 w-10 h-10 flex items-center justify-center bg-green-100 rounded-lg">
-              <FileText className="text-green-700" size={20} />
+            <div
+              className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-lg ${
+                isFailed ? 'bg-red-100' : 'bg-green-100'
+              }`}
+            >
+              <FileText
+                className={isFailed ? 'text-red-600' : 'text-green-700'}
+                size={20}
+              />
             </div>
 
             {isComplete ? (
@@ -72,6 +79,11 @@ const DocumentOutputPreview = ({ outputItems, setPreviewFile, onDismiss, onRegen
                   <p className="text-sm font-medium text-gray-900 truncate">
                     {displayName}
                   </p>
+                  {isFailed && (
+                    <p className="mt-1 text-xs font-medium text-red-600">
+                      State: Failed
+                    </p>
+                  )}
                   {!isFailed && (
                     <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div
