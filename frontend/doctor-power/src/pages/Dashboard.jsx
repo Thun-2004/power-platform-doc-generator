@@ -12,12 +12,12 @@ import axios from 'axios';
 
 const Dashboard = () => {
   const fileTypes = [
-    { id: "overview", title: "Overview", desc: "Dummy text for generating an ER diagram"},
-    { id: "workflows", title: "Workflows", desc: "Dummy text for generating a UI-hierarchy"},
-    { id: "faq", title: "Frequently Asked Questions", desc: "Dummy text for generating a program-flow"},
-    { id: "diagrams", title: "Diagrams", desc: "Dummy option for assigning some AI task"},
-    { id: "erd", title: "ER diagram", desc: "Dummy text for generating an ER diagram"},
-    { id: "environment-variables", title: "Environment variables", desc: "Dummy option for generating environment variables"}
+    { id: "overview", title: "Overview", desc: "A high-level summary of the solution, including key components such as canvas apps, workflows, screens, and environment variables."},
+    { id: "workflows", title: "Workflows", desc: "Detailed descriptions of the Power Automate workflows in the solution, including triggers, actions, connectors used, and their purpose."},
+    { id: "faq", title: "Frequently Asked Questions", desc: "A concise list of frequently asked questions about the solution, explaining common functionality and how different components interact"},
+    { id: "diagrams", title: "Diagrams", desc: "Visual architecture diagrams showing the relationships between canvas apps, workflows, and environment variables."},
+    { id: "erd", title: "ER diagram", desc: "A structured diagram illustrating relationships between apps, screens, workflows, connectors, and environment variables within the solution."},
+    { id: "environment-variables", title: "Environment variables", desc: "A structured table of environment variables used in the solution, including their type, description, and values across development, test, and production environments."}
   ];
 
   const statusSymbols = {

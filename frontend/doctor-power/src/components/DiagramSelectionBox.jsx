@@ -21,11 +21,11 @@ const DiagramSelectionBox = ({type, selectedModes, toggleSelected}) => {
         >
             <div className="flex items-start gap-3">
                 <span
-                    className={`mt-0.5 w-[18px] h-[18px] rounded-full border-1 flex items-center justify-center transition-all ${
+                    className={`mt-0.5 shrink-0 w-[18px] h-[18px] min-w-[18px] min-h-[18px] rounded-full border border-gray-400 flex items-center justify-center transition-all ${
                         isSelected ? "border-blue-600" : "border-gray-400"
                     }`}
                 >
-                    {isSelected && <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />}
+                    {isSelected && <span className="w-2.5 h-2.5 min-w-[10px] min-h-[10px] rounded-full bg-blue-600 shrink-0" />}
                 </span>
 
                 <div>
