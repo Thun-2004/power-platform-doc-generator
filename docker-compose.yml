@@ -32,4 +32,6 @@ services:
   
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY}
+
