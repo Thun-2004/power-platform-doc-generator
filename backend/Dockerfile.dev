@@ -11,6 +11,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0
 RUN apt-get update && apt-get install -y pandoc && rm -rf /var/lib/apt/lists/*
 RUN dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.49.4
 
+ENV PATH="$PATH:/root/.dotnet/tools"
+
 WORKDIR /src
 
 # Copy solution file
