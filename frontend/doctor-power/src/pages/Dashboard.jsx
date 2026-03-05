@@ -54,6 +54,24 @@ const Dashboard = () => {
     return file && file.name.toLowerCase().endsWith('.zip');
   };
 
+  const resetToDefault = () => {
+    setSelectedModes([]);
+    setOutputItems((prev) => {
+      prev.forEach((item) => {
+        if (item.url) URL.revokeObjectURL(item.url);
+      });
+      return [];
+    });
+    setJobCompleteStatus(null);
+    setPreviewFile(null);
+    fileTypes.forEach((type) => {
+      const el = document.getElementById(type.id);
+      if (el && el.tagName === 'TEXTAREA') el.value = '';
+    });
+    const jobStatusEl = document.getElementById('jobStatus');
+    if (jobStatusEl) jobStatusEl.textContent = '';
+  };
+
   const toggleSelected = (id) => {
     setSelectedModes(
       prev => 
@@ -69,6 +87,7 @@ const Dashboard = () => {
   const onPickFile = (e) => {
       const f = e.target.files?.[0] ?? null;
       if (f && isZipFile(f)) {
+        resetToDefault();
         setSelectedFile(f);
         setProgress(0);
       } else if (f) {
@@ -95,12 +114,13 @@ const Dashboard = () => {
       if (files.length > 0) {
           const f = files[0];
           if (isZipFile(f)) {
+            resetToDefault();
             setSelectedFile(f);
             setProgress(0);
             try {
                 if (fileInputRef.current) fileInputRef.current.value = "";
-            } catch (e) {
-                console.error('Failed to clear file input', e);
+            } catch (err) {
+                console.error('Failed to clear file input', err);
             }
           } else {
             alert('Please select a .zip file only.');
