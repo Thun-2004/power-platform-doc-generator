@@ -114,12 +114,18 @@ public class JobStore : IJobStore
 
         List<JobState> allProgress = job.OutputType_FileMeta_Matches.Values.Select(meta => meta.Status).ToList();
 
-        if (allProgress.Any(p => p == JobState.Failed))
-        {
-            job.JobStatus = JobState.Failed; 
-        }else if (allProgress.All(p => p == JobState.Completed))
+        // Overall job status:
+        // - Completed: all outputs completed
+        // - Failed: all outputs are either Completed or Failed, and at least one Failed
+        // - Processing: otherwise (some Pending/Processing remain)
+        if (allProgress.All(p => p == JobState.Completed))
         {
             job.JobStatus = JobState.Completed; 
+        }
+        else if (allProgress.All(p => p == JobState.Completed || p == JobState.Failed)
+                 && allProgress.Any(p => p == JobState.Failed))
+        {
+            job.JobStatus = JobState.Failed; 
         }
         else
         {
