@@ -53,7 +53,7 @@ const DocumentOutputPreview = ({ outputItems, setPreviewFile, onDismiss }) => {
                         blob: item.blob,
                       })
                     }
-                    className="text-gray-500 border border-gray-300 px-3 py-1 rounded-md text-sm cursor-pointer transition-all hover:brightness-110"
+                    className="text-gray-500 border border-gray-300 px-3 py-1 rounded-md text-sm cursor-pointer transition-all hover:brightness-110 focus:outline-none"
                   >
                     Preview
                   </button>

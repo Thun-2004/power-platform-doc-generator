@@ -30,13 +30,14 @@ public class FileController : ControllerBase
     [HttpPost("generate")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> Generate([FromForm] UploadRequest req,  CancellationToken ct){
-        if (req.File == null || req.File.Length == 0)
+        if (req?.File == null || req.File.Length == 0)
             return BadRequest("File is required");
 
         // Parse "overview" or "overview: add conclusion at the end" into types + per-type prompts
         var outputTypes = new List<string>();
         var outputPrompts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var item in req.SelectedOutputTypes.Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)))
+        var selectedItems = req.SelectedOutputTypes ?? new List<string>();
+        foreach (var item in selectedItems.Select(t => (t ?? "").Trim()).Where(t => !string.IsNullOrWhiteSpace(t)))
         {
             var colonIdx = item.IndexOf(':');
             string type;
@@ -81,6 +82,15 @@ public class FileController : ControllerBase
         {
             return Problem(
                 detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Invalid request"
+            );
+        }
+        catch (Exception e)
+        {
+            var message = e.InnerException?.Message ?? e.Message;
+            return Problem(
+                detail: message,
                 statusCode: StatusCodes.Status400BadRequest,
                 title: "Invalid request"
             );

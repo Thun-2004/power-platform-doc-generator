@@ -12,12 +12,12 @@ import axios from 'axios';
 
 const Dashboard = () => {
   const fileTypes = [
-    { id: "overview", title: "Overview", desc: "Dummy text for generating an ER diagram"},
-    { id: "workflows", title: "Workflows", desc: "Dummy text for generating a UI-hierarchy"},
-    { id: "faq", title: "Frequently Asked Questions", desc: "Dummy text for generating a program-flow"},
-    { id: "diagrams", title: "Diagrams", desc: "Dummy option for assigning some AI task"},
-    { id: "erd", title: "ER diagram", desc: "Dummy text for generating an ER diagram"},
-    { id: "environment-variables", title: "Environment variables", desc: "Dummy option for generating environment variables"}
+    { id: "overview", title: "Overview", desc: "A high-level summary of the solution, including key components such as canvas apps, workflows, screens, and environment variables."},
+    { id: "workflows", title: "Workflows", desc: "Detailed descriptions of the Power Automate workflows in the solution, including triggers, actions, connectors used, and their purpose."},
+    { id: "faq", title: "Frequently Asked Questions", desc: "A concise list of frequently asked questions about the solution, explaining common functionality and how different components interact"},
+    { id: "diagrams", title: "Diagrams", desc: "Visual architecture diagrams showing the relationships between canvas apps, workflows, and environment variables."},
+    { id: "erd", title: "ER diagram", desc: "A structured diagram illustrating relationships between apps, screens, workflows, connectors, and environment variables within the solution."},
+    { id: "environment-variables", title: "Environment variables", desc: "A structured table of environment variables used in the solution, including their type, description, and values across development, test, and production environments."}
   ];
 
   const statusSymbols = {
@@ -32,12 +32,16 @@ const Dashboard = () => {
   const [previewFile, setPreviewFile] = useState(null);
   // Banner when whole job finishes: 'Completed' | 'Failed' | null
   const [jobCompleteStatus, setJobCompleteStatus] = useState(null);
+  // Optional message for Failed (e.g. backend error text)
+  const [jobCompleteMessage, setJobCompleteMessage] = useState(null);
 
   //FIXME: finish axios private for this
   // const axiosPrivate = useAxiosPrivate();
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedModes, setSelectedModes] = useState([]);
+  // LLM model: '' = not selected yet, 'gpt-4.1' or 'No LLM'
+  const [selectedLLM, setSelectedLLM] = useState('');
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -52,6 +56,26 @@ const Dashboard = () => {
 
   const isZipFile = (file) => {
     return file && file.name.toLowerCase().endsWith('.zip');
+  };
+
+  const resetToDefault = () => {
+    setSelectedModes([]);
+    setSelectedLLM('');
+    setOutputItems((prev) => {
+      prev.forEach((item) => {
+        if (item.url) URL.revokeObjectURL(item.url);
+      });
+      return [];
+    });
+    setJobCompleteStatus(null);
+    setJobCompleteMessage(null);
+    setPreviewFile(null);
+    fileTypes.forEach((type) => {
+      const el = document.getElementById(type.id);
+      if (el && el.tagName === 'TEXTAREA') el.value = '';
+    });
+    const jobStatusEl = document.getElementById('jobStatus');
+    if (jobStatusEl) jobStatusEl.textContent = '';
   };
 
   const toggleSelected = (id) => {
@@ -69,6 +93,7 @@ const Dashboard = () => {
   const onPickFile = (e) => {
       const f = e.target.files?.[0] ?? null;
       if (f && isZipFile(f)) {
+        resetToDefault();
         setSelectedFile(f);
         setProgress(0);
       } else if (f) {
@@ -95,12 +120,13 @@ const Dashboard = () => {
       if (files.length > 0) {
           const f = files[0];
           if (isZipFile(f)) {
+            resetToDefault();
             setSelectedFile(f);
             setProgress(0);
             try {
                 if (fileInputRef.current) fileInputRef.current.value = "";
-            } catch (e) {
-                console.error('Failed to clear file input', e);
+            } catch (err) {
+                console.error('Failed to clear file input', err);
             }
           } else {
             alert('Please select a .zip file only.');
@@ -121,9 +147,44 @@ const Dashboard = () => {
       }
   };
 
+    const getErrorMessage = (err) => {
+      const d = err?.response?.data;
+      if (!d) return err?.message || 'Something went wrong';
+      if (d.title === 'One or more validation errors occurred.') {
+        return 'Invalid or corrupted zip file. Please upload a valid Power Platform solution package (.zip).';
+      }
+      return d.detail ?? d.Detail ?? d.message ?? d.Message ?? d.title ?? err?.message ?? 'Something went wrong';
+    };
+
     const onGenerateOutputFile = async () => {
       try {
         setJobCompleteStatus(null);
+        setJobCompleteMessage(null);
+
+        const hasFile = !!selectedFile;
+        const hasOptions = selectedModes.length > 0;
+        const hasLLM = !!selectedLLM;
+        if (!hasFile && !hasOptions) {
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage('Please select a file and at least one output type.');
+          return;
+        }
+        if (!hasFile) {
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage('Please select a file.');
+          return;
+        }
+        if (!hasOptions) {
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage('Please select at least one output type.');
+          return;
+        }
+        if (!hasLLM) {
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage('Please select an LLM model.');
+          return;
+        }
+
         const selectedModesClone = [...selectedModes];
         setIsUploading(true);
 
@@ -133,8 +194,18 @@ const Dashboard = () => {
           const prompt = document.getElementById(t)?.value?.trim() ?? '';
           formData.append('SelectedOutputTypes', prompt ? `${t}: ${prompt}` : t);
         });
+        formData.append('UseLLM', selectedLLM === 'gpt-4.1' ? 'true' : 'false');
 
-        const response = await axiosPublic.post('/api/File/generate', formData);
+        let response;
+        try {
+          response = await axiosPublic.post('/api/File/generate', formData);
+        } catch (postErr) {
+          const msg = getErrorMessage(postErr);
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage(msg);
+          return;
+        }
+
         const data = response.data?.data ?? response.data;
         const jobId = data.JobId ?? data.jobId;
         const statusUrl = data.JobStatusUrl ?? data.jobStatusUrl;
@@ -231,10 +302,14 @@ const Dashboard = () => {
             setJobCompleteStatus(
               normalizedJobStatus === 'Failed' ? 'Failed' : 'Completed'
             );
+            if (normalizedJobStatus === 'Failed') setJobCompleteMessage(null);
           }
         }
       } catch (err) {
         console.error('Failed to generate document', err);
+        const msg = getErrorMessage(err);
+        setJobCompleteStatus('Failed');
+        setJobCompleteMessage(msg);
       } finally {
         setIsUploading(false);
       }
@@ -245,6 +320,21 @@ const Dashboard = () => {
         const item = prev.find((i) => i.id === id);
         if (item?.url) URL.revokeObjectURL(item.url);
         return prev.filter((i) => i.id !== id);
+      });
+    };
+
+    const onDownloadAll = () => {
+      const completed = outputItems.filter((item) => item.url && item.name);
+      if (completed.length === 0) return;
+      completed.forEach((item, index) => {
+        setTimeout(() => {
+          const a = document.createElement('a');
+          a.href = item.url;
+          a.download = item.name ?? `document-${item.outputType}`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, index * 200);
       });
     };
 
@@ -262,7 +352,11 @@ const Dashboard = () => {
       {jobCompleteStatus && (
         <JobCompleteBanner
           status={jobCompleteStatus}
-          onDismiss={() => setJobCompleteStatus(null)}
+          message={jobCompleteMessage}
+          onDismiss={() => {
+            setJobCompleteStatus(null);
+            setJobCompleteMessage(null);
+          }}
         />
       )}
       <main className="flex-1 p-8 bg-white m-4 rounded-xl shadow-sm overflow-y-auto">
@@ -330,18 +424,47 @@ const Dashboard = () => {
               {fileTypes.map((type) => <DiagramSelectionBox type={type} selectedModes={selectedModes} toggleSelected={toggleSelected}/>)}
             </div>
 
+        </div>
+        </section>
+
+        <section className="mb-8">
+          <div className="w-full">
+            <div className="flex items-center max-w-md">
+              <h2 className="text-title m-0">Select LLM model</h2>
+              <select
+                value={selectedLLM}
+                onChange={(e) => setSelectedLLM(e.target.value)}
+                className="ml-4 w-40 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="">Select model</option>
+                <option value="gpt-4.1">gpt-4.1</option>
+                <option value="No LLM">No LLM</option>
+              </select>
+            </div>
+
             <div className="mt-6">
-                <button onClick={onGenerateOutputFile} className="btn-theme">Generate</button>
+                <button onClick={onGenerateOutputFile} className="btn-theme text-title text-white">Generate</button>
                 {/* <h2 id="jobStatus"></h2> */}
             </div>
         </div>
         </section>
 
+        
+
+
+
         {/* Output Section */}
         <section className="mt-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-title">Output</h2>
-            <button className="btn-theme">Download all</button>
+            <button
+              type="button"
+              onClick={onDownloadAll}
+              disabled={!outputItems.some((item) => item.url)}
+              className="btn-theme disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Download all
+            </button>
           </div>
           <div id="file-display" className="flex flex-col gap-4">
               <DocumentOutputPreview

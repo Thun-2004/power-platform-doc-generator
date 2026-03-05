@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+/* Remove grey border/outline from document preview wrapper only (not inner content) */
+.docx-preview-container,
+.docx-preview-container > *,
+div.docx {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
