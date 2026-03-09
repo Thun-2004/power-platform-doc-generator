@@ -63,7 +63,24 @@ Requirements
 
 ⸻
 
-If you want to run it locally, the output should be in backend/src/backend.Infrastructure/FileStorages
+If you want to run it locally, 
+
+Add .env to the root directory
+
+Add the following:
+        AZURE_OPENAI_ENDPOINT=your endpoint
+        AZURE_OPENAI_API_KEY=your key
+
+Frontend: 
+cd frontend/doctor-power/src
+npm run dev
+
+Backend:
+cd backend/src/backend.Api
+dotnet watch
+
+
+the output should be in backend/src/backend.Infrastructure/FileStorages
 
 Here is the order of storing output: 
 UploadedFile -> store uploaded document 
