@@ -171,35 +171,6 @@ public class FileController : ControllerBase
         }
     }
 
-
-    // [HttpGet("job/{jobId}/files/{outputType}")]
-    // public async Task<IActionResult> GetJobOutput(string jobId, string outputType)
-    // {
-    //     try
-    //     {
-    //         Console.WriteLine($"Fetching output file for job {jobId} and output type {outputType}");
-
-    //         FileMetadata fileMetadata = _jobs.getOutputFile(jobId, outputType);
-    //         var bytes = await System.IO.File.ReadAllBytesAsync(fileMetadata.FilePath); 
-    //         FileDescriptor fileDescriptor = CreateFileDescriptor(fileMetadata.FilePath);
-
-    //         return Ok(File(
-    //                 bytes,
-    //                 fileMetadata.MimeType,
-    //                 fileDescriptor.DownloadName
-    //             )); 
-            
-    //     }catch(Exception e)
-    //     {
-    //         ResponseModel<object> error = new ResponseModel<object>
-    //         {
-    //             Status = 500,
-    //             Message = e.ToString(),
-    //         };
-    //         return BadRequest(error);
-    //     }
-    // }
-
     // test function
     // [HttpGet("getDocument")]
     // public async Task<IActionResult> GetGeneratedFile()
