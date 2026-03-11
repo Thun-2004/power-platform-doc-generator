@@ -514,12 +514,12 @@ const Dashboard = () => {
           }}
         />
       )}
-      <main className="flex-1 p-8 bg-white m-4 rounded-xl shadow-sm overflow-y-auto">
+      <main className="flex-1 p-4 sm:p-6 md:p-7 lg:p-8 xl:p-9 bg-white m-2 sm:m-3 md:m-4 lg:m-4 rounded-xl shadow-sm overflow-y-auto">
         {/* Upload File Section */}
-        <section className="mb-8">
+        <section className="mb-6 sm:mb-7 md:mb-8 lg:mb-9">
           <h2 className="text-title">Upload File</h2>
           <div 
-            className={`w-full min-h-[200px] border-2 border-dashed rounded-xl bg-gray-50 flex justify-center items-center p-8 transition-colors ${
+            className={`w-full min-h-[200px] border-2 border-dashed rounded-xl bg-gray-50 flex justify-center items-center p-4 sm:p-6 md:p-7 lg:p-8 transition-colors ${
               isDragOver ? 'border-blue-400 bg-blue-50' : 'border-gray-300'
             }`}
             onDragOver={onDragOver}
@@ -547,7 +547,7 @@ const Dashboard = () => {
           
           {
               selectedFile && (
-                <div className="mt-4 p-3 border-1 border-gray-300 rounded-lg flex items-center justify-between">
+                <div className="mt-4 p-2 sm:p-3 md:p-3 lg:p-4 border-1 border-gray-300 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-amber-600 rounded-md">
                       <FileCheck color="#ffffff" size={20} />
@@ -571,25 +571,25 @@ const Dashboard = () => {
         </section>
 
         {/* Select Output File Types Section */}
-        <section className="mb-8">
+        <section className="mb-6 sm:mb-7 md:mb-8 lg:mb-9">
           <div className="w-full">
             <h2 className="text-title">Select output file types</h2>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-5">
               {fileTypes.map((type) => <DiagramSelectionBox type={type} selectedModes={selectedModes} toggleSelected={toggleSelected} charLimit={promptCharLimit}/>)}
             </div>
 
         </div>
         </section>
 
-        <section className="mb-8">
+        <section className="mb-6 sm:mb-7 md:mb-8 lg:mb-9">
           <div className="w-full">
-            <div className="flex items-center max-w-md">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4 lg:gap-5">
               <h2 className="text-title m-0">Select LLM model</h2>
               <select
                 value={selectedLLM}
                 onChange={(e) => setSelectedLLM(e.target.value)}
-                className="ml-4 w-40 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full sm:w-40 md:w-48 lg:w-56 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm md:text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="">Select model</option>
                 <option value="gpt-4.1">gpt-4.1</option>
@@ -609,8 +609,8 @@ const Dashboard = () => {
 
 
         {/* Output Section */}
-        <section className="mt-8">
-          <div className="flex justify-between items-center mb-4">
+        <section className="mt-6 sm:mt-7 md:mt-8 lg:mt-9">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4 lg:gap-6 mb-4 md:mb-5 lg:mb-6">
             <h2 className="text-title">Output</h2>
             <button
               type="button"
