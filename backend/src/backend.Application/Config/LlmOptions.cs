@@ -15,4 +15,11 @@ public class LlmOptions
         ["openai"] = "https://uofg-team-project-sh38-resource.openai.azure.com/openai/v1/",
         ["claude"] = "https://api.anthropic.com/v1/"
     };
+
+    //name of the corresponding API key in .env
+    public Dictionary<string, string> LLMKeys { get; set; } = new()
+    {
+        ["openai"] = "AZURE_OPENAI_API_KEY",
+        ["claude"] = "ANTHROPIC_API_KEY"
+    }; 
 }
