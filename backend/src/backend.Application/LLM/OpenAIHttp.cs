@@ -28,7 +28,7 @@ public static class OpenAIHttp
         // Clear any existing auth headers/keys
         http.DefaultRequestHeaders.Authorization = null;
         http.DefaultRequestHeaders.Remove("api-key");
-        http.DefaultRequestHeaders.Remove("x-api-key");
+        // http.DefaultRequestHeaders.Remove("x-api-key");
 
         var provider = (cfg.Provider ?? string.Empty).Trim().ToLowerInvariant();
 
