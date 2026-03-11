@@ -1,16 +1,20 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using backend.Application.Interfaces;
 using backend.Application.LLM;
+using backend.Application.Config;
 
 namespace backend.Infrastructure.Storages;
 
 public class LocalFileStorage : IFileStorage
 {
     private readonly FileProcessing _fileProcessing;
+    private readonly FileStorageOptions _options;
 
-    public LocalFileStorage(FileProcessing fileProcessing)
+    public LocalFileStorage(FileProcessing fileProcessing, IOptions<FileStorageOptions> options)
     {
         _fileProcessing = fileProcessing;
+        _options = options.Value;
     }
 
     public async Task<string> SaveUploadAsync(IFormFile file, CancellationToken ct)
@@ -18,25 +22,22 @@ public class LocalFileStorage : IFileStorage
         var originalFileName = file.FileName;
         var ext = Path.GetExtension(originalFileName).ToLowerInvariant();
 
-        //dirs
-        string pacDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "PPCliJobs");
+        string pacDir = _options.ResolvePacJobsPath();
         if (!Directory.Exists(pacDir))
             Directory.CreateDirectory(pacDir);
 
-        string rawinputDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "UploadedFiles");
+        string rawinputDir = _options.ResolveUploadedFilesPath();
         if (!Directory.Exists(rawinputDir))
             Directory.CreateDirectory(rawinputDir);
 
-        string ragoutDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "RAGOutputs");
+        string ragoutDir = _options.ResolveRagOutputsPath();
         if (!Directory.Exists(ragoutDir))
             Directory.CreateDirectory(ragoutDir);
 
-        string parsedDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "ParsedOutputs");
+        string parsedDir = _options.ResolveParsedOutputsPath();
         if (!Directory.Exists(parsedDir))
             Directory.CreateDirectory(parsedDir);
 
-
-        // unique file path
         string fullFilePath = _fileProcessing.CreateFile(originalFileName, ext, rawinputDir);
 
         await using var stream = System.IO.File.Create(fullFilePath);

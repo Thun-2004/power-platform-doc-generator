@@ -1,0 +1,3 @@
+Create a Markdown FAQ for the solution using ONLY the uploaded chunks.
+Include ~10 Q&As (workflows, env vars, canvas apps, what the solution contains).
+If info is missing, say 'Not found in uploaded files.' Keep it concise.

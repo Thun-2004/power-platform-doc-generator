@@ -16,8 +16,9 @@ public enum LlmProvider
 public sealed class OpenAiApiConfig
 {
     public required LlmProvider Provider { get; init; }
-    public required string BaseUrl { get; init; }  
+    public required string BaseUrl { get; init; }
     public required string ApiKey { get; init; }
+    public int TimeoutMinutes { get; init; } = 10;
 }
 
 public static class OpenAIHttp
@@ -27,7 +28,7 @@ public static class OpenAIHttp
         var http = new HttpClient
         {
             BaseAddress = new Uri(cfg.BaseUrl.TrimEnd('/') + "/"),
-            Timeout = TimeSpan.FromMinutes(10)
+            Timeout = TimeSpan.FromMinutes(cfg.TimeoutMinutes)
         };
 
         // Clear any existing auth headers
