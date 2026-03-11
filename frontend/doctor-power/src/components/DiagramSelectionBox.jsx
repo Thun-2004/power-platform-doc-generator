@@ -4,7 +4,7 @@ import { House, Bookmark, User, Menu } from 'lucide-react';
 import "../styles/App.css";
 
 
-const DiagramSelectionBox = ({type, selectedModes, toggleSelectedm, charLimit}) => {
+const DiagramSelectionBox = ({type, selectedModes, toggleSelected, charLimit}) => {
     var isSelected = selectedModes.includes(type.id);
     
     const [promptContent, setPromptContent] = useState('');
