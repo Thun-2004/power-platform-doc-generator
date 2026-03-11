@@ -1,5 +1,7 @@
 namespace backend.Application.Config;
 
+
+//TODO: use those variables in the code
 public class SharedOptions
 {
     public const string SectionName = "Shared";
@@ -7,7 +9,6 @@ public class SharedOptions
     public string FrontendUrl { get; set; } = "http://localhost:5173";
     public string BackendUrl { get; set; } = "http://localhost:5280";
 
-    /// <summary>CORS allowed origins (used by API).</summary>
     public string[] CorsOrigins { get; set; } = ["http://localhost:5173", "https://client.scalar.com"];
 
     public string[] AllowedOutputFileTypes { get; set; } =

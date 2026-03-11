@@ -194,7 +194,7 @@ const Dashboard = () => {
           const prompt = document.getElementById(t)?.value?.trim() ?? '';
           formData.append('SelectedOutputTypes', prompt ? `${t}: ${prompt}` : t);
         });
-        formData.append('UseLLM', selectedLLM === 'gpt-4.1' ? 'true' : 'false');
+        formData.append('LlmModel', selectedLLM === 'gpt-4.1' ? 'true' : 'false');
 
         let response;
         try {
@@ -397,7 +397,7 @@ const Dashboard = () => {
           'SelectedOutputTypes',
           prompt ? `${outputType}: ${prompt}` : outputType
         );
-        formData.append('UseLLM', selectedLLM === 'gpt-4.1' ? 'true' : 'false');
+        formData.append('LlmModel', selectedLLM === 'gpt-4.1' ? 'true' : 'false');
 
         let response;
         try {
@@ -598,7 +598,7 @@ const Dashboard = () => {
               >
                 <option value="">Select model</option>
                 <option value="gpt-4.1">gpt-4.1</option>
-                <option value="No LLM">No LLM</option>
+                <option value="none">No LLM</option>
               </select>
             </div>
 
