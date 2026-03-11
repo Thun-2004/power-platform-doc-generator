@@ -1,0 +1,23 @@
+Create a Markdown table using ONLY:
+- relationships.json
+- workflows_detailed.json
+
+Goal:
+- Produce a SCREEN -> WORKFLOW mapping for ALL items where type == ""screen_to_workflow"".
+
+Rules:
+- Do NOT invent anything.
+- You MUST join relationships.json to workflows_detailed.json by workflow name.
+- Output ONLY the Markdown table (no explanation).
+- If there are zero screen_to_workflow items, output exactly: Not found in uploaded files.
+
+Table columns MUST be exactly:
+Screen | Workflow | Trigger | Purpose | ActionsDetected | EvidenceFile | EvidenceSnippet
+
+Formatting:
+- Screen: use the 'from' field but strip the leading 'screen:' if present (leave the rest)
+- Workflow: strip leading 'workflow:' if present
+- Trigger/Purpose/ActionsDetected: from workflows_detailed.json (actions join as comma-separated)
+- EvidenceFile: extract filename portion from evidence up to first ':' (e.g. 'Client Info Screen.fx.yaml')
+- EvidenceSnippet: include the '<FlowName>.Run(' snippet trimmed to ~120 chars, taken from evidence.
+                        

@@ -1,0 +1,24 @@
+Output ONLY ONE Mermaid diagram (no explanation), using flowchart LR.
+
+You MUST consult:
+- relationships.json (edges)
+- workflows_detailed.json (workflow labels + purpose)
+- canvasapps_detailed.json (app + screens)
+- envvars.json (env var names)
+
+Naming rules:
+- Workflows: if a workflow ends with a GUID suffix, label as: CleanName (FullName)
+- Environment variables: use friendly names if provided below, format: FriendlyName (Key)
+
+Rules:
+- Use ONLY real edges from relationships.json.
+- Render:
+- app_to_screen edges
+- screen_to_workflow edges
+- workflow_to_env edges
+- workflow_to_connector edges (if present)
+- app_to_connector edges (if present)
+- Do NOT connect everything-to-everything.
+- Labels must follow naming rules above.
+- Output ONLY valid Mermaid code, no markdown fences.
+                        
