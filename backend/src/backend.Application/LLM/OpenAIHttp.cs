@@ -127,7 +127,7 @@ public static class OpenAIHttp
     {
         var payload = new
         {
-            LlmModel,
+            model = LlmModel,
             input = prompt,
             tools = new object[]
             {
