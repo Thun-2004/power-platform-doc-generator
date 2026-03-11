@@ -58,7 +58,7 @@ public class FileController : ControllerBase
 
         try
         {
-            var job = await _uploadService.StartJobAsync(req.File, outputTypes, req.UseLLM, outputPrompts, ct); 
+            var job = await _uploadService.StartJobAsync(req.File, outputTypes, req.LlmModel, outputPrompts, ct); 
             return Ok(new ResponseModel<JobResponse>
             {
                 Status = 200,

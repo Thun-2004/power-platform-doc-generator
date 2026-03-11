@@ -7,15 +7,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace backend.Application.LLM;
-
-public enum LlmProvider
-{
-    OpenAI,
-    AzureOpenAI
-}
 public sealed class OpenAiApiConfig
 {
-    public required LlmProvider Provider { get; init; }
+    public required string Provider { get; init; }
     public required string BaseUrl { get; init; }
     public required string ApiKey { get; init; }
     public int TimeoutMinutes { get; init; } = 10;
@@ -31,19 +25,30 @@ public static class OpenAIHttp
             Timeout = TimeSpan.FromMinutes(cfg.TimeoutMinutes)
         };
 
-        // Clear any existing auth headers
+        // Clear any existing auth headers/keys
         http.DefaultRequestHeaders.Authorization = null;
         http.DefaultRequestHeaders.Remove("api-key");
+        http.DefaultRequestHeaders.Remove("x-api-key");
 
-        if (cfg.Provider == LlmProvider.OpenAI)
+        var provider = (cfg.Provider ?? string.Empty).Trim().ToLowerInvariant();
+
+        if (provider is "openai" or "azure-openai")
         {
+            // Azure/OpenAI style key
+            // http.DefaultRequestHeaders.Add("api-key", cfg.ApiKey);
             http.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", cfg.ApiKey);
         }
-        else // AzureOpenAI
+        else if (provider is "claude" or "anthropic")
         {
-            // Azure uses api-key header for key auth
-            http.DefaultRequestHeaders.Add("api-key", cfg.ApiKey);
+            // Anthropic-style key
+            http.DefaultRequestHeaders.Add("x-api-key", cfg.ApiKey);
+        }
+        else
+        {
+            // Fallback: standard Bearer token
+            http.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", cfg.ApiKey);
         }
 
         return http;
@@ -118,11 +123,11 @@ public static class OpenAIHttp
         _ = await ReadJson(res);
     }
 
-    public static async Task<string> AskWithFileSearch(HttpClient http, string model, string vectorStoreId, string prompt)
+    public static async Task<string> AskWithFileSearch(HttpClient http, string LlmModel, string vectorStoreId, string prompt)
     {
         var payload = new
         {
-            model,
+            LlmModel,
             input = prompt,
             tools = new object[]
             {
