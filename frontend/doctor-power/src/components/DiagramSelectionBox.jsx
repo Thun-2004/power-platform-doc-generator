@@ -4,8 +4,10 @@ import { House, Bookmark, User, Menu } from 'lucide-react';
 import "../styles/App.css";
 
 
-const DiagramSelectionBox = ({type, selectedModes, toggleSelected}) => {
+const DiagramSelectionBox = ({type, selectedModes, toggleSelectedm, charLimit}) => {
     var isSelected = selectedModes.includes(type.id);
+    
+    const [promptContent, setPromptContent] = useState('');
 
     return (
         <>
@@ -39,7 +41,8 @@ const DiagramSelectionBox = ({type, selectedModes, toggleSelected}) => {
                 (isSelected) ? "border-blue-600 shadow-sm opacity-100" : "border-gray-300 opacity-50"
             }`}>
             <label className="block mb-2.5 text-sm font-small text-gray-600">Additional Prompt for {type.title}</label>
-            <textarea id={type.id} className="bg-gray-50 border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand  w-full px-1 py-2.5 shadow-xs placeholder:text-body" placeholder="Additional prompt" />
+            <label className="block mb-2.5 text-sm font-small text-gray-600 justify-self-end"> <span id={type.id + "-charcount"}>{promptContent.length}</span>/{charLimit}</label>
+            <textarea value={promptContent} id={type.id} maxLength={charLimit} onChange={e => setPromptContent(e.target.value)} className="bg-gray-50 border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand  w-full px-1 py-2.5 shadow-xs placeholder:text-body" placeholder="Additional prompt" />
             </button>
 
         </>
