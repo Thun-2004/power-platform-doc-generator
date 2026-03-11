@@ -20,13 +20,8 @@ const Dashboard = () => {
     { id: "environment-variables", title: "Environment variables", desc: "A structured table of environment variables used in the solution, including their type, description, and values across development, test, and production environments."}
   ];
 
-  const statusSymbols = {
-    'Pending': "⭘ Uploading Files",
-    'Processing': "🔘 File is being processed by LLM",
-    'Completed': "✅ Output should be produced",
-    'Failed': "❌ request failed",
-  }
-  
+  const promptCharLimit = 250;
+
   // Each item: { id, outputType, displayName, status, jobId, downloadUrl, name?, url?, blob? }
   const [outputItems, setOutputItems] = useState([]);
   const [previewFile, setPreviewFile] = useState(null);
@@ -581,7 +576,7 @@ const Dashboard = () => {
             <h2 className="text-title">Select output file types</h2>
 
             <div className="grid grid-cols-2 gap-4">
-              {fileTypes.map((type) => <DiagramSelectionBox type={type} selectedModes={selectedModes} toggleSelected={toggleSelected}/>)}
+              {fileTypes.map((type) => <DiagramSelectionBox type={type} selectedModes={selectedModes} toggleSelected={toggleSelected} charLimit={promptCharLimit}/>)}
             </div>
 
         </div>
