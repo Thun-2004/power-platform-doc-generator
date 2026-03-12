@@ -73,7 +73,6 @@ public static class OpenAIHttp
         }
         return JsonDocument.Parse(text).RootElement;
     }
-
     
     //new
     public static async Task<string> CreateVectorStore(HttpClient http, string name)
