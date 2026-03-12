@@ -1,0 +1,50 @@
+Create a Markdown table using ONLY:
+- relationships.json
+- workflows_detailed.json
+
+Goal:
+- Produce a SCREEN -> WORKFLOW mapping for ALL items where type == "screen_to_workflow".
+
+High-level rules:
+- Do NOT invent any screens or workflows that do not exist in the source files.
+- You MUST join relationships.json to workflows_detailed.json by workflow name.
+- Output ONLY the Markdown table (no explanation, no headings above it, no extra text below it).
+- If there are zero screen_to_workflow items, output exactly: `Not found in uploaded files.` (that exact sentence).
+
+Table structure (STRICT):
+- The table MUST have exactly these columns, in this order:
+  `Screen | Workflow | Trigger | Purpose | ActionsDetected | EvidenceFile | EvidenceSnippet`
+- The second line MUST be the Markdown separator row:
+  `|---|---|---|---|---|---|---|`
+- Every subsequent line is one mapping row.
+
+Column definitions:
+- Screen:
+  - Take the `from` field from relationships.json where `type == "screen_to_workflow"`.
+  - Strip the leading `screen:` prefix if present (leave the rest exactly as-is).
+- Workflow:
+  - Take the `to` field from relationships.json where `type == "screen_to_workflow"`.
+  - Strip the leading `workflow:` prefix if present (leave the rest).
+  - If a workflow ends with a GUID suffix, display as: `CleanName (FullName)`:
+    - CleanName: part before the GUID.
+    - FullName: the original workflow name.
+- Trigger / Purpose / ActionsDetected:
+  - Use values from workflows_detailed.json for the matched workflow.
+  - `Trigger`: workflows_detailed.trigger
+  - `Purpose`: workflows_detailed.purpose
+  - `ActionsDetected`: join workflows_detailed.actions_detected as a comma-separated list.
+  - If any of these fields are missing or empty, put `Not found in uploaded files`.
+- EvidenceFile:
+  - Use the `evidence` field from relationships.json for that edge.
+  - Extract the filename portion up to the first `:` (e.g. from `Client Info Screen.fx.yaml: <Flow.Run(...)>` get `Client Info Screen.fx.yaml`).
+  - If there is no evidence, put `Not found in uploaded files`.
+- EvidenceSnippet:
+  - From the same `evidence` field, take the part after the first `:`.
+  - Include the `<FlowName>.Run(` snippet, trimmed to ~120 characters (add `...` if you truncate).
+  - If there is no snippet, put `Not found in uploaded files`.
+
+Formatting:
+- Escape any `|` characters inside cell content so the Markdown table remains valid.
+- Do NOT wrap values in backticks.
+- Do NOT add any extra columns or rows. Only emit the header, separator, and one row per screen_to_workflow mapping.
+                        

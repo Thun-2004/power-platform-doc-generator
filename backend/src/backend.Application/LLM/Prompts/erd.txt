@@ -1,0 +1,61 @@
+Output ONLY ONE Mermaid diagram (no explanation), using flowchart LR.
+
+You MUST consult:
+- relationships.json (edges)
+- workflows_detailed.json (workflow labels + purpose)
+- canvasapps_detailed.json (app + screens)
+- envvars.json (env var names)
+
+Overall goal:
+- Show how Canvas Apps, Screens, Workflows, Connectors, and Environment Variables are related in a single ERD-style architecture diagram.
+
+Mermaid formatting rules (STRICT, MUST follow exactly):
+- First line MUST be exactly: `flowchart LR`
+- Each node MUST be on its own line.
+- Node IDs MUST only contain letters, digits, and underscores (no spaces, no dashes).
+  - GOOD: `CanvasApp1`, `Screen_Welcome`, `Workflow_GetCustomerDetails`
+  - BAD: `Canvas App 1`, `Screen-1`, `Wf:GetDetails`
+- Node labels MUST use the form: `ID["Label text"]` (square brackets and double quotes).
+  - Example: `CanvasApp1["Sales Tracker"]`
+  - The entire label text MUST be inside double quotes. Do NOT use the round-parenthesis form `ID(Label)`.
+  - Inside the label text, do NOT use parentheses ( or ). They break the Mermaid parser. Use a dash, comma, or space instead (e.g. "App Name - 516c" or "App Name, 516c", not "App Name (516c)").
+  - Do NOT put parentheses or quotes around the ID itself.
+- Edges MUST be on their own lines using the form: `ID1 --> ID2`
+  - Example: `CanvasApp1 --> ScreenWelcome`
+- Do NOT put multiple nodes or edges on the same line.
+- Do NOT include any Markdown code fences (no ```mermaid, no ```).
+- FORBIDDEN: node syntax like `ID(Label)` or `ID(Label (extra))`—these cause parse errors. Use only `ID["Label"]`.
+
+Subgraphs (groups):
+- You MUST define the following subgraphs, even if some are empty:
+  - `subgraph CanvasApps`
+  - `subgraph Screens`
+  - `subgraph Workflows`
+  - `subgraph Connectors` (only if there are connectors)
+  - `subgraph EnvironmentVariables` (only if there are env vars)
+- All Canvas App nodes MUST appear inside `subgraph CanvasApps`.
+- All Screen nodes MUST appear inside `subgraph Screens`.
+- All Workflow nodes MUST appear inside `subgraph Workflows`.
+- All Connector nodes MUST appear inside `subgraph Connectors`.
+- All Environment Variable nodes MUST appear inside `subgraph EnvironmentVariables`.
+
+Naming rules (no parentheses in labels; use dash or comma):
+- Workflows: if a workflow ends with a GUID suffix, use: `CleanName - FullName` or `CleanName, FullName` (never use parentheses in the label).
+- Environment variables: use `FriendlyName - Key` or `FriendlyName, Key` (no parentheses).
+
+Edge rules (from relationships.json):
+- Use ONLY real edges from relationships.json.
+- Render ALL of these relationship types when present:
+  - `app_to_screen` edges (Canvas App -> Screen)
+  - `screen_to_workflow` edges (Screen -> Workflow)
+  - `workflow_to_env` edges (Workflow -> Environment Variable)
+  - `workflow_to_connector` edges (Workflow -> Connector) if present
+  - `app_to_connector` edges (Canvas App -> Connector) if present
+- Do NOT invent any extra connections that are not in relationships.json.
+- Do NOT connect everything-to-everything.
+
+Additional constraints:
+- If a node is not referenced by any allowed edge type, you MAY omit it to keep the diagram readable.
+- Labels must follow naming rules above.
+- Output ONLY valid Mermaid code, no extra narrative, no Markdown, no backticks.
+                        
