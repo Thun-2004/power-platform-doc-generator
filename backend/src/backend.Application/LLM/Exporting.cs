@@ -2,8 +2,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
-namespace backend.Application.LLM; 
+namespace backend.Application.LLM;
 
 public static class Exporting
 {
@@ -29,8 +30,6 @@ public static class Exporting
 
         return p.ExitCode;
     }
-
-
 
     public static void ExportWord(string outDir, string overview, string workflows, string faq)
     {
@@ -110,82 +109,10 @@ public static class Exporting
             var label = content[labelStart..(i - 1)].Trim().Replace("(", "-").Replace(")", "-");
             result.Append(id).Append("[\"").Append(label).Append("\"]");
         }
-        var transformed = result.ToString();
-
-        // 3) Drop any lines that don't look like valid Mermaid for our use case
-        var lines = transformed.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-        var filtered = new System.Text.StringBuilder();
-        int keptLines = 0;
-        foreach (var line in lines)
-        {
-            var trimmed = line.Trim();
-            if (string.IsNullOrEmpty(trimmed))
-            {
-                continue;
-            }
-
-            // Allow core mermaid constructs we expect
-            if (trimmed.StartsWith("flowchart ", StringComparison.OrdinalIgnoreCase) ||
-                trimmed.StartsWith("subgraph ", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(trimmed, "end", StringComparison.OrdinalIgnoreCase) ||
-                trimmed.StartsWith("%%")) // comment
-            {
-                filtered.AppendLine(line);
-                continue;
-            }
-
-            // Node: ID["Label"]
-            if (Regex.IsMatch(trimmed, @"^[A-Za-z0-9_]+\s*\[\s*""[^""]*""\s*\]\s*$"))
-            {
-                filtered.AppendLine(line);
-                keptLines++;
-                continue;
-            }
-
-            // Edge: ID1 --> ID2
-            if (Regex.IsMatch(trimmed, @"^[A-Za-z0-9_]+\s*-->\s*[A-Za-z0-9_]+\s*$"))
-            {
-                filtered.AppendLine(line);
-                keptLines++;
-                continue;
-            }
-
-            // Anything else is dropped to avoid parser errors
-        }
-
-        // If we filtered everything out (or almost everything), fall back to transformed
-        // so we don't end up with an empty/blank diagram.
-        if (keptLines < 2)
-        {
-            return transformed;
-        }
-
-        return filtered.ToString();
+        return result.ToString();
     }
 
     /// Render a Mermaid .mmd file to PDF using mermaid-cli (mmdc). Returns the full path to the generated .pdf file.
-    // public static string ExportMermaidToPdf(string outDir, string mermaidFileName, string pdfFileName)
-    // {
-    //     var mmdPath = Path.Combine(outDir, mermaidFileName);
-    //     if (File.Exists(mmdPath))
-    //     {
-    //         var raw = File.ReadAllText(mmdPath);
-    //         var sanitized = SanitizeMermaidForMmdc(raw);
-    //         if (sanitized != raw)
-    //             File.WriteAllText(mmdPath, sanitized);
-    //     }
-
-    //     // Use Puppeteer config so Chrome can run as root with --no-sandbox inside Docker.
-    //     // const string puppeteerConfigPath = "/src/src/backend.Application/LLM/puppeteer-config.json";
-    //     const string puppeteerConfigPath = "../../backend.Application/LLM/puppeteer-config.json";
-
-    //     var configArg = File.Exists(puppeteerConfigPath)
-    //         ? $" -p \"{puppeteerConfigPath}\""
-    //         : string.Empty;
-
-    //     RunProcess("mmdc", $"-i \"{mermaidFileName}\" -o \"{pdfFileName}\"{configArg}", outDir);
-    //     return Path.Combine(outDir, pdfFileName);
-    // }
     public static string ExportMermaidToPdf(string outDir, string mermaidFileName, string pdfFileName)
     {
         var mmdPath = Path.Combine(outDir, mermaidFileName);
