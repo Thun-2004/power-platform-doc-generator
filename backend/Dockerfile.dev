@@ -10,6 +10,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0
 # Install pandoc for docx/pdf exports
 RUN apt-get update && apt-get install -y pandoc && rm -rf /var/lib/apt/lists/*
 RUN dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.49.4
+RUN npm install -g @mermaid-js/mermaid-cli
 
 ENV PATH="$PATH:/root/.dotnet/tools"
 
