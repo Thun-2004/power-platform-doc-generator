@@ -4,11 +4,13 @@ import { renderAsync } from 'docx-preview';
 import { Document, Page, pdfjs } from 'react-pdf';
 import * as XLSX from 'xlsx';
 
-// Set up PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+// Worker must match react-pdf's bundled pdfjs version (e.g. 4.8.69). Use CDN with that version.
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
 
 const DocumentPreviewModal = ({ file, isOpen, onClose }) => {
   const containerRef = useRef(null);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [pdfError, setPdfError] = useState(null);
   const [pdfNumPages, setPdfNumPages] = useState(null);
   const [pdfPageNumber, setPdfPageNumber] = useState(1);
   const [excelSheets, setExcelSheets] = useState([]);
@@ -26,6 +28,12 @@ const DocumentPreviewModal = ({ file, isOpen, onClose }) => {
 
   const handlePdfLoadSuccess = ({ numPages }) => {
     setPdfNumPages(numPages);
+    setPdfError(null);
+  };
+
+  const handlePdfLoadError = (err) => {
+    console.error('PDF load error', err);
+    setPdfError(err?.message || 'Failed to load PDF');
   };
 
   const loadExcelFile = async (blob) => {
@@ -84,8 +92,24 @@ const DocumentPreviewModal = ({ file, isOpen, onClose }) => {
       renderDocx();
     } else if (fileType === 'excel') {
       loadExcelFile(file.blob);
+    } else if (fileType === 'pdf') {
+      setPdfError(null);
+      setPdfPageNumber(1);
+      setPdfNumPages(null);
+      const blob =
+        file.blob instanceof Blob && file.blob.type === 'application/pdf'
+          ? file.blob
+          : new Blob([file.blob], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      setPdfUrl(url);
+      return () => {
+        URL.revokeObjectURL(url);
+        setPdfUrl(null);
+      };
+    } else {
+      setPdfUrl(null);
+      setPdfError(null);
     }
-    // PDF rendering is handled by react-pdf component
   }, [isOpen, file]);
 
   if (!isOpen) return null;
@@ -118,19 +142,30 @@ const DocumentPreviewModal = ({ file, isOpen, onClose }) => {
 
           {fileType === 'pdf' && (
             <div className="flex flex-col items-center gap-4 border-0 outline-none">
-              <Document
-                file={file.blob}
-                onLoadSuccess={handlePdfLoadSuccess}
-                className="flex flex-col items-center border-0 outline-none"
-              >
-                <Page
-                  pageNumber={pdfPageNumber}
-                  renderTextLayer={false}
-                  renderAnnotationLayer={false}
-                  className="max-w-full border-0 outline-none [&_canvas]:outline-none"
-                  scale={1.5}
-                />
-              </Document>
+              {pdfError && (
+                <div className="p-4 bg-red-50 text-red-700 rounded-lg w-full max-w-md">
+                  {pdfError}
+                </div>
+              )}
+              {pdfUrl && !pdfError && (
+                <Document
+                  file={{ url: pdfUrl }}
+                  onLoadSuccess={handlePdfLoadSuccess}
+                  onLoadError={handlePdfLoadError}
+                  loading={
+                    <div className="p-4 text-gray-600">Loading PDF…</div>
+                  }
+                  className="flex flex-col items-center border-0 outline-none"
+                >
+                  <Page
+                    pageNumber={pdfPageNumber}
+                    renderTextLayer={false}
+                    renderAnnotationLayer={false}
+                    className="max-w-full border-0 outline-none [&_canvas]:outline-none"
+                    scale={1.5}
+                  />
+                </Document>
+              )}
               {pdfNumPages && (
                 <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm">
                   <button

@@ -1,0 +1,31 @@
+Output ONLY ONE Mermaid diagram (no explanation), using flowchart LR.
+
+It MUST include all three groups as explicit nodes:
+1) Canvas Apps (both apps as nodes)
+2) Workflows (each workflow as its own node — do NOT use a single 'Workflows' hub node)
+3) Environment Variables (each env var as its own node)
+
+Naming rules:
+- Workflows: if a workflow ends with a GUID suffix, label as: CleanName (FullName)
+- Environment variables: use friendly names if provided below, format: FriendlyName (Key)
+
+Friendly environment variable names:
+"
++ envMapText
++ @"
+
+Connections rules:
+- Connect each Canvas App node to each Workflow node (high-level relationship).
+- Connect each Workflow node to a hub node named: Environment Variables (shared)
+- Connect that hub node to EVERY environment variable node.
+- Do NOT invent per-workflow env var mappings unless explicitly stated in uploaded chunks.
+
+Formatting rules:
+- Use subgraphs named exactly: CanvasApps, Workflows, EnvironmentVariables
+- Use safe IDs:
+- CA1, CA2 for canvas apps
+- W1..W10 for workflows
+- EVH for env var hub
+- E1..E16 for env vars
+- Labels must use the real names from the uploaded chunks (apply naming rules above).
+- Output ONLY valid Mermaid code. No second diagram. No markdown fences.
