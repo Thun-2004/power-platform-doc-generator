@@ -6,8 +6,13 @@ public class BackendOptions
 
     public int Timeout { get; set; } = 10;
 
-    public string PromptsBasePath { get; set; } = "../../backend.Application/Prompts";
+    /// <summary>Base path for prompt .txt files (used when AIPrompts does not contain the key).</summary>
+    public string PromptsBasePath { get; set; } = "../../backend.Application/Config/Prompts";
 
+    /// <summary>Prompt text by output type from appsettings. When set, used instead of loading from file.</summary>
+    public Dictionary<string, string>? AIPrompts { get; set; }
+
+    /// <summary>Prompt file names by output type (used when AIPrompts is null or does not contain the key).</summary>
     public Dictionary<string, string> AIPromptsUrl { get; set; } = new()
     {
         ["overview"] = "overview.txt",

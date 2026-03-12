@@ -22,10 +22,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         const string AllowFrontend = "_myAllowSpecificOrigins";
 
-        // Shared config from repo root (SharedConfig.json); backend-only values come from appsettings.json
-        var sharedConfigPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "..", "..", "..", "sharedConfig.json"));
-        builder.Configuration.AddJsonFile(sharedConfigPath, optional: true, reloadOnChange: true);
-
+        // All config (including Shared section) now comes from appsettings.json
         builder.Services.Configure<SharedOptions>(builder.Configuration.GetSection(SharedOptions.SectionName));
         builder.Services.Configure<FileStorageOptions>(builder.Configuration.GetSection(FileStorageOptions.SectionName));
         builder.Services.Configure<BackendOptions>(builder.Configuration.GetSection(BackendOptions.SectionName));
