@@ -46,6 +46,10 @@ const Dashboard = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
 
+  // Shared config from backend (SharedConfig.json)
+  const [backendUrl, setBackendUrl] = useState("");
+  const [aiModels, setAiModels] = useState([]);
+
 
   const abortRef = useRef(null);//like useState but not rerender 
   const fileInputRef = useRef(null); // to clear the DOM input val
@@ -89,6 +93,21 @@ const Dashboard = () => {
   useEffect(() => {
       console.log("Selected modes changed:", selectedModes);
     }, [selectedModes]);
+
+  // Load shared config (backendUrl, aiModels) from backend
+  useEffect(() => {
+    const loadSharedConfig = async () => {
+      try {
+        const res = await axiosPublic.get("/api/config/shared");
+        const data = res.data ?? {};
+        if (data.backendUrl) setBackendUrl(data.backendUrl);
+        if (Array.isArray(data.aiModels)) setAiModels(data.aiModels);
+      } catch (err) {
+        console.error("Failed to load shared config", err);
+      }
+    };
+    loadSharedConfig();
+  }, []);
 
   const onPickFile = (e) => {
       const f = e.target.files?.[0] ?? null;
@@ -194,7 +213,8 @@ const Dashboard = () => {
           const prompt = document.getElementById(t)?.value?.trim() ?? '';
           formData.append('SelectedOutputTypes', prompt ? `${t}: ${prompt}` : t);
         });
-        formData.append('LlmModel', selectedLLM === 'gpt-4.1' ? 'true' : 'false');
+        // Pass through the selected model name (or 'none') to backend
+        formData.append('LlmModel', selectedLLM);
 
         let response;
         try {
@@ -397,7 +417,7 @@ const Dashboard = () => {
           'SelectedOutputTypes',
           prompt ? `${outputType}: ${prompt}` : outputType
         );
-        formData.append('LlmModel', selectedLLM === 'gpt-4.1' ? 'true' : 'false');
+        formData.append('LlmModel', selectedLLM);
 
         let response;
         try {
@@ -597,8 +617,10 @@ const Dashboard = () => {
                 className="ml-4 w-40 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="">Select model</option>
-                <option value="gpt-4.1">gpt-4.1</option>
                 <option value="none">No LLM</option>
+                {aiModels.map((m) => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
               </select>
             </div>
 
