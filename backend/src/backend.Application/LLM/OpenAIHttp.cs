@@ -7,17 +7,12 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace backend.Application.LLM;
-
-public enum LlmProvider
-{
-    OpenAI,
-    AzureOpenAI
-}
 public sealed class OpenAiApiConfig
 {
-    public required LlmProvider Provider { get; init; }
-    public required string BaseUrl { get; init; }  
+    public required string Provider { get; init; }
+    public required string BaseUrl { get; init; }
     public required string ApiKey { get; init; }
+    public int TimeoutMinutes { get; init; } = 10;
 }
 
 public static class OpenAIHttp
@@ -27,22 +22,33 @@ public static class OpenAIHttp
         var http = new HttpClient
         {
             BaseAddress = new Uri(cfg.BaseUrl.TrimEnd('/') + "/"),
-            Timeout = TimeSpan.FromMinutes(10)
+            Timeout = TimeSpan.FromMinutes(cfg.TimeoutMinutes)
         };
 
-        // Clear any existing auth headers
+        // Clear any existing auth headers/keys
         http.DefaultRequestHeaders.Authorization = null;
         http.DefaultRequestHeaders.Remove("api-key");
+        // http.DefaultRequestHeaders.Remove("x-api-key");
 
-        if (cfg.Provider == LlmProvider.OpenAI)
+        var provider = (cfg.Provider ?? string.Empty).Trim().ToLowerInvariant();
+
+        if (provider is "openai" or "azure-openai")
         {
+            // Azure/OpenAI style key
+            // http.DefaultRequestHeaders.Add("api-key", cfg.ApiKey);
             http.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", cfg.ApiKey);
         }
-        else // AzureOpenAI
+        else if (provider is "claude" or "anthropic")
         {
-            // Azure uses api-key header for key auth
-            http.DefaultRequestHeaders.Add("api-key", cfg.ApiKey);
+            // Anthropic-style key
+            http.DefaultRequestHeaders.Add("x-api-key", cfg.ApiKey);
+        }
+        else
+        {
+            // Fallback: standard Bearer token
+            http.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", cfg.ApiKey);
         }
 
         return http;
@@ -67,99 +73,9 @@ public static class OpenAIHttp
         }
         return JsonDocument.Parse(text).RootElement;
     }
-
-    // public static async Task<string> CreateVectorStore(HttpClient http, string name)
-    // {
-    //     var body = JsonSerializer.Serialize(new { name });
-    //     var res = await http.PostAsync(
-    //         "https://api.openai.com/v1/vector_stores",
-    //         new StringContent(body, Encoding.UTF8, "application/json")
-    //     );
-    //     var json = await ReadJson(res);
-    //     return json.GetProperty("id").GetString()!;
-    // }
-
-    // public static async Task<string> UploadFile(HttpClient http, string path)
-    // {
-    //     using var form = new MultipartFormDataContent();
-    //     form.Add(new StringContent("assistants"), "purpose");
-
-    //     await using var fs = File.OpenRead(path);
-    //     var fileContent = new StreamContent(fs);
-    //     fileContent.Headers.ContentType =
-    //         new MediaTypeHeaderValue("application/octet-stream");
-
-    //     form.Add(fileContent, "file", Path.GetFileName(path));
-
-    //     var res = await http.PostAsync("https://api.openai.com/v1/files", form);
-    //     var json = await ReadJson(res);
-    //     return json.GetProperty("id").GetString()!;
-    // }
     
-
-    // public static async Task AttachFileToVectorStore(HttpClient http, string vectorStoreId, string fileId)
-    // {
-    //     var body = JsonSerializer.Serialize(new { file_id = fileId });
-    //     var res = await http.PostAsync(
-    //         $"https://api.openai.com/v1/vector_stores/{vectorStoreId}/files",
-    //         new StringContent(body, Encoding.UTF8, "application/json")
-    //     );
-    //     _ = await ReadJson(res);
-    // }
-
-    // public static async Task<string> AskWithFileSearch(HttpClient http, string model, string vectorStoreId, string prompt)
-    // {
-    //     var payload = new
-    //     {
-    //         model,
-    //         input = prompt,
-    //         tools = new object[]
-    //         {
-    //             new {
-    //                 type = "file_search",
-    //                 vector_store_ids = new[] { vectorStoreId }
-    //             }
-    //         }
-    //     };
-
-    //     var body = JsonSerializer.Serialize(payload);
-    //     var res = await http.PostAsync(
-    //         "https://api.openai.com/v1/responses",
-    //         new StringContent(body, Encoding.UTF8, "application/json")
-    //     );
-
-    //     var json = await ReadJson(res);
-
-    //     if (json.TryGetProperty("output_text", out var ot) &&
-    //         ot.ValueKind == JsonValueKind.String)
-    //         return ot.GetString()!;
-
-    //     if (json.TryGetProperty("output", out var output) &&
-    //         output.ValueKind == JsonValueKind.Array)
-    //     {
-    //         foreach (var item in output.EnumerateArray())
-    //         {
-    //             if (item.TryGetProperty("type", out var t) &&
-    //                 t.GetString() == "message" &&
-    //                 item.TryGetProperty("content", out var content) &&
-    //                 content.ValueKind == JsonValueKind.Array)
-    //             {
-    //                 foreach (var c in content.EnumerateArray())
-    //                 {
-    //                     if (c.TryGetProperty("type", out var ct) &&
-    //                         ct.GetString() == "output_text" &&
-    //                         c.TryGetProperty("text", out var tx))
-    //                         return tx.GetString()!;
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     return json.ToString();
-    // }
-
     //new
-    public static async Task<string> CreateVectorStore2(HttpClient http, string name)
+    public static async Task<string> CreateVectorStore(HttpClient http, string name)
     {
         var body = JsonSerializer.Serialize(new { name });
 
@@ -172,7 +88,7 @@ public static class OpenAIHttp
         return json.GetProperty("id").GetString()!;
     }
 
-    public static async Task<string> UploadFile2(HttpClient http, string path)
+    public static async Task<string> UploadFile(HttpClient http, string path)
     {
         using var form = new MultipartFormDataContent();
 
@@ -193,7 +109,7 @@ public static class OpenAIHttp
         return json.GetProperty("id").GetString()!;
     }
 
-    public static async Task AttachFileToVectorStore2(HttpClient http, string vectorStoreId, string fileId)
+    public static async Task AttachFileToVectorStore(HttpClient http, string vectorStoreId, string fileId)
     {
         var body = JsonSerializer.Serialize(new { file_id = fileId });
 
@@ -206,11 +122,11 @@ public static class OpenAIHttp
         _ = await ReadJson(res);
     }
 
-    public static async Task<string> AskWithFileSearch2(HttpClient http, string model, string vectorStoreId, string prompt)
+    public static async Task<string> AskWithFileSearch(HttpClient http, string LlmModel, string vectorStoreId, string prompt)
     {
         var payload = new
         {
-            model,
+            model = LlmModel,
             input = prompt,
             tools = new object[]
             {

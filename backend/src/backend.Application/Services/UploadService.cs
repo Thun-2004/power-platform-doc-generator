@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using backend.Application.DTO;
 using backend.Application.Interfaces;
 using backend.Domain;
-using backend.Application.LLM; 
-using backend.Application.Helpers; 
+using backend.Application.LLM;
+using backend.Application.Helpers;
+using backend.Application.Config;
 
 namespace backend.Application.Services;
 
@@ -14,20 +16,23 @@ public class UploadService : IUploadService
     private readonly IJobStore _jobs;
     private readonly FileProcessing _fileProcessing;
     private readonly IFileStorage _storage;
+    private readonly SharedOptions _sharedConfig;
 
     public UploadService(
         ILogger<UploadService> logger,
         IJobStore jobs,
         FileProcessing fileProcessing,
-        IFileStorage storage)
+        IFileStorage storage,
+        IOptions<SharedOptions> sharedConfig)
     {
         _logger = logger;
         _jobs = jobs;
         _fileProcessing = fileProcessing;
         _storage = storage;
+        _sharedConfig = sharedConfig.Value;
     }
 
-    public async Task<JobStartResult> StartJobAsync(IFormFile file, List<string> outputTypes, bool useLLM, IReadOnlyDictionary<string, string>? outputPrompts, CancellationToken ct)
+    public async Task<JobStartResult> StartJobAsync(IFormFile file, List<string> outputTypes, string LlmModel, IReadOnlyDictionary<string, string>? outputPrompts, CancellationToken ct)
     {
         // normalize
         outputTypes = outputTypes
@@ -44,8 +49,9 @@ public class UploadService : IUploadService
         var originalFileName = file.FileName;
         var ext = Path.GetExtension(originalFileName).ToLowerInvariant();
 
-        PermittedExtensions extType = PermittedFiletypeConversion.ToExtension(ext);
-        if (extType == 0)
+        // validate against allowed types from config
+        var allowed = _sharedConfig?.AllowedUploadedFileTypes ?? Array.Empty<string>();
+        if (allowed.Length > 0 && !allowed.Contains(ext, StringComparer.OrdinalIgnoreCase))
             throw new ArgumentException($"File type {ext} not permitted.");
 
         // save upload (handles directories + unique naming)
@@ -61,7 +67,7 @@ public class UploadService : IUploadService
         {
             try
             {
-                await _fileProcessing.ProcessFile(outputTypes, job.JobId, useLLM, outputPrompts);
+                await _fileProcessing.ProcessFile(outputTypes, job.JobId, LlmModel, outputPrompts);
             }
             //TODO: more descriptive error handling
             catch (Exception e)

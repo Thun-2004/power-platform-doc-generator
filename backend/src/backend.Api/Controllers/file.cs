@@ -58,7 +58,7 @@ public class FileController : ControllerBase
 
         try
         {
-            var job = await _uploadService.StartJobAsync(req.File, outputTypes, req.UseLLM, outputPrompts, ct); 
+            var job = await _uploadService.StartJobAsync(req.File, outputTypes, req.LlmModel, outputPrompts, ct); 
             return Ok(new ResponseModel<JobResponse>
             {
                 Status = 200,
@@ -170,35 +170,6 @@ public class FileController : ControllerBase
             return BadRequest(error);
         }
     }
-
-
-    // [HttpGet("job/{jobId}/files/{outputType}")]
-    // public async Task<IActionResult> GetJobOutput(string jobId, string outputType)
-    // {
-    //     try
-    //     {
-    //         Console.WriteLine($"Fetching output file for job {jobId} and output type {outputType}");
-
-    //         FileMetadata fileMetadata = _jobs.getOutputFile(jobId, outputType);
-    //         var bytes = await System.IO.File.ReadAllBytesAsync(fileMetadata.FilePath); 
-    //         FileDescriptor fileDescriptor = CreateFileDescriptor(fileMetadata.FilePath);
-
-    //         return Ok(File(
-    //                 bytes,
-    //                 fileMetadata.MimeType,
-    //                 fileDescriptor.DownloadName
-    //             )); 
-            
-    //     }catch(Exception e)
-    //     {
-    //         ResponseModel<object> error = new ResponseModel<object>
-    //         {
-    //             Status = 500,
-    //             Message = e.ToString(),
-    //         };
-    //         return BadRequest(error);
-    //     }
-    // }
 
     // test function
     // [HttpGet("getDocument")]

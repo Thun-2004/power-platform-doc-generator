@@ -13,7 +13,7 @@ using backend.Application.Helpers;
 namespace backend.Application.Parser;
 public static class SolutionParser
 {
-    public static string Run(string input_path, string output_path, string jobId)
+    public static string Run(string input_path, string output_path, string jobId, string pacJobsDir)
     {
         string input = input_path;
         string output = output_path;
@@ -34,9 +34,8 @@ public static class SolutionParser
         // ----------------------------
         var canvasDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasApps");
 
-        string pacDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "backend.Infrastructure", "FileStorages", "PPCliJobs");
+        string pacDir = Path.GetFullPath(Environment.ExpandEnvironmentVariables(pacJobsDir));
 
-        // var canvasAppsDir = Path.Combine(root.FullName, "CanvasApps");
         var canvasAppsDir = canvasDir.FullName;
         if (!Directory.Exists(canvasAppsDir))
             throw new DirectoryNotFoundException($"CanvasApps folder not found: {canvasAppsDir}");

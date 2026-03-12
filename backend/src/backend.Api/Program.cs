@@ -3,11 +3,13 @@ using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using DotNetEnv;
 
 using backend.Domain;
 using backend.Infrastructure;
 using backend.Application;
+using backend.Application.Config;
 
 namespace backend.Api;
 
@@ -18,38 +20,39 @@ public class Program
         Env.Load(Path.Combine("..", "..", ".." ,".env"));
 
         var builder = WebApplication.CreateBuilder(args);
-        var AllowFrontend = "_myAllowSpecificOrigins"; 
+        const string AllowFrontend = "_myAllowSpecificOrigins";
+
+        // All config (including Shared section) now comes from appsettings.json
+        builder.Services.Configure<SharedOptions>(builder.Configuration.GetSection(SharedOptions.SectionName));
+        builder.Services.Configure<FileStorageOptions>(builder.Configuration.GetSection(FileStorageOptions.SectionName));
+        builder.Services.Configure<BackendOptions>(builder.Configuration.GetSection(BackendOptions.SectionName));
+        builder.Services.Configure<LlmOptions>(builder.Configuration.GetSection(LlmOptions.SectionName));
+
+        var kestrelSection = builder.Configuration.GetSection("Kestrel");
+        builder.Services.Configure<KestrelServerOptions>(options =>
+        {
+            var reqMin = kestrelSection.GetValue<int?>("RequestHeadersTimeoutMinutes") ?? 5;
+            var keepAliveMin = kestrelSection.GetValue<int?>("KeepAliveTimeoutMinutes") ?? 5;
+            options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(reqMin);
+            options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(keepAliveMin);
+        });
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy(name: AllowFrontend,
-                            policy  =>
-                            {
-                                policy.WithOrigins(
-                                    "http://localhost:5173", 
-                                    "https://client.scalar.com"
-                                ).AllowAnyHeader()
-                                .AllowAnyMethod();
-                            });
+            options.AddPolicy(AllowFrontend, policy =>
+            {
+                var origins = builder.Configuration.GetSection("Shared:CorsOrigins").Get<string[]>() ?? ["http://localhost:5173", "https://client.scalar.com"];
+                policy.WithOrigins(origins).AllowAnyHeader().AllowAnyMethod();
+            });
         });
-        
-        // Add services
+
         builder.Services.AddControllers();
         builder.Services.AddInfrastructure();
         builder.Services.AddDomain();
         builder.Services.AddApplication();
 
-        //scalar UI
         builder.Services.AddOpenApi();
-
-        builder.Services.AddAuthorization(); 
-
-        //TODO: set global request time outs
-        builder.Services.Configure<KestrelServerOptions>(options =>
-        {
-            options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);
-            options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(5);
-        });
+        builder.Services.AddAuthorization();
 
         var app = builder.Build();
 
