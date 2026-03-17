@@ -7,8 +7,39 @@
 # ---------- DEV STAGE ----------
 FROM mcr.microsoft.com/dotnet/sdk:9.0
 
-# Install pandoc for docx/pdf exports
-RUN apt-get update && apt-get install -y pandoc && rm -rf /var/lib/apt/lists/*
+# Install pandoc (docx/pdf) and Node.js/npm (mermaid-cli)
+RUN apt-get update && apt-get install -y \
+    pandoc \
+    nodejs \
+    npm \
+    # Core Chrome / Puppeteer deps
+    libnss3 \
+    libnspr4 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libx11-6 \
+    libx11-xcb1 \
+    libxcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxrandr2 \
+    libxrender1 \
+    libxss1 \
+    libxshmfence1 \
+    libdrm2 \
+    libgbm1 \
+    libcairo2 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libasound2 \
+    # Optional but commonly required by Chromium
+    libgtk-3-0 \
+    ca-certificates \
+    fonts-liberation \
+ && rm -rf /var/lib/apt/lists/*
+ 
 RUN dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.49.4
 RUN npm install -g @mermaid-js/mermaid-cli
 
