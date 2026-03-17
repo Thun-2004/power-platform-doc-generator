@@ -4,6 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- Disable default **/*.cs globbing to avoid dotnet SDK bug passing '**/*.cs' to CSC -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +18,18 @@
   <ItemGroup>
     <ProjectReference Include="../backend.Domain/backend.Domain.csproj" />
     <ProjectReference Include="../backend.Application/backend.Application.csproj" />
+  </ItemGroup>
+
+  <!-- Explicitly list all .cs files instead of using **/*.cs globs -->
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="Helpers/Utility.cs" />
+    <Compile Include="Storages/JobStore.cs" />
+    <Compile Include="Storages/LocalFileStorage.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="**/*.resx" />
   </ItemGroup>
 
 </Project>
