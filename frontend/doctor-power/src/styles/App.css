@@ -1,10 +1,53 @@
-@import "tailwindcss";
+/* @import "tailwindcss";
 
-/* Remove grey border/outline from document preview wrapper only (not inner content) */
 .docx-preview-container,
 .docx-preview-container > *,
 div.docx {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.docx-preview-container{
+  padding: 0rem;
+}
+
+.docx-wrapper {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.docx-wrapper .docx {
+  padding: 3rem;     
+  background: white;            
+  box-shadow: none;
+} */
+
+@import "tailwindcss";
+
+/* Kill any border/outline/shadow around the DOCX preview wrapper */
+.docx-preview-container,
+.docx-preview-container > * {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
+  background: transparent !important;
+}
+
+.docx-wrapper {
+  border: none !important;
+  outline: none !important;
+  background: white !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+}
+
+.docx-wrapper .docx,
+.docx-wrapper .docx-page,
+.docx-wrapper .docx-page > * {
+  padding: 3rem !important;     
+  background: white !important; 
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;   
 }

@@ -12,6 +12,10 @@
   .text-menu {
     @apply text-sm font-medium;
   }
+
+  .docx-wrapper{
+    @apply bg-white p-8 mx-auto max-w-3xl border-0 outline-none;
+  }
 }
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

@@ -1,7 +1,6 @@
 namespace backend.Application.Config;
 
 
-//TODO: use those variables in the code
 public class SharedOptions
 {
     public const string SectionName = "Shared";
