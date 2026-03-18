@@ -4,7 +4,6 @@ public class LlmOptions
 {
     public const string SectionName = "Llm";
 
-    // public string DefaultProvider { get; set; } = "openai";
     public string DefaultModel { get; set; } = "gpt-4.1";
     public string VectorStoreName { get; set; } = "replybrary-vs";
     public int TimeoutMinutes { get; set; } = 10;
@@ -16,7 +15,6 @@ public class LlmOptions
         ["claude"] = "https://api.anthropic.com/v1/"
     };
 
-    //name of the corresponding API key in .env
     public Dictionary<string, string> LLMKeys { get; set; } = new()
     {
         ["openai"] = "AZURE_OPENAI_API_KEY",

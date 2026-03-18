@@ -18,6 +18,36 @@ public static class OpenAIHttp
         return JsonDocument.Parse(text).RootElement;
     }
 
+<<<<<<< HEAD
+=======
+    /// <summary>
+    /// Lightweight connectivity check: issues a simple GET against the base URL.
+    /// This is used only for LLM health validation and does not depend on a specific model.
+    /// </summary>
+    public static async Task PingAsync(HttpClient http)
+    {
+        // Try the bare base URL first
+        HttpResponseMessage res;
+        try
+        {
+            res = await http.GetAsync("");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"LLM endpoint not reachable: {ex.Message}", ex);
+        }
+
+        if (!res.IsSuccessStatusCode)
+        {
+            var text = res.Content == null ? "" : await res.Content.ReadAsStringAsync();
+            throw new Exception(
+                $"LLM health check failed: HTTP {(int)res.StatusCode} {res.ReasonPhrase}\n{text}"
+            );
+        }
+    }
+    
+    //new
+>>>>>>> 3677cb5 (feat: add LLM health check upon starting + disable not working model in dropdown)
     public static async Task<string> CreateVectorStore(HttpClient http, string name)
     {
         var body = JsonSerializer.Serialize(new { name });
@@ -105,5 +135,24 @@ public static class OpenAIHttp
         }
 
         return json.ToString();
+    }
+
+    /// <summary>
+    /// Tiny test call against the Responses API to validate that a specific model/deployment exists.
+    /// Used by LlmHealth to distinguish working vs broken deployments.
+    /// </summary>
+    public static async Task TestModelAsync(HttpClient http, string model)
+    {
+        var payload = new
+        {
+            model,
+            input = "ping",
+        };
+
+        var body = JsonSerializer.Serialize(payload);
+        var res = await http.PostAsync("responses", new StringContent(body, Encoding.UTF8, "application/json"));
+
+        // Will throw with detailed body (including DeploymentNotFound) if not OK
+        _ = await ReadJson(res);
     }
 }

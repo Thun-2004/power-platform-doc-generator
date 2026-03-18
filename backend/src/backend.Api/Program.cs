@@ -1,5 +1,5 @@
 using Scalar.AspNetCore;
-
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,12 +10,13 @@ using backend.Domain;
 using backend.Infrastructure;
 using backend.Application;
 using backend.Application.Config;
+using backend.Application.LLM;
 
 namespace backend.Api;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         Env.Load(Path.Combine("..", "..", ".." ,".env"));
 
@@ -73,7 +74,8 @@ public class Program
             app.MapGet("/", () => Results.Redirect("/scalar"));
         }
 
-        app.UseAuthentication();
+        // app.UseAuthentication();
+        // Optional: perform LLM health validation at startup using LlmHealth if desired.
         app.UseHttpsRedirection();
         app.UseCors(AllowFrontend);
         app.UseAuthorization();
