@@ -144,7 +144,6 @@ public static class OpenAIHttp
             $"vector_stores/{vectorStoreId}/files",
             new StringContent(body, Encoding.UTF8, "application/json")
         );
-
         _ = await ReadJson(res);
     }
 

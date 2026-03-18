@@ -63,8 +63,20 @@ public static class LlmHealth
                         }
                         catch (Exception ex)
                         {
-                            modelHealthy = false;
                             modelError = ex.Message;
+
+                            // Only mark model unhealthy for real deployment/auth problems.
+                            // This avoids false-negatives when the health-call payload differs
+                            // from the real generation payload.
+                            var msg = ex.Message ?? string.Empty;
+                            var isDeploymentMissing = msg.Contains("DeploymentNotFound", StringComparison.OrdinalIgnoreCase);
+                            var isAuthFailed =
+                                msg.Contains("401", StringComparison.OrdinalIgnoreCase) ||
+                                msg.Contains("403", StringComparison.OrdinalIgnoreCase) ||
+                                msg.Contains("Unauthorized", StringComparison.OrdinalIgnoreCase) ||
+                                msg.Contains("Forbidden", StringComparison.OrdinalIgnoreCase);
+
+                            modelHealthy = !(isDeploymentMissing || isAuthFailed);
                         }
 
                         results.Add(new LlmModelStatus(modelName, provider, baseUrl, modelHealthy, modelError));
