@@ -240,6 +240,7 @@ const Dashboard = () => {
           response = await axiosPublic.post('/api/File/generate', formData);
         } catch (postErr) {
           const msg = getErrorMessage(postErr);
+          console.log(`[SubmitError] ${msg}`, postErr?.response?.data ?? postErr);
           setJobCompleteStatus('Failed');
           setJobCompleteMessage(msg);
           return;
@@ -291,7 +292,7 @@ const Dashboard = () => {
                 const key = `${jobId}:${item.outputType}`;
                 if (!loggedOutputErrorsRef.current.has(key)) {
                   loggedOutputErrorsRef.current.add(key);
-                  console.error(`[JobError] jobId=${jobId} outputType=${item.outputType}:`, err);
+                  console.log(`[JobError] jobId=${jobId} outputType=${item.outputType}:`, err);
                 }
               }
               return { ...item, status, error: err };
@@ -451,6 +452,7 @@ const Dashboard = () => {
           response = await axiosPublic.post('/api/File/generate', formData);
         } catch (postErr) {
           const msg = getErrorMessage(postErr);
+          console.log(`[RegenerateSubmitError] ${msg}`, postErr?.response?.data ?? postErr);
           setJobCompleteStatus('Failed');
           setJobCompleteMessage(msg);
           return;
@@ -514,7 +516,7 @@ const Dashboard = () => {
               const key = `${jobId}:${outputType}`;
               if (!loggedOutputErrorsRef.current.has(key)) {
                 loggedOutputErrorsRef.current.add(key);
-                console.error(`[JobError] jobId=${jobId} outputType=${outputType}:`, err);
+                console.log(`[JobError] jobId=${jobId} outputType=${outputType}:`, err);
               }
             }
           }
