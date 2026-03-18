@@ -51,3 +51,8 @@ div.docx {
   outline: none !important;
   box-shadow: none !important;   
 }
+
+/* Make disabled <option> entries (e.g., unavailable models) appear dimmed */
+select option:disabled {
+  color: #9ca3af; /* Tailwind gray-400 */
+}
