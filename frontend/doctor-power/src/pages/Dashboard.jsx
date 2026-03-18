@@ -46,6 +46,8 @@ const Dashboard = () => {
   const [aiModels, setAiModels] = useState([]);
   // LLM health status per model: { [modelName]: { isHealthy, error } }
   const [llmStatus, setLlmStatus] = useState({});
+  // Prevent spamming console logs on every polling tick
+  const loggedOutputErrorsRef = useRef(new Set());
 
 
   const abortRef = useRef(null);//like useState but not rerender 
@@ -284,6 +286,14 @@ const Dashboard = () => {
                   errorsRaw[item.outputType]) ||
                 item.error;
               const status = (raw && String(raw).trim()) || item.status;
+              // Log backend error to browser console (once per output type)
+              if (status === 'Failed' && err) {
+                const key = `${jobId}:${item.outputType}`;
+                if (!loggedOutputErrorsRef.current.has(key)) {
+                  loggedOutputErrorsRef.current.add(key);
+                  console.error(`[JobError] jobId=${jobId} outputType=${item.outputType}:`, err);
+                }
+              }
               return { ...item, status, error: err };
             })
           );
@@ -473,15 +483,41 @@ const Dashboard = () => {
           const statusRes = await axiosPublic.get(statusUrl);
           const statusData = statusRes.data?.data ?? statusRes.data ?? {};
           const progressRaw = statusData.Progress ?? statusData.progress ?? {};
+          const errorsRaw = statusData.Errors ?? statusData.errors ?? {};
           const rawStatus = progressRaw[outputType];
           const status =
             (rawStatus && String(rawStatus).trim()) || 'Processing';
 
           setOutputItems((prev) =>
             prev.map((item) =>
-              item.outputType === outputType ? { ...item, status } : item
+              item.outputType === outputType
+                ? {
+                    ...item,
+                    status,
+                    error:
+                      (errorsRaw &&
+                        typeof errorsRaw === 'object' &&
+                        errorsRaw[item.outputType]) ||
+                      item.error,
+                  }
+                : item
             )
           );
+          // If it failed, log error once (using the same ref to avoid spam)
+          if (status === 'Failed') {
+            const err =
+              (errorsRaw &&
+                typeof errorsRaw === 'object' &&
+                errorsRaw[outputType]) ||
+              null;
+            if (err) {
+              const key = `${jobId}:${outputType}`;
+              if (!loggedOutputErrorsRef.current.has(key)) {
+                loggedOutputErrorsRef.current.add(key);
+                console.error(`[JobError] jobId=${jobId} outputType=${outputType}:`, err);
+              }
+            }
+          }
 
           if (status === 'Completed' || status === 'Failed') {
             done = true;
