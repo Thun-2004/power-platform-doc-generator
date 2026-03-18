@@ -44,6 +44,8 @@ const Dashboard = () => {
   // Shared config from backend (SharedConfig.json)
   const [backendUrl, setBackendUrl] = useState("");
   const [aiModels, setAiModels] = useState([]);
+  // LLM health status per model: { [modelName]: { isHealthy, error } }
+  const [llmStatus, setLlmStatus] = useState({});
 
 
   const abortRef = useRef(null);//like useState but not rerender 
@@ -89,19 +91,39 @@ const Dashboard = () => {
       console.log("Selected modes changed:", selectedModes);
     }, [selectedModes]);
 
-  // Load shared config (backendUrl, aiModels) from backend
+  // Load shared config (backendUrl, aiModels) and LLM health from backend
   useEffect(() => {
-    const loadSharedConfig = async () => {
+    const loadSharedConfigAndLlmStatus = async () => {
       try {
+        // Shared config
         const res = await axiosPublic.get("/api/config/shared");
         const data = res.data ?? {};
         if (data.backendUrl) setBackendUrl(data.backendUrl);
         if (Array.isArray(data.aiModels)) setAiModels(data.aiModels);
+
+        // LLM status (optional endpoint)
+        try {
+          const statusRes = await axiosPublic.get("/api/config/llm-status");
+          const statusArray = statusRes.data ?? [];
+          const statusMap = {};
+          for (const s of statusArray) {
+            // backend returns { model, isHealthy, error }
+            if (s.model) {
+              statusMap[s.model] = {
+                isHealthy: !!s.isHealthy,
+                error: s.error || null,
+              };
+            }
+          }
+          setLlmStatus(statusMap);
+        } catch (statusErr) {
+          console.warn("Failed to load LLM status", statusErr);
+        }
       } catch (err) {
         console.error("Failed to load shared config", err);
       }
     };
-    loadSharedConfig();
+    loadSharedConfigAndLlmStatus();
   }, []);
 
   const onPickFile = (e) => {
@@ -606,17 +628,41 @@ const Dashboard = () => {
           <div className="w-full">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4 lg:gap-5">
               <h2 className="text-title m-0">Select LLM model</h2>
-              <select
-                value={selectedLLM}
-                onChange={(e) => setSelectedLLM(e.target.value)}
-                className="w-full sm:w-40 md:w-48 lg:w-56 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm md:text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              >
-                <option value="">Select model</option>
-                <option value="none">No LLM</option>
-                {aiModels.map((m) => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
-              </select>
+              <div className="flex flex-col gap-1 w-full sm:w-auto">
+                <select
+                  value={selectedLLM}
+                  onChange={(e) => setSelectedLLM(e.target.value)}
+                  className="w-full sm:w-40 md:w-48 lg:w-56 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm md:text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="">Select model</option>
+                  <option value="none">No LLM</option>
+                  {aiModels.map((m) => {
+                    const status = llmStatus[m];
+                    const healthy = status ? status.isHealthy !== false : true;
+                    const label = healthy
+                      ? m
+                      : `${m} (unavailable – contact admin)`;
+                    return (
+                      <option
+                        key={m}
+                        value={m}
+                        disabled={!healthy}
+                        className={!healthy ? "opacity-50" : ""}
+                      >
+                        {label}
+                      </option>
+                    );
+                  })}
+                </select>
+                {Object.values(llmStatus).some(
+                  (s) => s && s.isHealthy === false
+                ) && (
+                  <p className="text-xs text-amber-700">
+                    Some AI models are currently unavailable. Please contact
+                    your administrator.
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="mt-6">
