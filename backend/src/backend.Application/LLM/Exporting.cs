@@ -2,11 +2,11 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace backend.Application.LLM;
+namespace RagCliApp;
 
 public static class Exporting
 {
-    public static int RunProcess(string fileName, string arguments, string workingDir, bool isPac=false)
+    public static int RunProcess(string fileName, string arguments, string workingDir)
     {
         var p = new Process();
         p.StartInfo.FileName = fileName;
@@ -21,8 +21,8 @@ public static class Exporting
         var stderr = p.StandardError.ReadToEnd();
         p.WaitForExit();
 
-        if (!string.IsNullOrWhiteSpace(stdout) && !isPac) Console.WriteLine(stdout.Trim());
-        if (p.ExitCode != 0 && !isPac)
+        if (!string.IsNullOrWhiteSpace(stdout)) Console.WriteLine(stdout.Trim());
+        if (p.ExitCode != 0)
             throw new Exception($"Command failed: {fileName} {arguments}\n{stderr}");
 
         return p.ExitCode;
@@ -60,7 +60,5 @@ public static class Exporting
         if (File.Exists(erd))
             RunProcess("pandoc", $"\"{erd}\" -o \"Replybrary_ERD_Mermaid.pdf\" --toc {pdfEngine}", outDir);
     }
-
-    
 
 }

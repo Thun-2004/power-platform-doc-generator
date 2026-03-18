@@ -1,73 +1,106 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using backend.Application.LLM;
-using backend.Application.Helpers;
 
-namespace backend.Application.Parser;
+namespace SolutionParserApp;
+
 public static class SolutionParser
 {
-    public static string Run(string input_path, string output_path, string jobId, string pacJobsDir)
+    public static int Run(string[] args)
     {
-        string input = input_path;
-        string output = output_path;
+        string? input = null;
+        string? output = null;
+
+        for (int i = 0; i < args.Length; i++)
+        {
+            var a = args[i];
+            if ((a.Equals("--input", StringComparison.OrdinalIgnoreCase) || a.Equals("-i", StringComparison.OrdinalIgnoreCase)) && i + 1 < args.Length)
+                input = args[++i];
+            else if ((a.Equals("--out", StringComparison.OrdinalIgnoreCase) || a.Equals("-o", StringComparison.OrdinalIgnoreCase)) && i + 1 < args.Length)
+                output = args[++i];
+        }
 
         if (string.IsNullOrWhiteSpace(input) || string.IsNullOrWhiteSpace(output))
         {
-            Console.Error.WriteLine("input or output path can not be null");
-            return "";
+            Console.Error.WriteLine("Usage: dotnet run -- --input <solution_folder> --out <output_folder>");
+            return 1;
         }
 
         var root = new DirectoryInfo(Path.GetFullPath(Environment.ExpandEnvironmentVariables(input)));
-        
+        if (!root.Exists)
+        {
+            Console.Error.WriteLine($"Input folder does not exist: {root.FullName}");
+            return 1;
+        }
+
         var outDirPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(output));
         Directory.CreateDirectory(outDirPath);
 
-        // ----------------------------
-        // Pac unzipped file
-        // ----------------------------
+        // ------------------------------------------------------------
+        // Locate standard folders
+        // ------------------------------------------------------------
         var canvasDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasApps");
-
-        string pacDir = Path.GetFullPath(Environment.ExpandEnvironmentVariables(pacJobsDir));
-
-        var canvasAppsDir = canvasDir.FullName;
-        if (!Directory.Exists(canvasAppsDir))
-            throw new DirectoryNotFoundException($"CanvasApps folder not found: {canvasAppsDir}");
-
-        var newPacFolderDir = Path.Combine(pacDir, jobId); 
-        if (!Directory.Exists(newPacFolderDir))
-            Directory.CreateDirectory(newPacFolderDir);
-
-        var newPacSolutionFileDir = Path.Combine(root.FullName, "CanvasAppsSrc"); 
-        if (!Directory.Exists(newPacSolutionFileDir))
-            Directory.CreateDirectory(newPacSolutionFileDir);
-
-        //Loop through .msapp file in Canvasapp & pac
-        foreach (var msappPath in Directory.EnumerateFiles(canvasDir.FullName, "*.msapp", SearchOption.TopDirectoryOnly)){
-            Exporting.RunProcess(
-                "pac",
-                $"canvas unpack --msapp \"{msappPath}\" --sources CanvasAppsSrc",
-                newPacFolderDir,  // working directory
-                true
-            );
-        }
-        FileOperation.CopyDirectory(newPacFolderDir, newPacSolutionFileDir); 
-        FileOperation.RemoveDirectory(newPacFolderDir); 
-
-        // ----------------------------
-        // Parser
-        // ----------------------------
         var workflowsDir = FsHelpers.FindDirCaseInsensitive(root, "Workflows");
         var envDir = FsHelpers.FindDirCaseInsensitive(root, "environmentvariabledefinitions");
         var canvasSrcDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasAppsSrc");
-        //TODO: should doc with 0 screen be able to be parsed ? 
 
+        // ------------------------------------------------------------
+        // Auto-unpack Canvas Apps
+        // IMPORTANT:
+        // Copy ONLY the inner CanvasAppsSrc folder from the temp dir.
+        // This avoids CanvasAppsSrc/CanvasAppsSrc nesting.
+        // ------------------------------------------------------------
+        if (canvasDir != null && canvasDir.Exists)
+        {
+            var msappFiles = Directory.EnumerateFiles(canvasDir.FullName, "*.msapp", SearchOption.TopDirectoryOnly).ToList();
+
+            if (msappFiles.Count > 0)
+            {
+                Console.WriteLine($"Found {msappFiles.Count} .msapp file(s) — running pac canvas unpack...");
+
+                var newPacFolderDir = Path.Combine(outDirPath, "_pac_temp");
+                var newPacSolutionFileDir = Path.Combine(root.FullName, "CanvasAppsSrc");
+
+                FsHelpers.RemoveDirectory(newPacFolderDir);
+                Directory.CreateDirectory(newPacFolderDir);
+
+                // Start fresh each run
+                FsHelpers.RemoveDirectory(newPacSolutionFileDir);
+                Directory.CreateDirectory(newPacSolutionFileDir);
+
+                foreach (var msappPath in msappFiles)
+                {
+                    try
+                    {
+                        RunProcess(
+                            "pac",
+                            $"canvas unpack --msapp \"{msappPath}\" --sources CanvasAppsSrc",
+                            newPacFolderDir
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[WARN] pac unpack failed for {Path.GetFileName(msappPath)}: {ex.Message}");
+                    }
+                }
+
+                var unpackedCanvasSrc = Path.Combine(newPacFolderDir, "CanvasAppsSrc");
+                if (Directory.Exists(unpackedCanvasSrc))
+                    FsHelpers.CopyDirectory(unpackedCanvasSrc, newPacSolutionFileDir);
+
+                FsHelpers.RemoveDirectory(newPacFolderDir);
+
+                canvasSrcDir = new DirectoryInfo(newPacSolutionFileDir);
+            }
+        }
+
+        // ------------------------------------------------------------
+        // Build report
+        // ------------------------------------------------------------
         var report = new SolutionReport
         {
             Root = root.FullName,
@@ -75,17 +108,23 @@ public static class SolutionParser
             CanvasApps = new CanvasAppsSection
             {
                 Exists = canvasDir != null,
-                Groups = canvasDir != null ? CanvasAppsParsing.GroupCanvasApps(canvasDir) : new Dictionary<string, List<string>>()
+                Groups = canvasDir != null
+                    ? CanvasAppsParsing.GroupCanvasApps(canvasDir)
+                    : new Dictionary<string, List<string>>()
             },
             Workflows = new WorkflowsSection
             {
                 Exists = workflowsDir != null,
-                Items = workflowsDir != null ? ListFiles(workflowsDir, ".json") : new List<Dictionary<string, object>>()
+                Items = workflowsDir != null
+                    ? ListFiles(workflowsDir, ".json")
+                    : new List<Dictionary<string, object>>()
             },
             EnvironmentVariableDefinitions = new EnvVarsSection
             {
                 Exists = envDir != null,
-                Items = envDir != null ? ListDirs(envDir) : new List<Dictionary<string, object>>()
+                Items = envDir != null
+                    ? ListDirs(envDir)
+                    : new List<Dictionary<string, object>>()
             }
         };
 
@@ -217,12 +256,9 @@ public static class SolutionParser
         Console.WriteLine($"Reports written to: {outDirPath}");
         Console.WriteLine($"Chunks written to: {chunksDir}");
 
-        return chunksDir;
+        return 0;
     }
 
-    // ----------------------------
-    // Existing helpers (unchanged behavior)
-    // ----------------------------
     static List<InventoryEntry> TopLevelInventory(DirectoryInfo root)
     {
         var inv = new List<InventoryEntry>();
@@ -255,5 +291,27 @@ public static class SolutionParser
             if (item is DirectoryInfo d)
                 outList.Add(new Dictionary<string, object> { ["name"] = d.Name + "/" });
         return outList;
+    }
+
+    static void RunProcess(string fileName, string arguments, string workingDir)
+    {
+        var p = new Process();
+        p.StartInfo.FileName = fileName;
+        p.StartInfo.Arguments = arguments;
+        p.StartInfo.WorkingDirectory = workingDir;
+        p.StartInfo.RedirectStandardOutput = true;
+        p.StartInfo.RedirectStandardError = true;
+        p.StartInfo.UseShellExecute = false;
+
+        p.Start();
+        var stdout = p.StandardOutput.ReadToEnd();
+        var stderr = p.StandardError.ReadToEnd();
+        p.WaitForExit();
+
+        if (!string.IsNullOrWhiteSpace(stdout))
+            Console.WriteLine(stdout.Trim());
+
+        if (p.ExitCode != 0)
+            throw new Exception($"Command failed: {fileName} {arguments}\n{stderr}");
     }
 }
