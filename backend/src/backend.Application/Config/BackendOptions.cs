@@ -11,6 +11,8 @@ public class BackendOptions
 
     public string PromptsBasePath { get; set; } = "../../backend.Application/Config/Prompts";
 
+    public Dictionary<string, string>? AIPrompts { get; set; }
+
     public Dictionary<string, string> AIPromptsUrl { get; set; } = new()
     {
         ["overview"] = "overview.txt",
