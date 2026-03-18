@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace backend.Application.LLM;
+namespace RagCliApp;
 
 public static class PromptRouting
 {

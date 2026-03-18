@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text.Json;
 using ClosedXML.Excel;
 
-namespace backend.Application.LLM;
+namespace RagCliApp;
+
 public static class ExcelExport
 {
     public static void Export(string chunksDir, string outDir)
