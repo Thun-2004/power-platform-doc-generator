@@ -153,6 +153,8 @@ public class JobStore : IJobStore
             return;
 
         fileMeta.ErrorMessage = message;
+        // Ensure the same error shown in the frontend is also visible in backend logs.
+        Console.Error.WriteLine($"[JobError] jobId={jobId} outputType={outputType} error={message}");
         _jobs[job.JobId] = job;
     }
 
