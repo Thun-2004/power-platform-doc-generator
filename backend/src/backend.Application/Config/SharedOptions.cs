@@ -10,9 +10,6 @@ public class SharedOptions
 
     public string[] CorsOrigins { get; set; } = ["http://localhost:5173", "https://client.scalar.com"];
 
-    public string[] AllowedOutputFileTypes { get; set; } =
-        ["overview", "workflows", "faq", "diagrams", "erd", "screen-mapping", "environment-variables"];
-
     public string[] AllowedUploadedFileTypes { get; set; } = [".zip", ".pdf"];
     public string[] AllowedExportTypes { get; set; } = [".docx", ".xlxs"];
 
