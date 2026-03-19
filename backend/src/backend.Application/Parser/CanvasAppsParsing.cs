@@ -86,19 +86,13 @@ public static class CanvasAppsParsing
 
                 var screenPaths = Directory
                     .EnumerateFiles(canvasSrcDir.FullName, "*.*.yaml", SearchOption.AllDirectories)
-                    .Where(p =>
-                        p.EndsWith(".fx.yaml", StringComparison.OrdinalIgnoreCase) ||
-                        p.EndsWith(".pa.yaml", StringComparison.OrdinalIgnoreCase))
-                    .Where(p => !FsHelpers.IsIgnored(Path.GetFileName(p)))
+                    .Where(ShouldCountAsScreenFile)
                     .OrderBy(p => p, StringComparer.OrdinalIgnoreCase)
                     .ToList();
 
                 foreach (var p in screenPaths)
                 {
                     var screenName = Path.GetFileNameWithoutExtension(p);
-                    if (screenName.Equals("App.fx", StringComparison.OrdinalIgnoreCase) ||
-                        screenName.Equals("App.pa", StringComparison.OrdinalIgnoreCase))
-                        continue;
 
                     detail.Screens.Add(screenName);
                     detail.FilesSeen.Add(FsHelpers.RelPath(canvasSrcDir, p));
@@ -128,19 +122,13 @@ public static class CanvasAppsParsing
 
                     var screenPaths = Directory
                         .EnumerateFiles(appFolder.FullName, "*.*.yaml", SearchOption.AllDirectories)
-                        .Where(p =>
-                            p.EndsWith(".fx.yaml", StringComparison.OrdinalIgnoreCase) ||
-                            p.EndsWith(".pa.yaml", StringComparison.OrdinalIgnoreCase))
-                        .Where(p => !FsHelpers.IsIgnored(Path.GetFileName(p)))
+                        .Where(ShouldCountAsScreenFile)
                         .OrderBy(p => p, StringComparer.OrdinalIgnoreCase)
                         .ToList();
 
                     foreach (var p in screenPaths)
                     {
                         var screenName = Path.GetFileNameWithoutExtension(p);
-                        if (screenName.Equals("App.fx", StringComparison.OrdinalIgnoreCase) ||
-                            screenName.Equals("App.pa", StringComparison.OrdinalIgnoreCase))
-                            continue;
 
                         detail.Screens.Add(screenName);
                         detail.FilesSeen.Add(FsHelpers.RelPath(appFolder, p));
@@ -182,6 +170,40 @@ public static class CanvasAppsParsing
 
         return result.OrderBy(x => x.App, StringComparer.OrdinalIgnoreCase).ToList();
     }
+
+    private static bool ShouldCountAsScreenFile(string path)
+    {
+        var fileName = Path.GetFileName(path);
+
+        if (FsHelpers.IsIgnored(fileName))
+            return false;
+
+        bool isYamlScreenCandidate =
+            fileName.EndsWith(".fx.yaml", StringComparison.OrdinalIgnoreCase) ||
+            fileName.EndsWith(".pa.yaml", StringComparison.OrdinalIgnoreCase);
+
+        if (!isYamlScreenCandidate)
+            return false;
+
+        // Already excluded before, keep excluding
+        if (fileName.Equals("App.fx.yaml", StringComparison.OrdinalIgnoreCase) ||
+            fileName.Equals("App.pa.yaml", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        // Not a real user-facing screen
+        if (fileName.Equals("_EditorState.pa.yaml", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        // These component .pa files are currently inflating the Replybrary screen count
+        // and should not be treated as standalone screens.
+        if (fileName.Equals("cmpHeader.pa.yaml", StringComparison.OrdinalIgnoreCase) ||
+            fileName.Equals("cmpLoading.pa.yaml", StringComparison.OrdinalIgnoreCase) ||
+            fileName.Equals("cmpMenu.pa.yaml", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        return true;
+    }
+
 
     public static List<string> ExtractConnectorNamesFromConnectionsJson(string path)
     {

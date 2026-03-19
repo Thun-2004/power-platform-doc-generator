@@ -30,7 +30,7 @@ class EnvironmentVariable
         //table specifications
         string[] columns = { "Environment Variable Name", "Type", "Description", "Dev Value - *Name of Dev Environment* - DEV", "Test Value -  * Name of UAT Environment* - UAT", "Production Value - *Name of Production Environment*" };
         string header_color = "#90bcf2";
-        string depreciated_color = "#ffc738";
+        //string depreciated_color = "#ffc738";
 
         using (var workbook = new XLWorkbook())
         {
