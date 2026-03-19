@@ -708,12 +708,16 @@ const Dashboard = () => {
                   </p>
                 )}
               </div>
+              <div className="sm:ml-auto w-full sm:w-auto mt-3 sm:mt-0">
+                <button
+                  onClick={onGenerateOutputFile}
+                  className="btn-theme text-title text-white"
+                >
+                  Generate
+                </button>
+              </div>
             </div>
 
-            <div className="mt-6">
-                <button onClick={onGenerateOutputFile} className="btn-theme text-title text-white">Generate</button>
-                {/* <h2 id="jobStatus"></h2> */}
-            </div>
         </div>
         </section>
 
