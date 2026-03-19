@@ -5,6 +5,9 @@ public class BackendOptions
     public const string SectionName = "Backend";
 
     public int Timeout { get; set; } = 10;
+    // How long to keep generated/uploaded files before deleting them.
+    // Value comes from appsettings.json: Backend:FileStorePeriodInMinutes
+    public int FileStorePeriodInMinutes { get; set; } = 5;
 
     public string PromptsBasePath { get; set; } = "../../backend.Application/Config/Prompts";
 

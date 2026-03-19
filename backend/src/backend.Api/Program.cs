@@ -55,6 +55,9 @@ public class Program
         builder.Services.AddOpenApi();
         builder.Services.AddAuthorization();
 
+        // Periodically delete old generated files (TTL cleanup).
+        builder.Services.AddHostedService<FileStorageTtlCleanupService>();
+
         var app = builder.Build();
 
         //Authentication -> later
