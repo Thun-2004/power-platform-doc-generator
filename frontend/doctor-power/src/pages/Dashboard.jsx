@@ -696,7 +696,7 @@ const Dashboard = () => {
                   (s) => s && s.isHealthy === false
                 ) && (
                   <p className="text-xs text-amber-700">
-                    If Some AI models are currently unavailable, contact
+                    If some AI models are currently unavailable, contact
                     your administrator.
                   </p>
                 )}
