@@ -364,25 +364,25 @@ const Dashboard = () => {
             } else if (failedTypes.length === selectedModesClone.length) {
               // all requested outputs failed
               const firstType = failedTypes[0];
-              const firstError =
-                (errorsRaw &&
-                  typeof errorsRaw === 'object' &&
-                  errorsRaw[firstType]) ||
-                null;
+              const firstFailedLabel =
+                (fileTypes &&
+                  Array.isArray(fileTypes) &&
+                  fileTypes.find((t) => t.id === firstType)?.title) ||
+                firstType;
               setJobCompleteStatus('Failed');
-              setJobCompleteMessage(firstError);
+              // Keep message short: only tell which output type failed.
+              setJobCompleteMessage(`\nFailed to generate: ${firstFailedLabel}`);
             } else {
               // partial failure: some completed, some failed
-              const label = failedTypes.join(', ');
-              const firstType = failedTypes[0];
-              const firstError =
-                (errorsRaw &&
-                  typeof errorsRaw === 'object' &&
-                  errorsRaw[firstType]) ||
-                null;
+              const firstFailedType = failedTypes[0];
+              const firstFailedLabel =
+                (fileTypes &&
+                  Array.isArray(fileTypes) &&
+                  fileTypes.find((t) => t.id === firstFailedType)?.title) ||
+                firstFailedType;
               const base =
-                `Generation partially completed but ${label} failed. Click Regenerate to try again.`;
-              const msg = firstError ? `${base} (${firstError})` : base;
+                `Generation partially completed. \nFailed: ${firstFailedLabel}. \nClick Regenerate to try again.`;
+              const msg = base;
               setJobCompleteStatus('PartialFailed');
               setJobCompleteMessage(msg);
             }
