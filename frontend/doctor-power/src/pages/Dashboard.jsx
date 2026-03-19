@@ -733,7 +733,7 @@ const Dashboard = () => {
               type="button"
               onClick={onDownloadAll}
               disabled={!outputItems.some((item) => item.url)}
-              className="btn-theme disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-theme bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Download all
             </button>
