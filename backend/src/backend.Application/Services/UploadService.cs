@@ -61,7 +61,7 @@ public class UploadService : IUploadService
         var job = _jobs.Create(outputTypes, Path.GetFileNameWithoutExtension(originalFileName), fullFilePath);
 
         //validate test before background job
-        FileOperation.ValidateSolutionZipOrThrow(job.ZipFilePath);
+        FileValidation.ValidateSolutionZipOrThrow(job.ZipFilePath);
         // background job
         _ = Task.Run(async () =>
         {

@@ -18,8 +18,6 @@ public static class OpenAIHttp
         return JsonDocument.Parse(text).RootElement;
     }
 
-<<<<<<< HEAD
-=======
     /// <summary>
     /// Lightweight connectivity check: issues a simple GET against the base URL.
     /// This is used only for LLM health validation and does not depend on a specific model.
@@ -47,7 +45,6 @@ public static class OpenAIHttp
     }
     
     //new
->>>>>>> 3677cb5 (feat: add LLM health check upon starting + disable not working model in dropdown)
     public static async Task<string> CreateVectorStore(HttpClient http, string name)
     {
         var body = JsonSerializer.Serialize(new { name });
