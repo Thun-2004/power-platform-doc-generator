@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using SolutionParserApp;
 
 namespace backend.Application.Parser;
 public static class WorkflowsParsing

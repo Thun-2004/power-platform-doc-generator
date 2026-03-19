@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using ClosedXML.Excel;
+using backend.Application.Parser;
 
 namespace RagCliApp;
 
