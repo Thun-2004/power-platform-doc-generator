@@ -11,16 +11,10 @@ import JobCompleteBanner from "../components/JobCompleteBanner";
 import axios from 'axios';
 
 const Dashboard = () => {
-  const fileTypes = [
-    { id: "overview", title: "Overview", desc: "A high-level summary of the solution, including key components such as canvas apps, workflows, screens, and environment variables."},
-    { id: "workflows", title: "Workflows", desc: "Detailed descriptions of the Power Automate workflows in the solution, including triggers, actions, connectors used, and their purpose."},
-    { id: "faq", title: "Frequently Asked Questions", desc: "A concise list of frequently asked questions about the solution, explaining common functionality and how different components interact"},
-    { id: "diagrams", title: "Diagrams", desc: "Visual architecture diagrams showing the relationships between canvas apps, workflows, and environment variables."},
-    { id: "erd", title: "ER diagram", desc: "A structured diagram illustrating relationships between apps, screens, workflows, connectors, and environment variables within the solution."},
-    { id: "environment-variables", title: "Environment variables", desc: "A structured table of environment variables used in the solution, including their type, description, and values across development, test, and production environments."}
-  ];
+  const [fileTypes, setFileTypes] = useState([]);
 
-  const promptCharLimit = 250;
+  // Comes from backend /api/config/shared (Frontend:customPromptCharacterLimit)
+  const [promptCharLimit, setPromptCharLimit] = useState(null);
 
   // Each item: { id, outputType, displayName, status, jobId, downloadUrl, name?, url?, blob? }
   const [outputItems, setOutputItems] = useState([]);
@@ -95,13 +89,18 @@ const Dashboard = () => {
 
   // Load shared config (backendUrl, aiModels) and LLM health from backend
   useEffect(() => {
-    const loadSharedConfigAndLlmStatus = async () => {
+        const loadSharedConfigAndLlmStatus = async () => {
       try {
         // Shared config
         const res = await axiosPublic.get("/api/config/shared");
         const data = res.data ?? {};
         if (data.backendUrl) setBackendUrl(data.backendUrl);
         if (Array.isArray(data.aiModels)) setAiModels(data.aiModels);
+            if (typeof data.customPromptCharacterLimit === "number")
+              setPromptCharLimit(data.customPromptCharacterLimit);
+
+            if (Array.isArray(data.generatedOutputTypes))
+              setFileTypes(data.generatedOutputTypes);
 
         // LLM status (optional endpoint)
         try {
@@ -656,7 +655,15 @@ const Dashboard = () => {
             <h2 className="text-title">Select output file types</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-5">
-              {fileTypes.map((type) => <DiagramSelectionBox type={type} selectedModes={selectedModes} toggleSelected={toggleSelected} charLimit={promptCharLimit}/>)}
+              {fileTypes.map((type) => (
+                <DiagramSelectionBox
+                  key={type.id}
+                  type={type}
+                  selectedModes={selectedModes}
+                  toggleSelected={toggleSelected}
+                  charLimit={promptCharLimit ?? 250}
+                />
+              ))}
             </div>
 
         </div>
