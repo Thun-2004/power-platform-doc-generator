@@ -4,7 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace backend.Application.Parser;
+namespace SolutionParserApp;
+
 public static class Relationships
 {
     public static List<RelationshipEdge> BuildRelationships(
@@ -129,6 +130,7 @@ public static class Relationships
 
             foreach (var path in screenFiles)
             {
+                // Keep the .fx / .pa suffix — matches how CanvasAppsParsing stores screen names
                 var screenName = Path.GetFileNameWithoutExtension(path);
 
                 bool isAppFile =
@@ -152,7 +154,7 @@ public static class Relationships
                     var called = m.Groups[1].Value.Trim();
                     Console.WriteLine($"[DEBUG] Run() call found: {called}   in   {Path.GetFileName(path)}");
 
-                    var calledN = Norm(called);
+                    var calledN   = Norm(called);
                     var calledNoN = calledN.StartsWith("n") ? calledN.Substring(1) : calledN;
 
                     string? match = null;
@@ -181,9 +183,9 @@ public static class Relationships
                     Console.WriteLine($"[DEBUG] EDGE ADDED: {screenNode} -> workflow:{match}");
                     edges.Add(new RelationshipEdge
                     {
-                        From = screenNode,
-                        To = $"workflow:{match}",
-                        Type = "screen_to_workflow",
+                        From     = screenNode,
+                        To       = $"workflow:{match}",
+                        Type     = "screen_to_workflow",
                         Evidence = $"{Path.GetFileName(path)}: {called}.Run(...)"
                     });
                 }
@@ -194,7 +196,7 @@ public static class Relationships
                     var called = m.Groups[1].Value.Trim();
                     Console.WriteLine($"[DEBUG] Run() call found (quoted): {called}   in   {Path.GetFileName(path)}");
 
-                    var calledN = Norm(called);
+                    var calledN   = Norm(called);
                     var calledNoN = calledN.StartsWith("n") ? calledN.Substring(1) : calledN;
 
                     string? match = null;
@@ -223,9 +225,9 @@ public static class Relationships
                     Console.WriteLine($"[DEBUG] EDGE ADDED (quoted): {screenNode} -> workflow:{match}");
                     edges.Add(new RelationshipEdge
                     {
-                        From = screenNode,
-                        To = $"workflow:{match}",
-                        Type = "screen_to_workflow",
+                        From     = screenNode,
+                        To       = $"workflow:{match}",
+                        Type     = "screen_to_workflow",
                         Evidence = $"{Path.GetFileName(path)}: '{called}'.Run(...)"
                     });
                 }
@@ -268,7 +270,7 @@ public static class Relationships
                 foreach (Match m in runCall.Matches(fileText))
                 {
                     runMatches++;
-                    var called = m.Groups[1].Value.Trim();
+                    var called  = m.Groups[1].Value.Trim();
                     var calledN = Norm(called);
                     var calledNoN = calledN.StartsWith("n") ? calledN.Substring(1) : calledN;
 
@@ -297,9 +299,9 @@ public static class Relationships
                     edgesAdded++;
                     edges.Add(new RelationshipEdge
                     {
-                        From = screenNode,
-                        To = $"workflow:{match}",
-                        Type = "screen_to_workflow",
+                        From     = screenNode,
+                        To       = $"workflow:{match}",
+                        Type     = "screen_to_workflow",
                         Evidence = $"{Path.GetFileName(path)}: {called}.Run(...)"
                     });
                 }
@@ -307,10 +309,10 @@ public static class Relationships
                 foreach (Match m in runCallQuoted.Matches(fileText))
                 {
                     runMatches++;
-                    var called = m.Groups[1].Value.Trim();
+                    var called  = m.Groups[1].Value.Trim();
                     Console.WriteLine($"[DEBUG] Run() call found (quoted): {called}   in   {Path.GetFileName(path)}");
 
-                    var calledN = Norm(called);
+                    var calledN   = Norm(called);
                     var calledNoN = calledN.StartsWith("n") ? calledN.Substring(1) : calledN;
 
                     string? match = null;
@@ -339,9 +341,9 @@ public static class Relationships
                     Console.WriteLine($"[DEBUG] EDGE ADDED (quoted): {screenNode} -> workflow:{match}");
                     edges.Add(new RelationshipEdge
                     {
-                        From = screenNode,
-                        To = $"workflow:{match}",
-                        Type = "screen_to_workflow",
+                        From     = screenNode,
+                        To       = $"workflow:{match}",
+                        Type     = "screen_to_workflow",
                         Evidence = $"{Path.GetFileName(path)}: '{called}'.Run(...)"
                     });
                 }

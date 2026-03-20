@@ -5,7 +5,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace backend.Application.Parser;
+namespace SolutionParserApp;
+
 public static class WorkflowsParsing
 {
     public static List<WorkflowDetail> ParseWorkflowsDetailed(DirectoryInfo workflowsDir, HashSet<string> envVarNames)
