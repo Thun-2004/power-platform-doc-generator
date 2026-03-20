@@ -1,8 +1,7 @@
 using System;
 using System.Text.Json;
 
-namespace backend.Application.Parser;
-
+namespace SolutionParserApp;
 
 public static class JsonHelpers
 {
