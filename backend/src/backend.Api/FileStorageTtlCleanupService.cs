@@ -27,7 +27,7 @@ public sealed class FileStorageTtlCleanupService : BackgroundService
         await CleanupOnce(stoppingToken);
 
         // Then run periodically.
-        // Keep it simple: every minute check for anything older than TTL.
+        // every minute check for anything older than TTL.
         var delay = TimeSpan.FromMinutes(1);
         while (!stoppingToken.IsCancellationRequested)
         {

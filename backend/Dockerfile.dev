@@ -73,4 +73,4 @@ ENV ASPNETCORE_URLS=http://0.0.0.0:5280
 EXPOSE 5280
 
 # Run in watch mode (like your local dotnet watch)
-CMD ["dotnet", "watch", "run", "--urls", "http://0.0.0.0:5280"]
+CMD ["dotnet", "watch", "--quiet", "run", "--urls", "http://0.0.0.0:5280"]
