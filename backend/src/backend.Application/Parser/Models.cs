@@ -1,11 +1,8 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace SolutionParserApp;
+namespace backend.Application.Parser;
 
-// ----------------------------
-// Models for JSON output
-// ----------------------------
 public sealed class InventoryEntry
 {
     [JsonPropertyName("name")]
@@ -27,7 +24,6 @@ public sealed class CanvasAppsSection
     [JsonPropertyName("groups")]
     public Dictionary<string, List<string>> Groups { get; set; } = new();
 }
-
 
 public sealed class ModelDrivenAppsSection
 {
@@ -125,7 +121,6 @@ public sealed class SolutionReport
     [JsonPropertyName("canvasapps")]
     public CanvasAppsSection CanvasApps { get; set; } = new();
 
-    // NEW: Model-Driven Apps
     [JsonPropertyName("modeldrivenapps")]
     public ModelDrivenAppsSection ModelDrivenApps { get; set; } = new();
 

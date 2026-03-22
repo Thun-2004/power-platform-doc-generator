@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace SolutionParserApp;
+namespace backend.Application.Parser;
 
 public static class WorkflowsParsing
 {
@@ -165,7 +165,6 @@ public static class WorkflowsParsing
         return t;
     }
 
-    //  lightweight action detection (safe, not overly assuming)
     static List<string> DetectActions(string jsonText)
     {
         var text = (jsonText ?? "").ToLowerInvariant();

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SolutionParserApp;
+namespace backend.Application.Parser;
 
 public static class Relationships
 {
@@ -122,24 +122,14 @@ public static class Relationships
 
             var screenFiles = Directory
                 .EnumerateFiles(canvasAppsSrcDir.FullName, "*.*.yaml", SearchOption.AllDirectories)
-                .Where(p =>
-                    p.EndsWith(".fx.yaml", StringComparison.OrdinalIgnoreCase) ||
-                    p.EndsWith(".pa.yaml", StringComparison.OrdinalIgnoreCase))
-                .Where(p => !FsHelpers.IsIgnored(Path.GetFileName(p)))
+                .Where(ShouldCountAsScreenFile)
                 .ToList();
 
             foreach (var path in screenFiles)
             {
-                // Keep the .fx / .pa suffix — matches how CanvasAppsParsing stores screen names
                 var screenName = Path.GetFileNameWithoutExtension(path);
 
-                bool isAppFile =
-                    screenName.Equals("App.fx", StringComparison.OrdinalIgnoreCase) ||
-                    screenName.Equals("App.pa", StringComparison.OrdinalIgnoreCase);
-
-                var screenNode = isAppFile
-                    ? $"app_start:{appName}"
-                    : $"screen:{appName}:{screenName}";
+                var screenNode = $"screen:{appName}:{screenName}";
 
                 var fileText = FsHelpers.SafeReadAllText(path);
                 if (string.IsNullOrWhiteSpace(fileText))
@@ -154,7 +144,7 @@ public static class Relationships
                     var called = m.Groups[1].Value.Trim();
                     Console.WriteLine($"[DEBUG] Run() call found: {called}   in   {Path.GetFileName(path)}");
 
-                    var calledN   = Norm(called);
+                    var calledN = Norm(called);
                     var calledNoN = calledN.StartsWith("n") ? calledN.Substring(1) : calledN;
 
                     string? match = null;
@@ -183,9 +173,9 @@ public static class Relationships
                     Console.WriteLine($"[DEBUG] EDGE ADDED: {screenNode} -> workflow:{match}");
                     edges.Add(new RelationshipEdge
                     {
-                        From     = screenNode,
-                        To       = $"workflow:{match}",
-                        Type     = "screen_to_workflow",
+                        From = screenNode,
+                        To = $"workflow:{match}",
+                        Type = "screen_to_workflow",
                         Evidence = $"{Path.GetFileName(path)}: {called}.Run(...)"
                     });
                 }
@@ -196,7 +186,7 @@ public static class Relationships
                     var called = m.Groups[1].Value.Trim();
                     Console.WriteLine($"[DEBUG] Run() call found (quoted): {called}   in   {Path.GetFileName(path)}");
 
-                    var calledN   = Norm(called);
+                    var calledN = Norm(called);
                     var calledNoN = calledN.StartsWith("n") ? calledN.Substring(1) : calledN;
 
                     string? match = null;
@@ -225,9 +215,9 @@ public static class Relationships
                     Console.WriteLine($"[DEBUG] EDGE ADDED (quoted): {screenNode} -> workflow:{match}");
                     edges.Add(new RelationshipEdge
                     {
-                        From     = screenNode,
-                        To       = $"workflow:{match}",
-                        Type     = "screen_to_workflow",
+                        From = screenNode,
+                        To = $"workflow:{match}",
+                        Type = "screen_to_workflow",
                         Evidence = $"{Path.GetFileName(path)}: '{called}'.Run(...)"
                     });
                 }
@@ -242,23 +232,13 @@ public static class Relationships
         {
             var screenFiles = Directory
                 .EnumerateFiles(appFolder.FullName, "*.*.yaml", SearchOption.AllDirectories)
-                .Where(p =>
-                    p.EndsWith(".fx.yaml", StringComparison.OrdinalIgnoreCase) ||
-                    p.EndsWith(".pa.yaml", StringComparison.OrdinalIgnoreCase))
-                .Where(p => !FsHelpers.IsIgnored(Path.GetFileName(p)))
+                .Where(ShouldCountAsScreenFile)
                 .ToList();
 
             foreach (var path in screenFiles)
             {
                 var screenName = Path.GetFileNameWithoutExtension(path);
-
-                bool isAppFile =
-                    screenName.Equals("App.fx", StringComparison.OrdinalIgnoreCase) ||
-                    screenName.Equals("App.pa", StringComparison.OrdinalIgnoreCase);
-
-                var screenNode = isAppFile
-                    ? $"app_start:{appFolder.Name}"
-                    : $"screen:{appFolder.Name}:{screenName}";
+                var screenNode = $"screen:{appFolder.Name}:{screenName}";
 
                 var fileText = FsHelpers.SafeReadAllText(path);
                 if (string.IsNullOrWhiteSpace(fileText))
@@ -270,7 +250,7 @@ public static class Relationships
                 foreach (Match m in runCall.Matches(fileText))
                 {
                     runMatches++;
-                    var called  = m.Groups[1].Value.Trim();
+                    var called = m.Groups[1].Value.Trim();
                     var calledN = Norm(called);
                     var calledNoN = calledN.StartsWith("n") ? calledN.Substring(1) : calledN;
 
@@ -299,9 +279,9 @@ public static class Relationships
                     edgesAdded++;
                     edges.Add(new RelationshipEdge
                     {
-                        From     = screenNode,
-                        To       = $"workflow:{match}",
-                        Type     = "screen_to_workflow",
+                        From = screenNode,
+                        To = $"workflow:{match}",
+                        Type = "screen_to_workflow",
                         Evidence = $"{Path.GetFileName(path)}: {called}.Run(...)"
                     });
                 }
@@ -309,10 +289,10 @@ public static class Relationships
                 foreach (Match m in runCallQuoted.Matches(fileText))
                 {
                     runMatches++;
-                    var called  = m.Groups[1].Value.Trim();
+                    var called = m.Groups[1].Value.Trim();
                     Console.WriteLine($"[DEBUG] Run() call found (quoted): {called}   in   {Path.GetFileName(path)}");
 
-                    var calledN   = Norm(called);
+                    var calledN = Norm(called);
                     var calledNoN = calledN.StartsWith("n") ? calledN.Substring(1) : calledN;
 
                     string? match = null;
@@ -341,9 +321,9 @@ public static class Relationships
                     Console.WriteLine($"[DEBUG] EDGE ADDED (quoted): {screenNode} -> workflow:{match}");
                     edges.Add(new RelationshipEdge
                     {
-                        From     = screenNode,
-                        To       = $"workflow:{match}",
-                        Type     = "screen_to_workflow",
+                        From = screenNode,
+                        To = $"workflow:{match}",
+                        Type = "screen_to_workflow",
                         Evidence = $"{Path.GetFileName(path)}: '{called}'.Run(...)"
                     });
                 }
@@ -352,5 +332,34 @@ public static class Relationships
 
         Console.WriteLine($"[DEBUG] Total Run() matches: {runMatches}");
         Console.WriteLine($"[DEBUG] Total screen->workflow edges added: {edgesAdded}");
+    }
+
+    static bool ShouldCountAsScreenFile(string path)
+    {
+        var fileName = Path.GetFileName(path);
+
+        if (FsHelpers.IsIgnored(fileName))
+            return false;
+
+        bool isYamlScreenCandidate =
+            fileName.EndsWith(".fx.yaml", StringComparison.OrdinalIgnoreCase) ||
+            fileName.EndsWith(".pa.yaml", StringComparison.OrdinalIgnoreCase);
+
+        if (!isYamlScreenCandidate)
+            return false;
+
+        if (fileName.Equals("App.fx.yaml", StringComparison.OrdinalIgnoreCase) ||
+            fileName.Equals("App.pa.yaml", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (fileName.Equals("_EditorState.pa.yaml", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (fileName.Equals("cmpHeader.pa.yaml", StringComparison.OrdinalIgnoreCase) ||
+            fileName.Equals("cmpLoading.pa.yaml", StringComparison.OrdinalIgnoreCase) ||
+            fileName.Equals("cmpMenu.pa.yaml", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        return true;
     }
 }
