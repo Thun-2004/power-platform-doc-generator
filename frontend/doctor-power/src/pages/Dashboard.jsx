@@ -9,6 +9,7 @@ import JobCompleteBanner from "../components/JobCompleteBanner";
 
 //temp
 import axios from 'axios';
+import JSZip from 'jszip';
 
 const Dashboard = () => {
   const [fileTypes, setFileTypes] = useState([]);
@@ -34,6 +35,7 @@ const Dashboard = () => {
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [downloadAllZipBusy, setDownloadAllZipBusy] = useState(false);
 
   // Shared config from backend (SharedConfig.json)
   const [backendUrl, setBackendUrl] = useState("");
@@ -406,19 +408,51 @@ const Dashboard = () => {
       });
     };
 
-    const onDownloadAll = () => {
+    const onDownloadAll = async () => {
       const completed = outputItems.filter((item) => item.url && item.name);
       if (completed.length === 0) return;
-      completed.forEach((item, index) => {
-        setTimeout(() => {
-          const a = document.createElement('a');
-          a.href = item.url;
-          a.download = item.name ?? `document-${item.outputType}`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        }, index * 200);
-      });
+      setDownloadAllZipBusy(true);
+      try {
+        const zip = new JSZip();
+        const usedNames = new Set();
+        for (const item of completed) {
+          let entryName = item.name ?? `document-${item.outputType}`;
+          if (usedNames.has(entryName)) {
+            const dot = entryName.lastIndexOf('.');
+            const base = dot > 0 ? entryName.slice(0, dot) : entryName;
+            const ext = dot > 0 ? entryName.slice(dot) : '';
+            entryName = `${base}-${item.outputType}${ext}`;
+          }
+          usedNames.add(entryName);
+
+          let data = item.blob;
+          if (!data && item.url) {
+            const res = await fetch(item.url);
+            data = await res.blob();
+          }
+          if (!data) continue;
+          zip.file(entryName, data);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const blobUrl = URL.createObjectURL(zipBlob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        const baseFromUpload =
+          selectedFile?.name?.replace(/\.[^.]+$/i, '') ?? 'outputs';
+        const jobId = completed[0]?.jobId;
+        a.download = jobId
+          ? `${baseFromUpload}_outputs_${jobId}.zip`
+          : `${baseFromUpload}_outputs.zip`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+      } catch (err) {
+        console.error('Download all (zip) failed', err);
+      } finally {
+        setDownloadAllZipBusy(false);
+      }
     };
 
     const onRegenerateOutput = async (outputType) => {
@@ -733,10 +767,12 @@ const Dashboard = () => {
             <button
               type="button"
               onClick={onDownloadAll}
-              disabled={!outputItems.some((item) => item.url)}
+              disabled={
+                !outputItems.some((item) => item.url) || downloadAllZipBusy
+              }
               className="btn-theme bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Download all
+              {downloadAllZipBusy ? 'Preparing zip…' : 'Download all'}
             </button>
           </div>
           <div id="file-display" className="flex flex-col gap-4">

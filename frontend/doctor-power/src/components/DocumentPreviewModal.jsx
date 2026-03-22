@@ -7,6 +7,7 @@ import * as XLSX from 'xlsx';
 // Worker must match react-pdf's bundled pdfjs version (e.g. 4.8.69). Use CDN with that version.
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
 
+//temp 
 const isScreenMappingDocxName = (name) =>
   !!name && /screen-mapping/i.test(name) && /\.docx$/i.test(name);
 
