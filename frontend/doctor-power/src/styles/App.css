@@ -42,6 +42,20 @@ div.docx {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
 }
 
+/*
+ * Screen-mapping DOCX only: wide multi-column tables (GUIDs, paths).
+ * 1400px -> comfortable width for ~7 columns;
+ */
+.docx-preview-container--screen-mapping .docx-wrapper {
+  width: max-content !important;
+  max-width: min(1400px, 95vw) !important;
+  box-sizing: border-box !important;
+}
+
+.docx-preview-container--screen-mapping {
+  max-width: none !important;
+}
+
 .docx-wrapper .docx,
 .docx-wrapper .docx-page,
 .docx-wrapper .docx-page > * {

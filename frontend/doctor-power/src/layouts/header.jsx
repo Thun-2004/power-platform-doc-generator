@@ -4,7 +4,7 @@ import dpLogo from '../assets/dp-logo.png'
 
 const Header = () => {
     return (
-        <header className="flex justify-between items-center px-8 py-2.5 bg-white shadow-sm flex-shrink-0">
+        <header className="flex justify-between items-center px-8 py-2.5 bg-white flex-shrink-0">
             <div className="flex items-end">
             <img src={dpLogo} className="h-19 p-2" alt="Doctor Power Logo" />
             <div className="flex flex-col items-start justify-end mb-2">

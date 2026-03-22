@@ -7,6 +7,9 @@ import * as XLSX from 'xlsx';
 // Worker must match react-pdf's bundled pdfjs version (e.g. 4.8.69). Use CDN with that version.
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
 
+const isScreenMappingDocxName = (name) =>
+  !!name && /screen-mapping/i.test(name) && /\.docx$/i.test(name);
+
 const DocumentPreviewModal = ({ file, isOpen, onClose }) => {
   const containerRef = useRef(null);
   const [pdfUrl, setPdfUrl] = useState(null);
@@ -115,10 +118,15 @@ const DocumentPreviewModal = ({ file, isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const fileType = getFileType(file?.name);
+  const screenMappingDocx = isScreenMappingDocxName(file?.name);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 outline-none">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col outline-none">
+      <div
+        className={`bg-white rounded-lg shadow-xl w-full max-h-[90vh] flex flex-col outline-none min-w-0 ${
+          screenMappingDocx ? 'max-w-[min(1400px,95vw)]' : 'max-w-6xl'
+        }`}
+      >
         {/* Header for doc */}
         <div className="flex justify-between items-center p-4 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-800">{file?.name}</h3>
@@ -132,11 +140,15 @@ const DocumentPreviewModal = ({ file, isOpen, onClose }) => {
         </div>
 
         {/* Doc Container */}
-        <div className="flex-1 overflow-auto p-4 bg-gray-50">
+        <div className="flex-1 overflow-auto p-4 bg-gray-50 min-w-0">
           {fileType === 'docx' && (
             <div
               ref={containerRef}
-              className="docx-preview-container bg-white p-8 mx-auto max-w-3xl border-0 outline-none"
+              className={`docx-preview-container bg-white p-8 mx-auto border-0 outline-none ${
+                screenMappingDocx
+                  ? 'docx-preview-container--screen-mapping max-w-none w-full min-w-0'
+                  : 'max-w-3xl'
+              }`}
             />
           )}
 
