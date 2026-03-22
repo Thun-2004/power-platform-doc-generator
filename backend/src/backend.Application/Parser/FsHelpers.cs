@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace SolutionParserApp;
+namespace backend.Application.Parser;
 
 public static class FsHelpers
 {

@@ -6,35 +6,26 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 
-namespace SolutionParserApp;
+namespace backend.Application.Parser;
 
 public static class SolutionParser
 {
-    public static int Run(string[] args)
+    public static string Run(string input_path, string output_path, string jobId, string pacJobsDir)
     {
-        string? input = null;
-        string? output = null;
-
-        for (int i = 0; i < args.Length; i++)
-        {
-            var a = args[i];
-            if ((a.Equals("--input", StringComparison.OrdinalIgnoreCase) || a.Equals("-i", StringComparison.OrdinalIgnoreCase)) && i + 1 < args.Length)
-                input = args[++i];
-            else if ((a.Equals("--out", StringComparison.OrdinalIgnoreCase) || a.Equals("-o", StringComparison.OrdinalIgnoreCase)) && i + 1 < args.Length)
-                output = args[++i];
-        }
+        string input = input_path;
+        string output = output_path;
 
         if (string.IsNullOrWhiteSpace(input) || string.IsNullOrWhiteSpace(output))
         {
-            Console.Error.WriteLine("Usage: dotnet run -- --input <solution_folder> --out <output_folder>");
-            return 1;
+            Console.Error.WriteLine("input or output path can not be null");
+            return "";
         }
 
         var root = new DirectoryInfo(Path.GetFullPath(Environment.ExpandEnvironmentVariables(input)));
         if (!root.Exists)
         {
             Console.Error.WriteLine($"Input folder does not exist: {root.FullName}");
-            return 1;
+            return "";
         }
 
         var outDirPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(output));
@@ -49,8 +40,7 @@ public static class SolutionParser
         var canvasSrcDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasAppsSrc");
 
         // ------------------------------------------------------------
-        // Auto-unpack Canvas Apps
-        // IMPORTANT:
+        // Auto-unpack Canvas Apps only if .msapp files exist
         // Copy ONLY the inner CanvasAppsSrc folder from the temp dir.
         // This avoids CanvasAppsSrc/CanvasAppsSrc nesting.
         // ------------------------------------------------------------
@@ -62,7 +52,7 @@ public static class SolutionParser
             {
                 Console.WriteLine($"Found {msappFiles.Count} .msapp file(s) — running pac canvas unpack...");
 
-                var newPacFolderDir = Path.Combine(outDirPath, "_pac_temp");
+                var newPacFolderDir = Path.Combine(pacJobsDir, jobId);
                 var newPacSolutionFileDir = Path.Combine(root.FullName, "CanvasAppsSrc");
 
                 FsHelpers.RemoveDirectory(newPacFolderDir);
@@ -99,6 +89,11 @@ public static class SolutionParser
         }
 
         // ------------------------------------------------------------
+        // Detect model-driven apps
+        // ------------------------------------------------------------
+        var modelDrivenAppNames = ModelDrivenAppsParsing.DetectModelDrivenApps(root);
+
+        // ------------------------------------------------------------
         // Build report
         // ------------------------------------------------------------
         var report = new SolutionReport
@@ -111,6 +106,11 @@ public static class SolutionParser
                 Groups = canvasDir != null
                     ? CanvasAppsParsing.GroupCanvasApps(canvasDir)
                     : new Dictionary<string, List<string>>()
+            },
+            ModelDrivenApps = new ModelDrivenAppsSection
+            {
+                Exists = modelDrivenAppNames.Count > 0,
+                Items = modelDrivenAppNames
             },
             Workflows = new WorkflowsSection
             {
@@ -143,6 +143,7 @@ public static class SolutionParser
         report.Relationships = Relationships.BuildRelationships(report, envVarNames, canvasDir, canvasSrcDir);
 
         int canvasGroupsCount = report.CanvasApps.Groups.Count;
+        int modelDrivenCount = report.ModelDrivenApps.Items.Count;
         int workflowsCount = report.Workflows.Items.Count;
         int envCount = report.EnvironmentVariableDefinitions.Items.Count;
         int screenCount = report.CanvasAppsDetailed.Sum(a => a.Screens.Count);
@@ -165,6 +166,7 @@ public static class SolutionParser
         md.AppendLine();
         md.AppendLine("## Key counts");
         md.AppendLine($"- Canvas Apps (grouped): **{canvasGroupsCount}**");
+        md.AppendLine($"- Model-Driven Apps: **{modelDrivenCount}**");
         md.AppendLine($"- Workflows: **{workflowsCount}**");
         md.AppendLine($"- Environment variables: **{envCount}**");
         md.AppendLine($"- Screens found (Canvas Apps): **{screenCount}**");
@@ -172,6 +174,7 @@ public static class SolutionParser
         md.AppendLine($"- Workflow connectors found: **{flowConnectorCount}**");
         md.AppendLine($"- Relationship edges inferred: **{relCount}**");
         md.AppendLine();
+
         md.AppendLine("## Canvas Apps (grouped)");
         if (canvasGroupsCount == 0) md.AppendLine("None found (CanvasApps folder missing or empty)");
         else
@@ -180,6 +183,16 @@ public static class SolutionParser
                 md.AppendLine($"- {kvp.Key}");
         }
         md.AppendLine();
+
+        md.AppendLine("## Model-Driven Apps");
+        if (modelDrivenCount == 0) md.AppendLine("None found");
+        else
+        {
+            foreach (var app in report.ModelDrivenApps.Items)
+                md.AppendLine($"- {app}");
+        }
+        md.AppendLine();
+
         md.AppendLine("## Workflows");
         if (workflowsCount == 0) md.AppendLine("None found (Workflows folder missing or empty)");
         else
@@ -191,6 +204,7 @@ public static class SolutionParser
             }
         }
         md.AppendLine();
+
         md.AppendLine("## Environment Variable Definitions");
         if (envCount == 0) md.AppendLine("None found (environmentvariabledefinitions missing or empty)");
         else
@@ -213,6 +227,7 @@ public static class SolutionParser
             counts = new
             {
                 canvasapps_groups = canvasGroupsCount,
+                modeldrivenapps = modelDrivenCount,
                 workflows = workflowsCount,
                 envvars = envCount,
                 screens = screenCount,
@@ -225,6 +240,7 @@ public static class SolutionParser
 
         File.WriteAllText(Path.Combine(chunksDir, "overview.json"), JsonSerializer.Serialize(overviewObj, jsonOptions), Encoding.UTF8);
         File.WriteAllText(Path.Combine(chunksDir, "canvasapps.json"), JsonSerializer.Serialize(report.CanvasApps, jsonOptions), Encoding.UTF8);
+        File.WriteAllText(Path.Combine(chunksDir, "modeldrivenapps.json"), JsonSerializer.Serialize(report.ModelDrivenApps, jsonOptions), Encoding.UTF8);
         File.WriteAllText(Path.Combine(chunksDir, "envvars.json"), JsonSerializer.Serialize(report.EnvironmentVariableDefinitions, jsonOptions), Encoding.UTF8);
         File.WriteAllText(Path.Combine(chunksDir, "workflows.json"), JsonSerializer.Serialize(report.Workflows, jsonOptions), Encoding.UTF8);
         File.WriteAllText(Path.Combine(chunksDir, "canvasapps_detailed.json"), JsonSerializer.Serialize(report.CanvasAppsDetailed, jsonOptions), Encoding.UTF8);
@@ -249,6 +265,7 @@ public static class SolutionParser
 
         Console.WriteLine("Parsing is complete");
         Console.WriteLine($"Canvas Apps (grouped): {canvasGroupsCount}");
+        Console.WriteLine($"Model-Driven Apps: {modelDrivenCount}");
         Console.WriteLine($"Workflows: {workflowsCount}");
         Console.WriteLine($"Environment variables: {envCount}");
         Console.WriteLine($"Screens found: {screenCount}");
@@ -256,7 +273,7 @@ public static class SolutionParser
         Console.WriteLine($"Reports written to: {outDirPath}");
         Console.WriteLine($"Chunks written to: {chunksDir}");
 
-        return 0;
+        return chunksDir;
     }
 
     static List<InventoryEntry> TopLevelInventory(DirectoryInfo root)
