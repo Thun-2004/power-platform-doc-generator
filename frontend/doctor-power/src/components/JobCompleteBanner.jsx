@@ -42,7 +42,9 @@ const JobCompleteBanner = ({ status, message, onDismiss }) => {
       />
       <div className="flex flex-col gap-0.5">
         {isPartial && displayMessage ? (
-          <p className="text-sm font-bold text-gray-900 m-0">{displayMessage}</p>
+          <p className="text-sm font-bold text-gray-900 m-0 whitespace-pre-line">
+            {displayMessage}
+          </p>
         ) : (
           <>
             <p className="text-sm font-bold text-gray-900 m-0">
@@ -50,7 +52,7 @@ const JobCompleteBanner = ({ status, message, onDismiss }) => {
               <span className={accentTextColor}>{accentWord}</span>
             </p>
             {isFailed && displayMessage && (
-              <p className="text-sm text-gray-600 m-0 font-normal">
+              <p className="text-sm text-gray-600 m-0 font-normal whitespace-pre-line">
                 {displayMessage}
               </p>
             )}

@@ -31,7 +31,7 @@ public static class LlmHealth
         // Map provider -> models from SharedOptions.AIModels if available
         var modelsByProvider = shared?.AIModels ?? new Dictionary<string, string[]>();
 
-        // Validate env vars/base URLs per provider and also test each configured model/deployment.
+        // Validate env vars/base URLs per provider and also test each configured model/deployment
         foreach (var kvp in llm.LLMKeys)
         {
             var provider = kvp.Key;
@@ -48,7 +48,7 @@ public static class LlmHealth
                 var cfg = new OpenAiApiConfig { Provider = provider, BaseUrl = baseUrl, ApiKey = apiKey, TimeoutMinutes = 1 };
                 using var client = OpenAIHttp.CreateClient(cfg);
 
-                // Emit a status for each model belonging to this provider, or at least the provider name.
+                // Emit a status for each model belonging to this provider, or at least the provider name
                 if (modelsByProvider.TryGetValue(provider, out var models) && models is { Length: > 0 })
                 {
                     foreach (var modelName in models)
@@ -57,7 +57,7 @@ public static class LlmHealth
                         string? modelError = null;
                         try
                         {
-                            // Tiny test call per model/deployment. This will surface DeploymentNotFound.
+                            // Tiny test call per model/deployment -> DeploymentNotFound
                             await OpenAIHttp.TestModelAsync(client, modelName);
                             modelHealthy = true;
                         }
@@ -66,7 +66,7 @@ public static class LlmHealth
                             modelError = ex.Message;
 
                             // Only mark model unhealthy for real deployment/auth problems.
-                            // This avoids false-negatives when the health-call payload differs
+                            // avoids false-negatives when the health-call payload differs
                             // from the real generation payload.
                             var msg = ex.Message ?? string.Empty;
                             var isDeploymentMissing = msg.Contains("DeploymentNotFound", StringComparison.OrdinalIgnoreCase);
