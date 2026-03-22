@@ -606,6 +606,7 @@ const Dashboard = () => {
             onDrop={onDrop}
           >
             <div className="text-center flex flex-col items-center gap-4">
+              <img src="./open-folder.png" className="w-15 h-15" />
               <p className="text-base text-gray-600 m-0">Drag and drop your file here</p>
               <p className="text-sm text-gray-400 m-0">Max 120 MB, only .ZIP accepted</p>
               <label className="btn-theme">

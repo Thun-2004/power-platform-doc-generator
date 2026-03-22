@@ -11,7 +11,7 @@ const Sidebar = () => {
   return (
     <aside className={`w-64 bg-gray-100 p-6 flex flex-col gap-3 flex-shrink-0 transition-all ${isSidebarOpen ? '' : ''}`}>
         <div className="flex items-center">
-          <button 
+          <button
             className="bg-transparent border-none cursor-pointer p-2 flex items-center justify-center"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           >
