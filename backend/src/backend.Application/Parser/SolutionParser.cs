@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-<<<<<<< HEAD
-=======
 using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -14,7 +12,6 @@ using System.Diagnostics;
 
 using backend.Application.LLM;
 using backend.Application.Helpers;
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
 
 
 namespace backend.Application.Parser;
@@ -39,28 +36,16 @@ public static class SolutionParser
             return "";
         }
 
-<<<<<<< HEAD
         var outDirPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(output));
         Directory.CreateDirectory(outDirPath);
 
         // ------------------------------------------------------------
         // Locate standard folders
         // ------------------------------------------------------------
-=======
-        
-        var outDirPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(output));
-        Directory.CreateDirectory(outDirPath);
-
-        // ----------------------------
-        // Locate standard folders
-        // ----------------------------
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
         var canvasDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasApps");
         var workflowsDir = FsHelpers.FindDirCaseInsensitive(root, "Workflows");
         var envDir = FsHelpers.FindDirCaseInsensitive(root, "environmentvariabledefinitions");
         var canvasSrcDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasAppsSrc");
-<<<<<<< HEAD
-=======
 
         // ------------------------------------------------------------
         // Auto-unpack Canvas Apps
@@ -111,7 +96,6 @@ public static class SolutionParser
         // ------------------------------------------------------------
         // Build report
         // ------------------------------------------------------------
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
 
         // ------------------------------------------------------------
         // Auto-unpack Canvas Apps only if .msapp files exist
@@ -180,15 +164,11 @@ public static class SolutionParser
                 Groups = canvasDir != null
                     ? CanvasAppsParsing.GroupCanvasApps(canvasDir)
                     : new Dictionary<string, List<string>>()
-<<<<<<< HEAD
             },
             ModelDrivenApps = new ModelDrivenAppsSection
             {
                 Exists = modelDrivenAppNames.Count > 0,
                 Items = modelDrivenAppNames
-=======
-
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
             },
             Workflows = new WorkflowsSection
             {
@@ -196,10 +176,6 @@ public static class SolutionParser
                 Items = workflowsDir != null
                     ? ListFiles(workflowsDir, ".json")
                     : new List<Dictionary<string, object>>()
-<<<<<<< HEAD
-=======
-
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
             },
             EnvironmentVariableDefinitions = new EnvVarsSection
             {
@@ -207,10 +183,6 @@ public static class SolutionParser
                 Items = envDir != null
                     ? ListDirs(envDir)
                     : new List<Dictionary<string, object>>()
-<<<<<<< HEAD
-=======
-
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
             }
         };
 
@@ -362,10 +334,7 @@ public static class SolutionParser
         return chunksDir;
     }
 
-<<<<<<< HEAD
-=======
  
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
     static List<InventoryEntry> TopLevelInventory(DirectoryInfo root)
     {
         var inv = new List<InventoryEntry>();

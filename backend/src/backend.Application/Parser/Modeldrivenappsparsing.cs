@@ -8,8 +8,6 @@ namespace backend.Application.Parser;
 
 public static class ModelDrivenAppsParsing
 {
-<<<<<<< HEAD
-=======
     /// <summary>
     /// Detects model-driven apps in an unpacked Power Platform solution.
     ///
@@ -19,15 +17,10 @@ public static class ModelDrivenAppsParsing
     ///   - RootComponent entries with type="80" in solution.xml
     ///   - *.appmodule.xml files scattered in the solution tree
     /// </summary>
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
     public static List<string> DetectModelDrivenApps(DirectoryInfo solutionRoot)
     {
         var found = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-<<<<<<< HEAD
-=======
-        
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
         var appModulesDir = FsHelpers.FindDirCaseInsensitive(solutionRoot, "AppModules");
         if (appModulesDir != null && appModulesDir.Exists)
         {
@@ -42,20 +35,13 @@ public static class ModelDrivenAppsParsing
                     var cleanName = Path.GetFileNameWithoutExtension(f.Name)
                         .Replace(".appmodule", "", StringComparison.OrdinalIgnoreCase)
                         .Trim();
-<<<<<<< HEAD
-
-=======
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
                     if (!string.IsNullOrWhiteSpace(cleanName))
                         found.Add(cleanName);
                 }
             }
         }
 
-<<<<<<< HEAD
-=======
       
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
         var solutionXml = solutionRoot
             .GetFiles("solution.xml", SearchOption.AllDirectories)
             .FirstOrDefault();
@@ -80,17 +66,11 @@ public static class ModelDrivenAppsParsing
             }
             catch
             {
-<<<<<<< HEAD
-            }
-        }
-
-=======
                
             }
         }
 
       
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
         try
         {
             foreach (var f in solutionRoot.GetFiles("*.appmodule.xml", SearchOption.AllDirectories))
@@ -98,24 +78,13 @@ public static class ModelDrivenAppsParsing
                 var cleanName = f.Name
                     .Replace(".appmodule.xml", "", StringComparison.OrdinalIgnoreCase)
                     .Trim();
-<<<<<<< HEAD
-
-=======
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
                 if (!string.IsNullOrWhiteSpace(cleanName))
                     found.Add(cleanName);
             }
         }
-<<<<<<< HEAD
-        catch
-        {
-        }
-
-=======
         catch { }
 
          
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
         try
         {
             foreach (var f in solutionRoot.GetFiles("*.appmodule", SearchOption.AllDirectories))
@@ -125,18 +94,8 @@ public static class ModelDrivenAppsParsing
                     found.Add(cleanName);
             }
         }
-<<<<<<< HEAD
-        catch
-        {
-        }
-
-        return found.OrderBy(x => x, StringComparer.OrdinalIgnoreCase).ToList();
-    }
-}
-=======
         catch { }
 
         return found.OrderBy(x => x, StringComparer.OrdinalIgnoreCase).ToList();
     }
 }
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
