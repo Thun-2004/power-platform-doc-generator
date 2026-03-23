@@ -98,10 +98,6 @@ public static class CanvasAppsParsing
                 foreach (var p in screenPaths)
                 {
                     var screenName = Path.GetFileNameWithoutExtension(p);
-<<<<<<< HEAD
-=======
-
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
                     detail.Screens.Add(screenName);
                     detail.FilesSeen.Add(FsHelpers.RelPath(canvasSrcDir, p));
                 }
@@ -137,10 +133,6 @@ public static class CanvasAppsParsing
                     foreach (var p in screenPaths)
                     {
                         var screenName = Path.GetFileNameWithoutExtension(p);
-<<<<<<< HEAD
-=======
-
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
                         detail.Screens.Add(screenName);
                         detail.FilesSeen.Add(FsHelpers.RelPath(appFolder, p));
                     }
@@ -196,26 +188,13 @@ public static class CanvasAppsParsing
         if (!isYamlScreenCandidate)
             return false;
 
-<<<<<<< HEAD
-=======
-        // Already excluded before, keep excluding
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
         if (fileName.Equals("App.fx.yaml", StringComparison.OrdinalIgnoreCase) ||
             fileName.Equals("App.pa.yaml", StringComparison.OrdinalIgnoreCase))
             return false;
 
-<<<<<<< HEAD
         if (fileName.Equals("_EditorState.pa.yaml", StringComparison.OrdinalIgnoreCase))
             return false;
 
-=======
-        // Not a real user-facing screen
-        if (fileName.Equals("_EditorState.pa.yaml", StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        // These component .pa files are currently inflating the Replybrary screen count
-        // and should not be treated as standalone screens.
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
         if (fileName.Equals("cmpHeader.pa.yaml", StringComparison.OrdinalIgnoreCase) ||
             fileName.Equals("cmpLoading.pa.yaml", StringComparison.OrdinalIgnoreCase) ||
             fileName.Equals("cmpMenu.pa.yaml", StringComparison.OrdinalIgnoreCase))
@@ -224,10 +203,6 @@ public static class CanvasAppsParsing
         return true;
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
     public static List<string> ExtractConnectorNamesFromConnectionsJson(string path)
     {
         var text = FsHelpers.SafeReadAllText(path);
