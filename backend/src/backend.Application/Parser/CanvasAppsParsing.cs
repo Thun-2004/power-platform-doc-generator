@@ -1,3 +1,5 @@
+
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,12 +47,7 @@ public static class CanvasAppsParsing
             list.Add(name);
         }
 
-        // Only keep groups that have an actual _DocumentUri.msapp file.
-        // This prevents model-driven solution metadata files from being
-        // counted as canvas apps.
         return groups
-            .Where(kvp => kvp.Value.Any(f =>
-                f.EndsWith("_DocumentUri.msapp", StringComparison.OrdinalIgnoreCase)))
             .OrderBy(kvp => kvp.Key, StringComparer.OrdinalIgnoreCase)
             .ToDictionary(
                 kvp => kvp.Key,
@@ -98,6 +95,7 @@ public static class CanvasAppsParsing
                 foreach (var p in screenPaths)
                 {
                     var screenName = Path.GetFileNameWithoutExtension(p);
+
                     detail.Screens.Add(screenName);
                     detail.FilesSeen.Add(FsHelpers.RelPath(canvasSrcDir, p));
                 }
@@ -133,6 +131,7 @@ public static class CanvasAppsParsing
                     foreach (var p in screenPaths)
                     {
                         var screenName = Path.GetFileNameWithoutExtension(p);
+
                         detail.Screens.Add(screenName);
                         detail.FilesSeen.Add(FsHelpers.RelPath(appFolder, p));
                     }
@@ -188,13 +187,17 @@ public static class CanvasAppsParsing
         if (!isYamlScreenCandidate)
             return false;
 
+        // Already excluded before, keep excluding
         if (fileName.Equals("App.fx.yaml", StringComparison.OrdinalIgnoreCase) ||
             fileName.Equals("App.pa.yaml", StringComparison.OrdinalIgnoreCase))
             return false;
 
+        // Not a real user-facing screen
         if (fileName.Equals("_EditorState.pa.yaml", StringComparison.OrdinalIgnoreCase))
             return false;
 
+        // These component .pa files are currently inflating the Replybrary screen count
+        // and should not be treated as standalone screens.
         if (fileName.Equals("cmpHeader.pa.yaml", StringComparison.OrdinalIgnoreCase) ||
             fileName.Equals("cmpLoading.pa.yaml", StringComparison.OrdinalIgnoreCase) ||
             fileName.Equals("cmpMenu.pa.yaml", StringComparison.OrdinalIgnoreCase))
@@ -202,6 +205,7 @@ public static class CanvasAppsParsing
 
         return true;
     }
+
 
     public static List<string> ExtractConnectorNamesFromConnectionsJson(string path)
     {
