@@ -214,15 +214,11 @@ public static class SolutionParser
                 Groups = canvasDir != null
                     ? CanvasAppsParsing.GroupCanvasApps(canvasDir)
                     : new Dictionary<string, List<string>>()
-<<<<<<< HEAD
             },
             ModelDrivenApps = new ModelDrivenAppsSection
             {
                 Exists = modelDrivenAppNames.Count > 0,
                 Items = modelDrivenAppNames
-=======
-
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
             },
             Workflows = new WorkflowsSection
             {
@@ -230,10 +226,6 @@ public static class SolutionParser
                 Items = workflowsDir != null
                     ? ListFiles(workflowsDir, ".json")
                     : new List<Dictionary<string, object>>()
-<<<<<<< HEAD
-=======
-
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
             },
             EnvironmentVariableDefinitions = new EnvVarsSection
             {
@@ -241,10 +233,6 @@ public static class SolutionParser
                 Items = envDir != null
                     ? ListDirs(envDir)
                     : new List<Dictionary<string, object>>()
-<<<<<<< HEAD
-=======
-
->>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
             }
         };
 
