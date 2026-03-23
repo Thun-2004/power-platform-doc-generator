@@ -1,14 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
 
 using backend.Application.LLM;
 using backend.Application.Helpers;
@@ -48,109 +44,9 @@ public static class SolutionParser
         var canvasSrcDir = FsHelpers.FindDirCaseInsensitive(root, "CanvasAppsSrc");
 
         // ------------------------------------------------------------
-        // Auto-unpack Canvas Apps
-        // IMPORTANT:
+        // Auto-unpack Canvas Apps (once per job — duplicate blocks were
+        // running pac 3× and dominated parse time).
         // Copy ONLY the inner CanvasAppsSrc folder from the temp dir.
-        // This avoids CanvasAppsSrc/CanvasAppsSrc nesting.
-        // ------------------------------------------------------------
-        if (canvasDir != null && canvasDir.Exists)
-        {
-            var msappFiles = Directory.EnumerateFiles(canvasDir.FullName, "*.msapp", SearchOption.TopDirectoryOnly).ToList();
-            if (msappFiles.Count > 0)
-            {
-                Console.WriteLine($"Found {msappFiles.Count} .msapp file(s) — running pac canvas unpack...");
-                var newPacFolderDir = Path.Combine(outDirPath, "_pac_temp");
-                var newPacSolutionFileDir = Path.Combine(root.FullName, "CanvasAppsSrc");
-                FsHelpers.RemoveDirectory(newPacFolderDir);
-                Directory.CreateDirectory(newPacFolderDir);
-                 // Start fresh each run
-                FsHelpers.RemoveDirectory(newPacSolutionFileDir);
-                Directory.CreateDirectory(newPacSolutionFileDir);
-
-                foreach (var msappPath in msappFiles)
-                {
-                    try
-                    {
-                        Exporting.RunProcess(
-                            "pac",
-                            $"canvas unpack --msapp \"{msappPath}\" --sources CanvasAppsSrc",
-                            newPacFolderDir,
-                            true
-                        );
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"[WARN] pac unpack failed for {Path.GetFileName(msappPath)}: {ex.Message}");
-                    }
-                }
-
-                var unpackedCanvasSrc = Path.Combine(newPacFolderDir, "CanvasAppsSrc");
-                if (Directory.Exists(unpackedCanvasSrc))
-                    FsHelpers.CopyDirectory(unpackedCanvasSrc, newPacSolutionFileDir);
-
-                FsHelpers.RemoveDirectory(newPacFolderDir);
-
-                canvasSrcDir = new DirectoryInfo(newPacSolutionFileDir);
-            }
-        }
-        // ------------------------------------------------------------
-        // Build report
-        // ------------------------------------------------------------
-
-        // ------------------------------------------------------------
-        // Auto-unpack Canvas Apps
-        // IMPORTANT:
-        // Copy ONLY the inner CanvasAppsSrc folder from the temp dir.
-        // This avoids CanvasAppsSrc/CanvasAppsSrc nesting.
-        // ------------------------------------------------------------
-        if (canvasDir != null && canvasDir.Exists)
-        {
-            var msappFiles = Directory.EnumerateFiles(canvasDir.FullName, "*.msapp", SearchOption.TopDirectoryOnly).ToList();
-            if (msappFiles.Count > 0)
-            {
-                Console.WriteLine($"Found {msappFiles.Count} .msapp file(s) — running pac canvas unpack...");
-                var newPacFolderDir = Path.Combine(outDirPath, "_pac_temp");
-                var newPacSolutionFileDir = Path.Combine(root.FullName, "CanvasAppsSrc");
-                FsHelpers.RemoveDirectory(newPacFolderDir);
-                Directory.CreateDirectory(newPacFolderDir);
-                 // Start fresh each run
-                FsHelpers.RemoveDirectory(newPacSolutionFileDir);
-                Directory.CreateDirectory(newPacSolutionFileDir);
-
-                foreach (var msappPath in msappFiles)
-                {
-                    try
-                    {
-                        Exporting.RunProcess(
-                            "pac",
-                            $"canvas unpack --msapp \"{msappPath}\" --sources CanvasAppsSrc",
-                            newPacFolderDir,
-                            true
-                        );
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"[WARN] pac unpack failed for {Path.GetFileName(msappPath)}: {ex.Message}");
-                    }
-                }
-
-                var unpackedCanvasSrc = Path.Combine(newPacFolderDir, "CanvasAppsSrc");
-                if (Directory.Exists(unpackedCanvasSrc))
-                    FsHelpers.CopyDirectory(unpackedCanvasSrc, newPacSolutionFileDir);
-
-                FsHelpers.RemoveDirectory(newPacFolderDir);
-
-                canvasSrcDir = new DirectoryInfo(newPacSolutionFileDir);
-            }
-        }
-        // ------------------------------------------------------------
-        // Build report
-        // ------------------------------------------------------------
-
-        // ------------------------------------------------------------
-        // Auto-unpack Canvas Apps only if .msapp files exist
-        // Copy ONLY the inner CanvasAppsSrc folder from the temp dir.
-        // This avoids CanvasAppsSrc/CanvasAppsSrc nesting.
         // ------------------------------------------------------------
         if (canvasDir != null && canvasDir.Exists)
         {
@@ -166,7 +62,6 @@ public static class SolutionParser
                 FsHelpers.RemoveDirectory(newPacFolderDir);
                 Directory.CreateDirectory(newPacFolderDir);
 
-                // Start fresh each run
                 FsHelpers.RemoveDirectory(newPacSolutionFileDir);
                 Directory.CreateDirectory(newPacSolutionFileDir);
 
@@ -174,11 +69,11 @@ public static class SolutionParser
                 {
                     try
                     {
-                        RunProcess(
+                        Exporting.RunProcess(
                             "pac",
                             $"canvas unpack --msapp \"{msappPath}\" --sources CanvasAppsSrc",
-                            newPacFolderDir
-                        );
+                            newPacFolderDir,
+                            isPac: true);
                     }
                     catch (Exception ex)
                     {
@@ -417,27 +312,5 @@ public static class SolutionParser
             if (item is DirectoryInfo d)
                 outList.Add(new Dictionary<string, object> { ["name"] = d.Name + "/" });
         return outList;
-    }
-
-    static void RunProcess(string fileName, string arguments, string workingDir)
-    {
-        var p = new Process();
-        p.StartInfo.FileName = fileName;
-        p.StartInfo.Arguments = arguments;
-        p.StartInfo.WorkingDirectory = workingDir;
-        p.StartInfo.RedirectStandardOutput = true;
-        p.StartInfo.RedirectStandardError = true;
-        p.StartInfo.UseShellExecute = false;
-
-        p.Start();
-        var stdout = p.StandardOutput.ReadToEnd();
-        var stderr = p.StandardError.ReadToEnd();
-        p.WaitForExit();
-
-        if (!string.IsNullOrWhiteSpace(stdout))
-            Console.WriteLine(stdout.Trim());
-
-        if (p.ExitCode != 0)
-            throw new Exception($"Command failed: {fileName} {arguments}\n{stderr}");
     }
 }

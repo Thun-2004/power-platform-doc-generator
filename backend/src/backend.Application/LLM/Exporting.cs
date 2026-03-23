@@ -101,6 +101,7 @@ public static class Exporting
                 else if (content[i] == ')') depth--;
                 i++;
             }
+            
             if (depth != 0)
             {
                 result.Append(content.AsSpan(runStart, i - runStart));
