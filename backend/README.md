@@ -1,6 +1,6 @@
 ## Backend appsettings.json Guide
 
-This guide explains how to update values in `backend/src/backend.Api/appsettings.json` and what to do after changing them.
+This guide explains how to safely update values in `backend/src/backend.Api/appsettings.json` and what to do after changing them.
 
 ### 1) Edit the config file
 

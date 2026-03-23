@@ -98,6 +98,56 @@ public static class SolutionParser
         // ------------------------------------------------------------
 
         // ------------------------------------------------------------
+        // Auto-unpack Canvas Apps
+        // IMPORTANT:
+        // Copy ONLY the inner CanvasAppsSrc folder from the temp dir.
+        // This avoids CanvasAppsSrc/CanvasAppsSrc nesting.
+        // ------------------------------------------------------------
+        if (canvasDir != null && canvasDir.Exists)
+        {
+            var msappFiles = Directory.EnumerateFiles(canvasDir.FullName, "*.msapp", SearchOption.TopDirectoryOnly).ToList();
+            if (msappFiles.Count > 0)
+            {
+                Console.WriteLine($"Found {msappFiles.Count} .msapp file(s) — running pac canvas unpack...");
+                var newPacFolderDir = Path.Combine(outDirPath, "_pac_temp");
+                var newPacSolutionFileDir = Path.Combine(root.FullName, "CanvasAppsSrc");
+                FsHelpers.RemoveDirectory(newPacFolderDir);
+                Directory.CreateDirectory(newPacFolderDir);
+                 // Start fresh each run
+                FsHelpers.RemoveDirectory(newPacSolutionFileDir);
+                Directory.CreateDirectory(newPacSolutionFileDir);
+
+                foreach (var msappPath in msappFiles)
+                {
+                    try
+                    {
+                        Exporting.RunProcess(
+                            "pac",
+                            $"canvas unpack --msapp \"{msappPath}\" --sources CanvasAppsSrc",
+                            newPacFolderDir,
+                            true
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[WARN] pac unpack failed for {Path.GetFileName(msappPath)}: {ex.Message}");
+                    }
+                }
+
+                var unpackedCanvasSrc = Path.Combine(newPacFolderDir, "CanvasAppsSrc");
+                if (Directory.Exists(unpackedCanvasSrc))
+                    FsHelpers.CopyDirectory(unpackedCanvasSrc, newPacSolutionFileDir);
+
+                FsHelpers.RemoveDirectory(newPacFolderDir);
+
+                canvasSrcDir = new DirectoryInfo(newPacSolutionFileDir);
+            }
+        }
+        // ------------------------------------------------------------
+        // Build report
+        // ------------------------------------------------------------
+
+        // ------------------------------------------------------------
         // Auto-unpack Canvas Apps only if .msapp files exist
         // Copy ONLY the inner CanvasAppsSrc folder from the temp dir.
         // This avoids CanvasAppsSrc/CanvasAppsSrc nesting.
@@ -164,11 +214,15 @@ public static class SolutionParser
                 Groups = canvasDir != null
                     ? CanvasAppsParsing.GroupCanvasApps(canvasDir)
                     : new Dictionary<string, List<string>>()
+<<<<<<< HEAD
             },
             ModelDrivenApps = new ModelDrivenAppsSection
             {
                 Exists = modelDrivenAppNames.Count > 0,
                 Items = modelDrivenAppNames
+=======
+
+>>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
             },
             Workflows = new WorkflowsSection
             {
@@ -176,6 +230,10 @@ public static class SolutionParser
                 Items = workflowsDir != null
                     ? ListFiles(workflowsDir, ".json")
                     : new List<Dictionary<string, object>>()
+<<<<<<< HEAD
+=======
+
+>>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
             },
             EnvironmentVariableDefinitions = new EnvVarsSection
             {
@@ -183,6 +241,10 @@ public static class SolutionParser
                 Items = envDir != null
                     ? ListDirs(envDir)
                     : new List<Dictionary<string, object>>()
+<<<<<<< HEAD
+=======
+
+>>>>>>> e57b607 (refactor: integrate with Dara's code + add backend/README.md)
             }
         };
 
