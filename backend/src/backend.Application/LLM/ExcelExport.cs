@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using ClosedXML.Excel;
 
-namespace RagCliApp;
+namespace backend.Application.LLM;
 
 public static class ExcelExport
 {

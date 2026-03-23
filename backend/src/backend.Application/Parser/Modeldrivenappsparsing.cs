@@ -21,6 +21,7 @@ public static class ModelDrivenAppsParsing
     {
         var found = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+        
         var appModulesDir = FsHelpers.FindDirCaseInsensitive(solutionRoot, "AppModules");
         if (appModulesDir != null && appModulesDir.Exists)
         {

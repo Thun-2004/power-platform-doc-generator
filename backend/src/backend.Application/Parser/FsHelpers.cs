@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -87,32 +88,3 @@ public static class FsHelpers
 
 }
 
-    // public static void CopyDirectory(string src, string dst)
-    // {
-    //     Directory.CreateDirectory(dst);
-
-    //     foreach (var file in Directory.GetFiles(src, "*", SearchOption.AllDirectories))
-    //     {
-    //         var relative = file.Substring(src.Length)
-    //             .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-
-    //         var destFile = Path.Combine(dst, relative);
-    //         var destFolder = Path.GetDirectoryName(destFile);
-
-    //         if (!string.IsNullOrWhiteSpace(destFolder))
-    //             Directory.CreateDirectory(destFolder);
-
-    //         File.Copy(file, destFile, overwrite: true);
-    //     }
-    // }
-
-    // public static void RemoveDirectory(string path)
-    // {
-    //     try
-    //     {
-    //         if (Directory.Exists(path))
-    //             Directory.Delete(path, recursive: true);
-    //     }
-    //     catch { }
-    // }
-// }

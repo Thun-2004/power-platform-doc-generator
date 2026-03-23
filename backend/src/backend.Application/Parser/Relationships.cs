@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -5,7 +6,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace backend.Application.Parser;
-
 public static class Relationships
 {
     public static List<RelationshipEdge> BuildRelationships(
@@ -122,14 +122,23 @@ public static class Relationships
 
             var screenFiles = Directory
                 .EnumerateFiles(canvasAppsSrcDir.FullName, "*.*.yaml", SearchOption.AllDirectories)
-                .Where(ShouldCountAsScreenFile)
+                .Where(p =>
+                    p.EndsWith(".fx.yaml", StringComparison.OrdinalIgnoreCase) ||
+                    p.EndsWith(".pa.yaml", StringComparison.OrdinalIgnoreCase))
+                .Where(p => !FsHelpers.IsIgnored(Path.GetFileName(p)))
                 .ToList();
 
             foreach (var path in screenFiles)
             {
                 var screenName = Path.GetFileNameWithoutExtension(path);
 
-                var screenNode = $"screen:{appName}:{screenName}";
+                bool isAppFile =
+                    screenName.Equals("App.fx", StringComparison.OrdinalIgnoreCase) ||
+                    screenName.Equals("App.pa", StringComparison.OrdinalIgnoreCase);
+
+                var screenNode = isAppFile
+                    ? $"app_start:{appName}"
+                    : $"screen:{appName}:{screenName}";
 
                 var fileText = FsHelpers.SafeReadAllText(path);
                 if (string.IsNullOrWhiteSpace(fileText))
@@ -232,13 +241,23 @@ public static class Relationships
         {
             var screenFiles = Directory
                 .EnumerateFiles(appFolder.FullName, "*.*.yaml", SearchOption.AllDirectories)
-                .Where(ShouldCountAsScreenFile)
+                .Where(p =>
+                    p.EndsWith(".fx.yaml", StringComparison.OrdinalIgnoreCase) ||
+                    p.EndsWith(".pa.yaml", StringComparison.OrdinalIgnoreCase))
+                .Where(p => !FsHelpers.IsIgnored(Path.GetFileName(p)))
                 .ToList();
 
             foreach (var path in screenFiles)
             {
                 var screenName = Path.GetFileNameWithoutExtension(path);
-                var screenNode = $"screen:{appFolder.Name}:{screenName}";
+
+                bool isAppFile =
+                    screenName.Equals("App.fx", StringComparison.OrdinalIgnoreCase) ||
+                    screenName.Equals("App.pa", StringComparison.OrdinalIgnoreCase);
+
+                var screenNode = isAppFile
+                    ? $"app_start:{appFolder.Name}"
+                    : $"screen:{appFolder.Name}:{screenName}";
 
                 var fileText = FsHelpers.SafeReadAllText(path);
                 if (string.IsNullOrWhiteSpace(fileText))
@@ -332,34 +351,5 @@ public static class Relationships
 
         Console.WriteLine($"[DEBUG] Total Run() matches: {runMatches}");
         Console.WriteLine($"[DEBUG] Total screen->workflow edges added: {edgesAdded}");
-    }
-
-    static bool ShouldCountAsScreenFile(string path)
-    {
-        var fileName = Path.GetFileName(path);
-
-        if (FsHelpers.IsIgnored(fileName))
-            return false;
-
-        bool isYamlScreenCandidate =
-            fileName.EndsWith(".fx.yaml", StringComparison.OrdinalIgnoreCase) ||
-            fileName.EndsWith(".pa.yaml", StringComparison.OrdinalIgnoreCase);
-
-        if (!isYamlScreenCandidate)
-            return false;
-
-        if (fileName.Equals("App.fx.yaml", StringComparison.OrdinalIgnoreCase) ||
-            fileName.Equals("App.pa.yaml", StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        if (fileName.Equals("_EditorState.pa.yaml", StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        if (fileName.Equals("cmpHeader.pa.yaml", StringComparison.OrdinalIgnoreCase) ||
-            fileName.Equals("cmpLoading.pa.yaml", StringComparison.OrdinalIgnoreCase) ||
-            fileName.Equals("cmpMenu.pa.yaml", StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        return true;
     }
 }
