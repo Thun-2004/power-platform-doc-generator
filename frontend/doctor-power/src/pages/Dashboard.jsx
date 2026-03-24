@@ -22,6 +22,24 @@ const EXAMPLE_DOC_BY_TYPE = {
   'environment-variables': 'environment-variables.pdf',
 };
 
+/** Short example prompts for the “Additional prompt” textarea — keyed by output type id */
+const ADDITIONAL_PROMPT_PLACEHOLDER_BY_TYPE = {
+  overview:
+    'e.g. Emphasize canvas apps and cloud flows in the summary.',
+  workflows:
+    'e.g. For each flow, note trigger type and main connectors.',
+  faq:
+    'e.g. Include questions about deployment and permissions.',
+  diagrams:
+    'e.g. Use simple boxes and arrows; label major data flows.',
+  erd:
+    'e.g. Show how apps, screens, and env vars relate.',
+  'screen-mapping':
+    'e.g. Call out dev vs test vs prod URL differences.',
+  'environment-variables':
+    'e.g. Group by app or scope; omit secret values.',
+};
+
 const Dashboard = () => {
   const [fileTypes, setFileTypes] = useState([]);
 
@@ -733,11 +751,11 @@ const Dashboard = () => {
         </section> */}
 
         {/* Select Output File Types Section */}
-        <section className="mb-6 sm:mb-7 md:mb-8 lg:mb-9">
+        <section className="border-t border-gray-200 pt-6 sm:pt-7 md:pt-8 lg:pt-9 mb-6 sm:mb-7 md:mb-8 lg:mb-9">
           <div className="w-full">
             <h2 className="text-title">Select output file types</h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-5">
+            <div className="flex flex-col w-full gap-2 sm:gap-3 md:gap-4 lg:gap-5">
               {fileTypes.map((type) => (
                 <DiagramSelectionBox
                   key={type.id}
@@ -747,6 +765,9 @@ const Dashboard = () => {
                   charLimit={promptCharLimit ?? 250}
                   onOpenExamplePreview={openExamplePreviewForType}
                   hasExampleDoc={!!EXAMPLE_DOC_BY_TYPE[type.id]}
+                  promptPlaceholder={
+                    ADDITIONAL_PROMPT_PLACEHOLDER_BY_TYPE[type.id]
+                  }
                 />
               ))}
             </div>
@@ -754,7 +775,7 @@ const Dashboard = () => {
         </div>
         </section>
 
-        <section className="mb-6 sm:mb-7 md:mb-8 lg:mb-9">
+        <section className="border-t border-gray-200 pt-6 sm:pt-7 md:pt-8 lg:pt-9 mb-6 sm:mb-7 md:mb-8 lg:mb-9">
           <div className="w-full">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4 lg:gap-5">
               <h2 className="text-title m-0">Select LLM model</h2>
@@ -811,7 +832,7 @@ const Dashboard = () => {
 
 
         {/* Output Section */}
-        <section className="mt-6 sm:mt-7 md:mt-8 lg:mt-9">
+        <section className="border-t border-gray-200 pt-6 sm:pt-7 md:pt-8 lg:pt-9">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4 lg:gap-6 mb-4 md:mb-5 lg:mb-6">
             <h2 className="text-title">Output</h2>
             <button
