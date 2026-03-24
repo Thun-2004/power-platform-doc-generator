@@ -11,6 +11,17 @@ import JobCompleteBanner from "../components/JobCompleteBanner";
 import axios from 'axios';
 import JSZip from 'jszip';
 
+/** Example PDFs in `public/example_docs/` — keyed by output type id from config */
+const EXAMPLE_DOC_BY_TYPE = {
+  overview: 'overview.pdf',
+  workflows: 'workflows.pdf',
+  faq: 'faq.pdf',
+  diagrams: 'diagrams.pdf',
+  erd: 'erd.pdf',
+  'screen-mapping': 'screen-mapping.pdf',
+  'environment-variables': 'environment-variables.pdf',
+};
+
 const Dashboard = () => {
   const [fileTypes, setFileTypes] = useState([]);
 
@@ -50,6 +61,32 @@ const Dashboard = () => {
   const fileInputRef = useRef(null); // to clear the DOM input val
  
   const delay = ms => new Promise(res => setTimeout(res, ms)); //call await delay(n) to wait n ms
+
+  const getExampleDocUrl = (typeId) => {
+    const pdfName = EXAMPLE_DOC_BY_TYPE[typeId];
+    if (!pdfName) return null;
+    const base = import.meta.env.BASE_URL ?? '/';
+    const prefix = base.endsWith('/') ? base : `${base}/`;
+    return `${prefix}example_docs/${pdfName}`;
+  };
+
+  /** Same overlay as output “Preview” — DocumentPreviewModal */
+  const openExamplePreviewForType = async (typeId) => {
+    const pdfName = EXAMPLE_DOC_BY_TYPE[typeId];
+    if (!pdfName) return;
+    const url = getExampleDocUrl(typeId);
+    if (!url) return;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      setPreviewFile({ name: `Example: ${pdfName}`, blob });
+    } catch (err) {
+      console.error('Example doc load failed', typeId, err);
+      alert('Could not load the example document for this output type.');
+    }
+  };
+
   const tickLength = 100; //Tick length for calling API to check job status
 
 
@@ -683,6 +720,17 @@ const Dashboard = () => {
           }
           
         </section>
+        
+        {/* for upload additional/support files */}
+        {/* <section>
+         
+          <button className="bg-white text-blue-700 hover:text-blue-500">
+            + Add additional files
+            <input type="file" accept=".zip" className="hidden" ref={fileInputRef} onChange={(e) => {
+              onPickFile(e);
+            }} />
+          </button>
+        </section> */}
 
         {/* Select Output File Types Section */}
         <section className="mb-6 sm:mb-7 md:mb-8 lg:mb-9">
@@ -697,6 +745,8 @@ const Dashboard = () => {
                   selectedModes={selectedModes}
                   toggleSelected={toggleSelected}
                   charLimit={promptCharLimit ?? 250}
+                  onOpenExamplePreview={openExamplePreviewForType}
+                  hasExampleDoc={!!EXAMPLE_DOC_BY_TYPE[type.id]}
                 />
               ))}
             </div>
