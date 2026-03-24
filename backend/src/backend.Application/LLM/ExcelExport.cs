@@ -8,7 +8,7 @@ namespace backend.Application.LLM;
 
 public static class ExcelExport
 {
-    public static void Export(string chunksDir, string outDir)
+    public static void Export(string chunksDir, string outDir, string fileNamePrefix = "Export")
     {
         var workflowsPath = Path.Combine(chunksDir, "workflows_detailed.json");
         var relationshipsPath = Path.Combine(chunksDir, "relationships.json");
@@ -74,7 +74,7 @@ public static class ExcelExport
 
         // Save
         Directory.CreateDirectory(outDir);
-        var outPath = Path.Combine(outDir, "Replybrary_Exports.xlsx");
+        var outPath = Path.Combine(outDir, $"{fileNamePrefix}_Exports.xlsx");
         wb.SaveAs(outPath);
     }
 
