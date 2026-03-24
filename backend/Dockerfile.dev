@@ -57,6 +57,11 @@ COPY src/backend.Domain/backend.Domain.csproj src/backend.Domain/
 COPY src/backend.Infrastructure/backend.Infrastructure.csproj src/backend.Infrastructure/
 COPY tests/unit/Domain.Tests/Domain.Tests.csproj tests/unit/Domain.Tests/
 COPY tests/unit/Application.Tests/Application.Tests.csproj tests/unit/Application.Tests/
+COPY tests/unit/Api.Tests/Api.Tests.csproj tests/unit/Api.Tests/
+COPY tests/unit/Infrastructure.Tests/Infrastructure.Tests.csproj tests/unit/Infrastructure.Tests/
+COPY tests/integration/Api.Tests/Api.Tests.csproj tests/integration/Api.Tests/
+COPY tests/integration/Application.Tests/Application.Tests.csproj tests/integration/Application.Tests/
+
 
 # Restore all projects : backend sln
 RUN dotnet restore

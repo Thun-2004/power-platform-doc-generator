@@ -20,4 +20,11 @@
     <ProjectReference Include="../backend.Domain/backend.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="LLM/puppeteer-config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>puppeteer-config.json</Link>
+    </None>
+  </ItemGroup>
+
 </Project>

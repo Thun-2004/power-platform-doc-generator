@@ -113,6 +113,19 @@ public static class Exporting
         return result.ToString();
     }
 
+    /// <summary>Resolves bundled puppeteer-config.json (Chromium flags for Docker/root: --no-sandbox, etc.).</summary>
+    private static string? ResolvePuppeteerConfigPath()
+    {
+        var dir = Path.GetDirectoryName(typeof(Exporting).Assembly.Location);
+        if (string.IsNullOrEmpty(dir))
+            return null;
+        var nextToDll = Path.Combine(dir, "puppeteer-config.json");
+        if (File.Exists(nextToDll))
+            return nextToDll;
+        var inLlm = Path.Combine(dir, "LLM", "puppeteer-config.json");
+        return File.Exists(inLlm) ? inLlm : null;
+    }
+
     /// Render a Mermaid .mmd file to PDF using mermaid-cli (mmdc). Returns the full path to the generated .pdf file.
     public static string ExportMermaidToPdf(string outDir, string mermaidFileName, string pdfFileName)
     {
@@ -124,7 +137,10 @@ public static class Exporting
             if (sanitized != raw)
                 File.WriteAllText(mmdPath, sanitized);
         }
-        RunProcess("mmdc", $"-i \"{mermaidFileName}\" -o \"{pdfFileName}\"", outDir);
+
+        var puppeteerCfg = ResolvePuppeteerConfigPath();
+        var puppeteerArg = puppeteerCfg != null ? $" -p \"{puppeteerCfg}\"" : "";
+        RunProcess("mmdc", $"-i \"{mermaidFileName}\" -o \"{pdfFileName}\"{puppeteerArg}", outDir);
         return Path.Combine(outDir, pdfFileName);
     }
 
