@@ -41,7 +41,8 @@ public class ConfigController : ControllerBase
             generatedOutputTypesSection.Get<Dictionary<string, GeneratedOutputTypeDto>>() ??
             new Dictionary<string, GeneratedOutputTypeDto>();
 
-        var generatedOutputTypes = generatedOutputTypesDict
+        // Dictionary binding does not guarantee JSON key order; keep "custom-document" last in the list.
+        var generatedOutputTypesList = generatedOutputTypesDict
             .Where(kv => kv.Value != null)
             .Select(kv => new
             {
@@ -49,7 +50,13 @@ public class ConfigController : ControllerBase
                 title = kv.Key,
                 desc = kv.Value.description
             })
-            .ToArray();
+            .ToList();
+        // Keep custom-document at the end of the list.
+        var customDoc = generatedOutputTypesList.FirstOrDefault(x => x.id == "custom-document");
+        var ordered = generatedOutputTypesList.Where(x => x.id != "custom-document").ToList();
+        if (customDoc != null)
+            ordered.Add(customDoc);
+        var generatedOutputTypes = ordered.ToArray();
 
         return Ok(new
         {

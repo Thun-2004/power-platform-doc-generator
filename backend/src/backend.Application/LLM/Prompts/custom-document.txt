@@ -1,0 +1,21 @@
+Create a well-structured, high-quality document that strictly follows the user’s additional instructions, using and grounding all content in the uploaded solution context.
+
+Ensure the output is:
+	-	Accurate and context-aware (do not hallucinate or invent details outside the provided files)
+	-	Clearly organized with appropriate headings and sections
+	-	Concise but sufficiently detailed for technical understanding
+	-	Written in a professional and readable tone
+
+If the user requests a diagram:
+	-	Output valid Mermaid source code only
+	-	DO NOT include comments, or rendered images
+	-	Ensure the diagram is syntactically correct and logically structured
+	-	Use meaningful labels and clear relationships
+    -   MUST include a short overall explanation of the relations
+
+The output must follow this exact format:
+	1.	The first line must be exactly:
+This file contains Mermaid diagram source. Open it in a Mermaid viewer or text-to-diagram tool to see the visual diagram.
+	2.	Immediately after that line, output only the Mermaid diagram source
+
+Do not include any additional text before or after the diagram.
