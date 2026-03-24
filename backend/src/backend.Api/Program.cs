@@ -14,13 +14,22 @@ using backend.Application.LLM;
 
 namespace backend.Api;
 
-public class Program
+public partial class Program
 {
     public static async Task Main(string[] args)
     {
-        Env.Load(Path.Combine("..", "..", ".." ,".env"));
+        var app = CreateWebApplication(args);
+        await app.RunAsync();
+    }
 
-        var builder = WebApplication.CreateBuilder(args);
+    /// <summary>Used by integration tests (<see cref="Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory{TEntryPoint}"/>) and by <see cref="Main"/>.</summary>
+    public static WebApplication CreateWebApplication(string[]? args)
+    {
+        var envPath = Path.Combine("..", "..", "..", ".env");
+        if (File.Exists(envPath))
+            Env.Load(envPath);
+
+        var builder = WebApplication.CreateBuilder(args ?? Array.Empty<string>());
         const string AllowFrontend = "_myAllowSpecificOrigins";
 
         // All config (including Shared section) now comes from appsettings.json
@@ -55,8 +64,9 @@ public class Program
         builder.Services.AddOpenApi();
         builder.Services.AddAuthorization();
 
-        // Periodically delete old generated files (TTL cleanup).
-        builder.Services.AddHostedService<FileStorageTtlCleanupService>();
+        // Periodically delete old generated files (TTL cleanup). Skip in test host.
+        if (!builder.Environment.IsEnvironment("Testing"))
+            builder.Services.AddHostedService<FileStorageTtlCleanupService>();
 
         var app = builder.Build();
 
@@ -79,12 +89,12 @@ public class Program
 
         // app.UseAuthentication();
         // Optional: perform LLM health validation at startup using LlmHealth if desired.
-        app.UseHttpsRedirection();
+        if (!app.Environment.IsEnvironment("Testing"))
+            app.UseHttpsRedirection();
         app.UseCors(AllowFrontend);
         app.UseAuthorization();
         app.MapControllers();
-        app.Run();
+        return app;
     }
 }
-
 
