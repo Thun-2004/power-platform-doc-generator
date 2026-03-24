@@ -61,3 +61,5 @@ After restart:
 Guide to create new tests
 
 1. Run 'dotnet new xunit -n <name>.Tests -o <path to your test folder>'
+
+2. Run 'dotnet sln backend.sln add tests/unit/Api.Tests/Api.Tests.csproj --solution-folder tests/unit' 
