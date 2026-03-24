@@ -55,3 +55,9 @@ After restart:
 - Open frontend and check dropdowns/output types reflect your updates.
 - Try generating one output file to confirm backend can read new config.
 - If model health looks wrong, recheck `Shared.AIModels` names and provider URL/key config.
+
+##Testing 
+
+Guide to create new tests
+
+1. Run 'dotnet new xunit -n <name>.Tests -o <path to your test folder>'
