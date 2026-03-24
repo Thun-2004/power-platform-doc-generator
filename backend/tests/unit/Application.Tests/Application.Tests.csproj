@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\backend.Application\backend.Application.csproj" />
     <ProjectReference Include="..\..\..\src\backend.Domain\backend.Domain.csproj" />
   </ItemGroup>
 
