@@ -54,7 +54,7 @@ const Dashboard = () => {
   // Optional message for Failed (e.g. backend error text)
   const [jobCompleteMessage, setJobCompleteMessage] = useState(null);
 
-  //FIXME: finish axios private for this
+  // FIXME: finish axios private for this
   // const axiosPrivate = useAxiosPrivate();
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -74,8 +74,7 @@ const Dashboard = () => {
   // Prevent spamming console logs on every polling tick
   const loggedOutputErrorsRef = useRef(new Set());
 
-
-  const abortRef = useRef(null);//like useState but not rerender 
+  const abortRef = useRef(null); // like useState but not rerender 
   const fileInputRef = useRef(null); // to clear the DOM input val
  
   const delay = ms => new Promise(res => setTimeout(res, ms)); //call await delay(n) to wait n ms
@@ -252,7 +251,9 @@ const Dashboard = () => {
 
     const onGenerateOutputFile = async () => {
       try {
-        setJobCompleteStatus(null);
+        
+        console.log("Generating output file");
+        setJobCompleteStatus('Pending'); 
         setJobCompleteMessage(null);
 
         const hasFile = !!selectedFile;
@@ -695,7 +696,7 @@ const Dashboard = () => {
             onDrop={onDrop}
           >
             <div className="text-center flex flex-col items-center gap-4">
-              <img src="./open-folder.png" className="w-15 h-15" />
+              <img src="./open-folder.png" className="w-12 h-12" />
               <p className="text-base text-gray-600 m-0">Drag and drop your file here</p>
               <p className="text-sm text-gray-400 m-0">Max 120 MB, only .ZIP accepted</p>
               <label className="btn-theme">
@@ -817,7 +818,8 @@ const Dashboard = () => {
               <div className="sm:ml-auto w-full sm:w-auto mt-3 sm:mt-0">
                 <button
                   onClick={onGenerateOutputFile}
-                  className="btn-theme text-title text-white"
+                  className={`btn-theme ${jobCompleteStatus == null ? "brightness-100" : "brightness-200"} text-title text-white`}
+                  disabled={jobCompleteStatus != null}
                 >
                   Generate
                 </button>
@@ -826,10 +828,6 @@ const Dashboard = () => {
 
         </div>
         </section>
-
-        
-
-
 
         {/* Output Section */}
         <section className="border-t border-gray-200 pt-6 sm:pt-7 md:pt-8 lg:pt-9">
