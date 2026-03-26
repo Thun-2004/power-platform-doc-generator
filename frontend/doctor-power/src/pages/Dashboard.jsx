@@ -1,14 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FileCheck,Trash2 } from 'lucide-react';
 import axiosPublic from "../api/axios";
-import uploadFile from "../api/file";
 import DocumentPreviewModal from "../components/DocumentPreviewModal";
 import DiagramSelectionBox from "../components/DiagramSelectionBox";
 import DocumentOutputPreview from "../components/DocumentOutputPreview";
 import JobCompleteBanner from "../components/JobCompleteBanner";
-
-//temp
-import axios from 'axios';
 import JSZip from 'jszip';
 
 /** Example PDFs in `public/example_docs/` — keyed by output type id from config */
@@ -53,9 +49,6 @@ const Dashboard = () => {
   const [jobCompleteStatus, setJobCompleteStatus] = useState(null);
   // Optional message for Failed (e.g. backend error text)
   const [jobCompleteMessage, setJobCompleteMessage] = useState(null);
-
-  // FIXME: finish axios private for this
-  // const axiosPrivate = useAxiosPrivate();
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedModes, setSelectedModes] = useState([]);
@@ -227,7 +220,6 @@ const Dashboard = () => {
       }
   };
 
-  //FIXME: might need to change in case multiple files are allowed
   const onRemoveFile = () => {
 
       setSelectedFile(null); 
