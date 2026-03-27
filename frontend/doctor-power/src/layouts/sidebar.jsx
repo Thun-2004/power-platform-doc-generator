@@ -41,8 +41,8 @@ const Sidebar = () => {
                 : 'text-gray-600 hover:bg-gray-200'
             }`}
             onClick={() => {
-              setActiveMenu('collections')
-              navigate('/mycollection', { replace: true });
+              setActiveMenu('userhandbook')
+              navigate('/userhandbook', { replace: true });
             }}
           >
             <Bookmark size={20}/>

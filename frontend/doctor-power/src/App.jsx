@@ -8,8 +8,7 @@ import './styles/App.css'
 import Header from './layouts/header'
 import Dashboard from './pages/Dashboard'
 import Sidebar from './layouts/sidebar'
-import MyCollection from './pages/MyCollection'
-import UserProfile from './pages/UserProfile'
+import UserHandbook from './pages/UserHandbook'
 
 
 function App() {
@@ -23,8 +22,7 @@ function App() {
             <Sidebar/>
             <Routes>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/mycollection" element={<MyCollection />} />
-              <Route path="/userprofile" element={<UserProfile />} />
+              <Route path="/userhandbook" element={<UserHandbook />} />
             </Routes>
            
           </div>

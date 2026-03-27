@@ -1,29 +1,3 @@
-/* @import "tailwindcss";
-
-.docx-preview-container,
-.docx-preview-container > *,
-div.docx {
-  border: none;
-  outline: none;
-  box-shadow: none;
-}
-
-.docx-preview-container{
-  padding: 0rem;
-}
-
-.docx-wrapper {
-  border: none;
-  outline: none;
-  box-shadow: none;
-}
-
-.docx-wrapper .docx {
-  padding: 3rem;     
-  background: white;            
-  box-shadow: none;
-} */
-
 @import "tailwindcss";
 
 /* Kill any border/outline/shadow around the DOCX preview wrapper */
