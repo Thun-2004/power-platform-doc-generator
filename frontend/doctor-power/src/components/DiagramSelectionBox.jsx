@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Info } from "lucide-react";
 import "../styles/App.css";
+
 
 const DiagramSelectionBox = ({
   type,
@@ -10,9 +11,14 @@ const DiagramSelectionBox = ({
   onOpenExamplePreview,
   hasExampleDoc,
   promptPlaceholder = 'e.g. Add brief instructions for this output',
+  promptValue = '',
+  onPromptChange
 }) => {
   const isSelected = selectedModes.includes(type.id);
-  const [promptContent, setPromptContent] = useState("");
+  const showCustomDocumentEmptyWarning =
+    type.id === "custom-document" &&
+    isSelected &&
+    promptValue.trim().length === 0;
 
   return (
     <div
@@ -97,17 +103,22 @@ const DiagramSelectionBox = ({
           <label className="flex mb-1 sm:mb-1.5 md:mb-2 text-xs sm:text-xs md:text-sm font-small justify-between gap-2 text-gray-600">
             Additional Prompt for {type.title}
             <span id={type.id + "-charcount"}>
-              {promptContent.length}/{charLimit}
+              {promptValue.length}/{charLimit}
             </span>
           </label>
           <textarea
-            value={promptContent}
             id={type.id}
+            value={promptValue}
             maxLength={charLimit}
-            onChange={(e) => setPromptContent(e.target.value)}
+            onChange={(e) => onPromptChange?.(e.target.value)}
             className="bg-gray-50 border border-default-medium text-heading text-xs sm:text-xs md:text-sm rounded-md focus:ring-brand focus:border-brand w-full px-1.5 py-2 md:py-2.5 shadow-xs placeholder:text-body"
             placeholder={promptPlaceholder}
           />
+          {showCustomDocumentEmptyWarning && (
+            <p className="mt-1 text-xs text-red-600">
+              No text detected. Enter some text to proceed.
+            </p>
+          )}
         </div>
       </div>
     </div>
