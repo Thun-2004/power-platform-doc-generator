@@ -34,6 +34,16 @@ const ADDITIONAL_PROMPT_PLACEHOLDER_BY_TYPE = {
     'e.g. Call out dev vs test vs prod URL differences.',
   'environment-variables':
     'e.g. Group by app or scope; omit secret values.',
+  'custom-document':
+    'Describe the document you want (sections, tone, audience, diagrams, etc.).',
+};
+
+/** Optional status indicator in DOM (`#jobStatus`) if present */
+const JOB_STATUS_SYMBOLS = {
+  Pending: '⏳',
+  Processing: '…',
+  Completed: '✓',
+  Failed: '✗',
 };
 
 const Dashboard = () => {
@@ -54,22 +64,19 @@ const Dashboard = () => {
   const [selectedModes, setSelectedModes] = useState([]);
   // LLM model: '' = not selected yet, 'gpt-4.1' or 'No LLM'
   const [selectedLLM, setSelectedLLM] = useState('');
-  const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [downloadAllZipBusy, setDownloadAllZipBusy] = useState(false);
 
   // Shared config from backend (SharedConfig.json)
-  const [backendUrl, setBackendUrl] = useState("");
   const [aiModels, setAiModels] = useState([]);
   // LLM health status per model: { [modelName]: { isHealthy, error } }
   const [llmStatus, setLlmStatus] = useState({});
   // Prevent spamming console logs on every polling tick
   const loggedOutputErrorsRef = useRef(new Set());
 
-  const abortRef = useRef(null); // like useState but not rerender 
   const fileInputRef = useRef(null); // to clear the DOM input val
- 
+  const [promptsByType, setPromptsByType] = useState({});
   const delay = ms => new Promise(res => setTimeout(res, ms)); //call await delay(n) to wait n ms
 
   const getExampleDocUrl = (typeId) => {
@@ -116,10 +123,7 @@ const Dashboard = () => {
     setJobCompleteStatus(null);
     setJobCompleteMessage(null);
     setPreviewFile(null);
-    fileTypes.forEach((type) => {
-      const el = document.getElementById(type.id);
-      if (el && el.tagName === 'TEXTAREA') el.value = '';
-    });
+    setPromptsByType({});
     const jobStatusEl = document.getElementById('jobStatus');
     if (jobStatusEl) jobStatusEl.textContent = '';
   };
@@ -130,7 +134,6 @@ const Dashboard = () => {
         prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     ); 
   };
-
 
   useEffect(() => {
       console.log("Selected modes changed:", selectedModes);
@@ -143,7 +146,6 @@ const Dashboard = () => {
         // Shared config
         const res = await axiosPublic.get("/api/config/shared");
         const data = res.data ?? {};
-        if (data.backendUrl) setBackendUrl(data.backendUrl);
         if (Array.isArray(data.aiModels)) setAiModels(data.aiModels);
             if (typeof data.customPromptCharacterLimit === "number")
               setPromptCharLimit(data.customPromptCharacterLimit);
@@ -181,7 +183,6 @@ const Dashboard = () => {
       if (f && isZipFile(f)) {
         resetToDefault();
         setSelectedFile(f);
-        setProgress(0);
       } else if (f) {
         alert('Please select a .zip file only.');
         // Clear the input
@@ -208,7 +209,6 @@ const Dashboard = () => {
           if (isZipFile(f)) {
             resetToDefault();
             setSelectedFile(f);
-            setProgress(0);
             try {
                 if (fileInputRef.current) fileInputRef.current.value = "";
             } catch (err) {
@@ -222,12 +222,11 @@ const Dashboard = () => {
 
   const onRemoveFile = () => {
 
-      setSelectedFile(null); 
-      setProgress(0); 
+      setSelectedFile(null);
       // clear the native input so selecting the same file again will fire change
       try {
         if (fileInputRef.current) fileInputRef.current.value = "";
-      } catch (e) {
+      } catch {
         // ignore
       }
   };
@@ -245,7 +244,7 @@ const Dashboard = () => {
       try {
         
         console.log("Generating output file");
-        setJobCompleteStatus('Pending'); 
+        setJobCompleteStatus(null);
         setJobCompleteMessage(null);
 
         const hasFile = !!selectedFile;
@@ -272,13 +271,24 @@ const Dashboard = () => {
           return;
         }
 
+        if (
+          selectedModes.includes('custom-document') &&
+          !(promptsByType['custom-document'] ?? '').trim()
+        ) {
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage(
+            'No text detected for Custom document. Enter some text to proceed.'
+          );
+          return;
+        }
+
         const selectedModesClone = [...selectedModes];
         setIsUploading(true);
 
         const formData = new FormData();
         formData.append('File', selectedFile);
         selectedModes.forEach((t) => {
-          const prompt = document.getElementById(t)?.value?.trim() ?? '';
+          const prompt = (promptsByType[t] ?? '').trim();
           formData.append('SelectedOutputTypes', prompt ? `${t}: ${prompt}` : t);
         });
         // Pass through the selected model name (or 'none') to backend
@@ -362,7 +372,7 @@ const Dashboard = () => {
               const contentDisposition =
                 fileRes.headers['content-disposition'] || '';
               let fileName = 'generated_document';
-              const fileNameMatch = /filename=(?:"?)([^;\"]+)/i.exec(
+              const fileNameMatch = /filename=(?:"?)([^;"]+)/i.exec(
                 contentDisposition
               );
               if (fileNameMatch?.[1]) fileName = fileNameMatch[1].replace(/"/g, "");
@@ -519,7 +529,7 @@ const Dashboard = () => {
           return;
         }
 
-        const prompt = document.getElementById(outputType)?.value?.trim() ?? '';
+        const prompt = (promptsByType[outputType] ?? '').trim();
         const formData = new FormData();
         formData.append('File', selectedFile);
         formData.append(
@@ -613,7 +623,7 @@ const Dashboard = () => {
                 const contentDisposition =
                   fileRes.headers['content-disposition'] || '';
                 let fileName = 'generated_document';
-                const fileNameMatch = /filename=(?:"?)([^;\"]+)/i.exec(
+                const fileNameMatch = /filename=(?:"?)([^;"]+)/i.exec(
                   contentDisposition
                 );
                 if (fileNameMatch?.[1])
@@ -655,13 +665,12 @@ const Dashboard = () => {
     };
 
 
-  const onCancelUpload = () => {
-      abortRef.current?.abort(); 
-  };
-
   const updateStatusSymbol = (status) => {
-    document.getElementById("jobStatus").innerText = statusSymbols[status];
-  } ;
+    const el = document.getElementById('jobStatus');
+    if (!el) return;
+    const key = status && String(status).trim();
+    el.textContent = JOB_STATUS_SYMBOLS[key] ?? key ?? '';
+  };
 
   return (
       <>
@@ -709,7 +718,7 @@ const Dashboard = () => {
           
           {
               selectedFile && (
-                <div className="mt-4 p-2 sm:p-3 md:p-3 lg:p-4 border-1 border-gray-300 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4">
+                <div className="mt-4 p-2 sm:p-3 md:p-3 lg:p-4 border border-gray-300 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-amber-600 rounded-md">
                       <FileCheck color="#ffffff" size={20} />
@@ -761,6 +770,10 @@ const Dashboard = () => {
                   promptPlaceholder={
                     ADDITIONAL_PROMPT_PLACEHOLDER_BY_TYPE[type.id]
                   }
+                  promptValue={promptsByType[type.id] ?? ''}
+                  onPromptChange={(val) =>
+                    setPromptsByType((prev) => ({ ...prev, [type.id]: val }))
+                  }
                 />
               ))}
             </div>
@@ -811,7 +824,7 @@ const Dashboard = () => {
                 <button
                   onClick={onGenerateOutputFile}
                   className={`btn-theme ${jobCompleteStatus == null ? "brightness-100" : "brightness-200"} text-title text-white`}
-                  disabled={jobCompleteStatus != null}
+                  disabled={isUploading || jobCompleteStatus != null}
                 >
                   Generate
                 </button>
