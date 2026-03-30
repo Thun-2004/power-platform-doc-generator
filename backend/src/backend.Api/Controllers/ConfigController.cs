@@ -21,13 +21,9 @@ public class ConfigController : ControllerBase
     }
 
     [HttpGet("shared")]
-    public IActionResult GetShared([FromServices] IConfiguration configuration)
+    public async Task<IActionResult> GetShared([FromServices] IConfiguration configuration, [FromServices] IServiceProvider services)
     {
-        var aiModelsFlat = (_shared.AIModels ?? new Dictionary<string, string[]>() )
-            .SelectMany(kv => kv.Value ?? Array.Empty<string>())
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToArray();
-
+      
         var customPromptCharacterLimit =
             configuration.GetValue<int?>("Frontend:customPromptCharacterLimit") ?? 250;
 
@@ -61,7 +57,6 @@ public class ConfigController : ControllerBase
         return Ok(new
         {
             backendUrl = _shared.BackendUrl,
-            aiModels = aiModelsFlat,
             customPromptCharacterLimit,
             generatedOutputTypes
         });

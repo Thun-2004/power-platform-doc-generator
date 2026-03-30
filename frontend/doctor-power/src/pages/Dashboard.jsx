@@ -69,9 +69,8 @@ const Dashboard = () => {
   const [downloadAllZipBusy, setDownloadAllZipBusy] = useState(false);
 
   // Shared config from backend (SharedConfig.json)
-  const [aiModels, setAiModels] = useState([]);
   // LLM health status per model: { [modelName]: { isHealthy, error } }
-  const [llmStatus, setLlmStatus] = useState({});
+  const [llmStatusMap, setLlmStatusMap] = useState({});
   // Prevent spamming console logs on every polling tick
   const loggedOutputErrorsRef = useRef(new Set());
 
@@ -146,17 +145,18 @@ const Dashboard = () => {
         // Shared config
         const res = await axiosPublic.get("/api/config/shared");
         const data = res.data ?? {};
-        if (Array.isArray(data.aiModels)) setAiModels(data.aiModels);
-            if (typeof data.customPromptCharacterLimit === "number")
-              setPromptCharLimit(data.customPromptCharacterLimit);
+        
+        if (typeof data.customPromptCharacterLimit === "number")
+          setPromptCharLimit(data.customPromptCharacterLimit);
 
-            if (Array.isArray(data.generatedOutputTypes))
-              setFileTypes(data.generatedOutputTypes);
+        if (Array.isArray(data.generatedOutputTypes))
+          setFileTypes(data.generatedOutputTypes);
 
         // LLM status (optional endpoint)
         try {
           const statusRes = await axiosPublic.get("/api/config/llm-status");
           const statusArray = statusRes.data ?? [];
+
           const statusMap = {};
           for (const s of statusArray) {
             // backend returns { model, isHealthy, error }
@@ -167,7 +167,7 @@ const Dashboard = () => {
               };
             }
           }
-          setLlmStatus(statusMap);
+          setLlmStatusMap(statusMap);
         } catch (statusErr) {
           console.warn("Failed to load LLM status", statusErr);
         }
@@ -793,9 +793,9 @@ const Dashboard = () => {
                 >
                   <option value="">Select model</option>
                   <option value="none">No LLM</option>
-                  {aiModels.map((m) => {
-                    const status = llmStatus[m];
-                    const healthy = status ? status.isHealthy !== false : true;
+                  {Object.keys(llmStatusMap).map((m) => {
+                    const entry = llmStatusMap[m];
+                    const healthy = entry?.isHealthy === true;
                     const label = healthy
                       ? m
                       : `${m} (unavailable – contact admin)`;
@@ -811,12 +811,9 @@ const Dashboard = () => {
                     );
                   })}
                 </select>
-                {Object.values(llmStatus).some(
-                  (s) => s && s.isHealthy === false
-                ) && (
+                {llmStatusMap[selectedLLM]?.error && (
                   <p className="text-xs text-amber-700">
-                    If some AI models are currently unavailable, contact
-                    your administrator.
+                    {llmStatusMap[selectedLLM].error}
                   </p>
                 )}
               </div>
@@ -846,7 +843,7 @@ const Dashboard = () => {
               }
               className="btn-theme bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {downloadAllZipBusy ? 'Preparing zip…' : 'Download all'}
+              { downloadAllZipBusy ? 'Preparing zip…' : 'Download all'}
             </button>
           </div>
           <div id="file-display" className="flex flex-col gap-4">
