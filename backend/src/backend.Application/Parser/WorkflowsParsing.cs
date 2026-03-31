@@ -1,3 +1,4 @@
+// Summary: Parses Power Automate workflow definitions to extract connectors, environment variables, triggers, and inferred purposes.
 
 using System;
 using System.Collections.Generic;
@@ -5,10 +6,13 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using backend.Application.Helpers; 
 
 namespace backend.Application.Parser;
+// Summary: Provides helper methods for analyzing workflow JSON files in a solution export.
 public static class WorkflowsParsing
 {
+    // Summary: Scans workflow JSON files and folders to build detailed metadata for each workflow in a solution.
     public static List<WorkflowDetail> ParseWorkflowsDetailed(DirectoryInfo workflowsDir, HashSet<string> envVarNames)
     {
         var result = new List<WorkflowDetail>();
@@ -71,6 +75,7 @@ public static class WorkflowsParsing
             .ToList();
     }
 
+    // Summary: Extracts connector identifiers referenced in a workflow JSON definition.
     public static List<string> ExtractConnectorsFromFlowJson(string jsonText)
     {
         var found = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -85,6 +90,7 @@ public static class WorkflowsParsing
         return found.OrderBy(x => x, StringComparer.OrdinalIgnoreCase).ToList();
     }
 
+    // Summary: Finds which known environment variable names appear in a block of workflow text.
     public static List<string> ExtractEnvVarsFromText(string text, HashSet<string> envVarNames)
     {
         var used = new List<string>();
@@ -98,6 +104,7 @@ public static class WorkflowsParsing
         return used;
     }
 
+    // Summary: Attempts to summarize the main trigger for a workflow from its JSON definition.
     public static string? TryExtractTriggerSummary(string jsonText)
     {
         if (string.IsNullOrWhiteSpace(jsonText)) return null;
@@ -150,6 +157,7 @@ public static class WorkflowsParsing
         }
     }
 
+    // Summary: Normalizes a connector identifier from a provider URL or shorthand into a simple connector name.
     static string NormalizeConnector(string s)
     {
         var t = s.Trim();
@@ -166,6 +174,7 @@ public static class WorkflowsParsing
     }
 
     //  lightweight action detection (safe, not overly assuming)
+    // Summary: Performs lightweight keyword-based detection of common workflow actions from JSON text.
     static List<string> DetectActions(string jsonText)
     {
         var text = (jsonText ?? "").ToLowerInvariant();
@@ -190,6 +199,7 @@ public static class WorkflowsParsing
         return found.OrderBy(x => x, StringComparer.OrdinalIgnoreCase).ToList();
     }
 
+    // Summary: Infers a human-readable purpose string for a workflow based on its name, trigger, connectors, env vars, and detected actions.
     static string InferWorkflowPurpose(
         string workflowName,
         string jsonText,

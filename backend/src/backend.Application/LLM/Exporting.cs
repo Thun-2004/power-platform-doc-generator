@@ -1,3 +1,5 @@
+// Summary: Wraps external export tooling (pandoc, mermaid-cli) to generate Word/PDF documents and diagrams from solution artifacts.
+
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -6,9 +8,10 @@ using System.Text.RegularExpressions;
 
 namespace backend.Application.LLM;
 
+// Summary: Provides helper methods for running external export commands and sanitizing Mermaid diagrams.
 public static class Exporting
 {
-
+    // Summary: Starts a process with the given command/arguments, waits for completion, and optionally throws on non-zero exit.
     public static int RunProcess(string fileName, string arguments, string workingDir, bool isPac=false)
     {
         var p = new Process();
@@ -31,6 +34,7 @@ public static class Exporting
         return p.ExitCode;
     }
 
+    // Summary: Uses pandoc to export overview, workflows, FAQ, and optional mapping/ERD files to Word documents.
     public static void ExportWord(string outDir, string overview, string workflows, string faq, string fileNamePrefix = "Export")
     {
         RunProcess("pandoc", $"\"{overview}\" -o \"{fileNamePrefix}_Overview.docx\" --toc", outDir);
@@ -47,6 +51,7 @@ public static class Exporting
             RunProcess("pandoc", $"\"{erd}\" -o \"{fileNamePrefix}_ERD_Mermaid.docx\" --toc", outDir);
     }
 
+    // Summary: Uses pandoc to export overview, workflows, FAQ, and optional mapping/ERD files to PDF documents.
     public static void ExportPdf(string outDir, string overview, string workflows, string faq, string fileNamePrefix = "Export")
     {
         var pdfEngine = "--pdf-engine=weasyprint";
@@ -65,6 +70,7 @@ public static class Exporting
     }
 
     /// Sanitize Mermaid content so mmdc parser does not fail on parentheses in labels.
+    // Summary: Cleans Mermaid source so mermaid-cli can safely render it, especially when labels contain parentheses.
     public static string SanitizeMermaidForMmdc(string content)
     {
         if (string.IsNullOrWhiteSpace(content)) return content;
@@ -113,7 +119,8 @@ public static class Exporting
         return result.ToString();
     }
 
-    /// <summary>Resolves bundled puppeteer-config.json (Chromium flags for Docker/root: --no-sandbox, etc.).</summary>
+    // Resolves bundled puppeteer-config.json (Chromium flags for Docker/root: --no-sandbox, etc.).
+    // Summary: Locates the bundled puppeteer-config.json near the assembly or in the LLM folder if present.
     private static string? ResolvePuppeteerConfigPath()
     {
         var dir = Path.GetDirectoryName(typeof(Exporting).Assembly.Location);
@@ -127,6 +134,7 @@ public static class Exporting
     }
 
     /// Render a Mermaid .mmd file to PDF using mermaid-cli (mmdc). Returns the full path to the generated .pdf file.
+    // Summary: Renders a Mermaid diagram file to PDF via mermaid-cli, applying sanitization and optional puppeteer config.
     public static string ExportMermaidToPdf(string outDir, string mermaidFileName, string pdfFileName)
     {
         var mmdPath = Path.Combine(outDir, mermaidFileName);

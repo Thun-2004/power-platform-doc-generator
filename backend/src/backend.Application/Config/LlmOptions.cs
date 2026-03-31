@@ -1,5 +1,6 @@
 namespace backend.Application.Config;
 
+// Default values
 public class LlmOptions
 {
     public const string SectionName = "Llm";

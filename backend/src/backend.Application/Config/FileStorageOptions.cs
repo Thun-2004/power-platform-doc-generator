@@ -1,9 +1,11 @@
 namespace backend.Application.Config;
 
+// Default values
 public class FileStorageOptions
 {
     public const string SectionName = "FileStorage";
 
+    // Default values
     public string BasePath { get; set; } = "..";
 
     public string UploadedFilesDir { get; set; } = "backend.Infrastructure/FileStorages/UploadedFiles";

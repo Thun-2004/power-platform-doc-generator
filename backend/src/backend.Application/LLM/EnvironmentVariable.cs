@@ -1,8 +1,10 @@
+// Summary: Defines environment variable metadata and exports it into a formatted Excel table.
 
 using ClosedXML.Excel;
 
 namespace backend.Application.LLM; 
 
+// Summary: Represents a single environment variable and its values across environments.
 public class EnvironmentVariableValue
 {
     public required string Name { get; set; }
@@ -22,8 +24,10 @@ public class EnvironmentVariableValue
 }
 
 
+// Summary: Builds and saves an Excel sheet that tabulates environment variable definitions and environment-specific values.
 class EnvironmentVariable
 {
+    // Summary: Writes the parsed environment variables into a styled Excel table at the given file path.
     public static void construct_table(HashSet<EnvironmentVariableValue> parsedJsonRes, string file_path)
     {
 
