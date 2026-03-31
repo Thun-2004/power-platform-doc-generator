@@ -1,6 +1,7 @@
 
 public class Utility
 {
+    // Summary: Converts a string output type to a MIME type for a Word document export.
     public static string outputTypeToMimeTypeConverter(string outputType)
     {
         switch (outputType)
