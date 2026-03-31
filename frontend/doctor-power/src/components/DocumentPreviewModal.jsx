@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import SafePreviewBoundary from './SafePreviewBoundary';
 import { X } from 'lucide-react';
 import { renderAsync } from 'docx-preview';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -154,53 +155,55 @@ const DocumentPreviewModal = ({ file, isOpen, onClose }) => {
           )}
 
           {fileType === 'pdf' && (
-            <div className="flex flex-col items-center gap-4 border-0 outline-none">
-              {pdfError && (
-                <div className="p-4 bg-red-50 text-red-700 rounded-lg w-full max-w-md">
-                  {pdfError}
-                </div>
-              )}
-              {pdfUrl && !pdfError && (
-                <Document
-                  file={{ url: pdfUrl }}
-                  onLoadSuccess={handlePdfLoadSuccess}
-                  onLoadError={handlePdfLoadError}
-                  loading={
-                    <div className="p-4 text-gray-600">Loading PDF…</div>
-                  }
-                  className="flex flex-col items-center border-0 outline-none"
-                >
-                  <Page
-                    pageNumber={pdfPageNumber}
-                    renderTextLayer={false}
-                    renderAnnotationLayer={false}
-                    className="max-w-full border-0 outline-none [&_canvas]:outline-none"
-                    scale={1.5}
-                  />
-                </Document>
-              )}
-              {pdfNumPages && (
-                <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm">
-                  <button
-                    onClick={() => setPdfPageNumber(Math.max(1, pdfPageNumber - 1))}
-                    disabled={pdfPageNumber === 1}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 hover:bg-blue-700"
+            <SafePreviewBoundary>
+              <div className="flex flex-col items-center gap-4 border-0 outline-none">
+                {pdfError && (
+                  <div className="p-4 bg-red-50 text-red-700 rounded-lg w-full max-w-md">
+                    {pdfError}
+                  </div>
+                )}
+                {pdfUrl && !pdfError && (
+                  <Document
+                    file={{ url: pdfUrl }}
+                    onLoadSuccess={handlePdfLoadSuccess}
+                    onLoadError={handlePdfLoadError}
+                    loading={
+                      <div className="p-4 text-gray-600">Loading PDF…</div>
+                    }
+                    className="flex flex-col items-center border-0 outline-none"
                   >
-                    Previous
-                  </button>
-                  <span className="text-gray-600 font-medium">
-                    Page {pdfPageNumber} of {pdfNumPages}
-                  </span>
-                  <button
-                    onClick={() => setPdfPageNumber(Math.min(pdfNumPages, pdfPageNumber + 1))}
-                    disabled={pdfPageNumber === pdfNumPages}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 hover:bg-blue-700"
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
-            </div>
+                    <Page
+                      pageNumber={pdfPageNumber}
+                      renderTextLayer={false}
+                      renderAnnotationLayer={false}
+                      className="max-w-full border-0 outline-none [&_canvas]:outline-none"
+                      scale={1.5}
+                    />
+                  </Document>
+                )}
+                {pdfNumPages && (
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm">
+                    <button
+                      onClick={() => setPdfPageNumber(Math.max(1, pdfPageNumber - 1))}
+                      disabled={pdfPageNumber === 1}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 hover:bg-blue-700"
+                    >
+                      Previous
+                    </button>
+                    <span className="text-gray-600 font-medium">
+                      Page {pdfPageNumber} of {pdfNumPages}
+                    </span>
+                    <button
+                      onClick={() => setPdfPageNumber(Math.min(pdfNumPages, pdfPageNumber + 1))}
+                      disabled={pdfPageNumber === pdfNumPages}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 hover:bg-blue-700"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </div>
+            </SafePreviewBoundary>
           )}
 
           {fileType === 'excel' && (
