@@ -6,6 +6,7 @@ using backend.Api;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using backend.Api.Helpers;
 
 namespace backend.Api.Controllers;
 

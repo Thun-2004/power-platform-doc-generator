@@ -10,13 +10,15 @@ using backend.Infrastructure;
 using System.Reflection.Metadata;
 using backend.Api.DTO;
 using backend.Application.Interfaces;
+using backend.Api.Helpers;
 
 namespace backend.Api.Controllers; 
 
 [ApiController]
 [Route("api/[controller]")]
 public class FileController : ControllerBase
-{
+{   
+    // Services as DI, to edit, 2 relevent folders are Services and Interfaces in backend.Application
     private readonly IUploadService _uploadService;
     private readonly IJobStatusService _jobStatusService;
     private readonly IJobOutputService _jobOutputService; 
@@ -27,18 +29,19 @@ public class FileController : ControllerBase
         _jobOutputService = jobOutputService; 
     }
 
+    // Initialize a new job and return the job id, status url, and output files meta not the file itself right away
     [HttpPost("generate")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> Generate([FromForm] UploadRequest req,  CancellationToken ct){
         if (req?.File == null || req.File.Length == 0)
             return BadRequest("File is required");
 
-        // Parse "overview" or "overview: add conclusion at the end" into types + per-type prompts
         var outputTypes = new List<string>();
         var outputPrompts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        var selectedItems = req.SelectedOutputTypes ?? new List<string>();
+        var selectedItems = req.SelectedOutputTypes ?? new List<string>(); // selectedItem = ["<output-type>:<prompt>"]
         foreach (var item in selectedItems.Select(t => (t ?? "").Trim()).Where(t => !string.IsNullOrWhiteSpace(t)))
         {
+            // Split outputType and outputPrompt
             var colonIdx = item.IndexOf(':');
             string type;
             string? promptPart = null;
@@ -68,7 +71,8 @@ public class FileController : ControllerBase
                     JobId = job.JobId,
                     JobStatus = JobState.Processing.ToString(),
                     JobStatusUrl = $"/api/File/jobstatus/{job.JobId}",
-                    OutputFilesMetas = job.OutputFilesMetas
+                    //error
+                    OutputFilesMetas = job.OutputFilesMetas // See the structure of the output files meta in FileMetadata in backend/src/backend.Domain/Job.cs
                 }
             });
         }catch (DirectoryNotFoundException e){
@@ -97,6 +101,7 @@ public class FileController : ControllerBase
         }
     }
 
+    // Return progresses of all output types for a given job
     [HttpGet("jobstatus/{jobId}")]
     public IActionResult GetJobStatus(string jobId)
     {
@@ -127,6 +132,7 @@ public class FileController : ControllerBase
         }
     }
 
+    // Return the output file for a given output type for a given job
     [HttpGet("job/{jobId}/files/{outputType}")]
     public async Task<IActionResult> GetJobOutput(string jobId, string outputType, CancellationToken ct)
     {
@@ -171,11 +177,10 @@ public class FileController : ControllerBase
         }
     }
 
+    // Regenerate the job for a given job id and return the information like /generate
     [HttpPost("regenerate")]
     public async Task<IActionResult> Regenerate([FromBody] RegenerateRequest req, CancellationToken ct)
     {
-            // string jobId, string outputType, string llmModel, string outputPrompts, CancellationToken ct
-            //split outputType and outputPrompts
             var outputTypes = new List<string>();
             var outputPrompts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var selectedItems = req.SelectedOutputTypes ?? new List<string>();

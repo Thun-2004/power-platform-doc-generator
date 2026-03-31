@@ -11,6 +11,7 @@ using backend.Infrastructure;
 using backend.Application;
 using backend.Application.Config;
 using backend.Application.LLM;
+using backend.Api.Helpers; 
 
 namespace backend.Api;
 
@@ -22,7 +23,6 @@ public partial class Program
         await app.RunAsync();
     }
 
-    /// <summary>Used by integration tests (<see cref="Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory{TEntryPoint}"/>) and by <see cref="Main"/>.</summary>
     public static WebApplication CreateWebApplication(string[]? args)
     {
         var envPath = Path.Combine("..", "..", "..", ".env");
@@ -38,6 +38,7 @@ public partial class Program
         builder.Services.Configure<BackendOptions>(builder.Configuration.GetSection(BackendOptions.SectionName));
         builder.Services.Configure<LlmOptions>(builder.Configuration.GetSection(LlmOptions.SectionName));
 
+        // Configure Kestrel server options
         var kestrelSection = builder.Configuration.GetSection("Kestrel");
         builder.Services.Configure<KestrelServerOptions>(options =>
         {
@@ -51,6 +52,7 @@ public partial class Program
         {
             options.AddPolicy(AllowFrontend, policy =>
             {
+                // Get cors origins from appsettings.json, shared section
                 var origins = builder.Configuration.GetSection("Shared:CorsOrigins").Get<string[]>() ?? ["http://localhost:5173", "https://client.scalar.com"];
                 policy.WithOrigins(origins).AllowAnyHeader().AllowAnyMethod();
             });
@@ -69,17 +71,8 @@ public partial class Program
             builder.Services.AddHostedService<FileStorageTtlCleanupService>();
 
         var app = builder.Build();
-
-        //Authentication -> later
-        // builder.Services.AddDbContext<AppDbContext>(options =>
-        // {
-        //     options.UseInMemoryDatabase("AuthDb"); 
-        // }
-        // );
-        // app.MapIdentityApi<IdentityUser>(); 
         
-
-        // Configure the HTTP request pipeline.
+        // Configure the HTTP request pipeline
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
@@ -87,8 +80,6 @@ public partial class Program
             app.MapGet("/", () => Results.Redirect("/scalar"));
         }
 
-        // app.UseAuthentication();
-        // Optional: perform LLM health validation at startup using LlmHealth if desired.
         if (!app.Environment.IsEnvironment("Testing"))
             app.UseHttpsRedirection();
         app.UseCors(AllowFrontend);

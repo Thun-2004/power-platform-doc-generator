@@ -8,7 +8,7 @@ using backend.Application.LLM;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace backend.Api;
+namespace backend.Api.Helpers;
 
 public record LlmModelStatus(
     string Model,
