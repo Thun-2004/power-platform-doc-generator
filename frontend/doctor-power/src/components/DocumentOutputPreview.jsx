@@ -53,12 +53,12 @@ const DocumentOutputPreview = ({ outputItems, setPreviewFile, onDismiss, onRegen
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3 w-full sm:w-auto sm:shrink-0">
                   <button
                     type="button"
-                    onClick={() =>
+                    onClick={() => {
                       setPreviewFile({
                         name: item.name,
-                        url: item.url,
+                        url: item.url, 
                         blob: item.blob,
-                      })
+                      })}
                     }
                     className="text-gray-500 border border-gray-300 px-3 md:px-4 py-1 md:py-2 rounded-md text-sm md:text-base cursor-pointer transition-all hover:brightness-110 focus:outline-none flex-1 sm:flex-none"
                   >
