@@ -85,4 +85,48 @@ public class UploadService : IUploadService
 
         return new JobStartResult(job.JobId, outputFilesMetas);
     }
+
+    public Task<JobStartResult> RegenerateJobAsync(string jobId, List<string> outputTypes, string llmModel, IReadOnlyDictionary<string, string>? outputPrompts, CancellationToken ct)
+    {
+        var job = _jobs.Get(jobId);
+        if (job == null)
+            throw new ArgumentException("Job not found");
+
+        outputTypes = outputTypes
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Select(x => x.Trim().ToLowerInvariant())
+            .Distinct()
+            .ToList();
+
+        if (outputTypes.Count == 0)
+            throw new ArgumentException("At least one output type is required.");
+
+        // validate test before background job
+        FileValidation.ValidateSolutionZipOrThrow(job.ZipFilePath);
+
+        // Mark outputs as Processing before returning so the first poll is not still "Failed"
+        // from the previous run (ProcessFile runs in Task.Run and would race the UI poll).
+        foreach (var t in outputTypes)
+            _jobs.UpdateSingleOutputFileProgress(job.JobId, t, JobState.Processing);
+
+        // background job
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _fileProcessing.ProcessFile(outputTypes, job.JobId, llmModel, outputPrompts);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "FileProcessing failed for job {JobId}", job.JobId);
+            }
+        }, CancellationToken.None);
+
+        var outputFilesMetas = outputTypes.ToDictionary(
+            t => t,
+            t => $"/api/File/job/{job.JobId}/files/{t}"
+        );
+
+        return Task.FromResult(new JobStartResult(job.JobId, outputFilesMetas));
+    }
 }

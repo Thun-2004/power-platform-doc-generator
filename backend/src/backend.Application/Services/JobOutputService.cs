@@ -30,7 +30,6 @@ public class JobOutputService : IJobOutputService
         ); 
     }
 
-
     private FileDescriptor CreateFileDescriptor(string jobId, string outputType,  string path)
     {
 

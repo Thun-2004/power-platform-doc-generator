@@ -109,7 +109,9 @@ public class JobStore : IJobStore
             throw new Exception("Output type not found");
         }
 
-        fileMeta.Status = outputfileProgress; 
+        fileMeta.Status = outputfileProgress;
+        if (outputfileProgress == JobState.Processing)
+            fileMeta.ErrorMessage = null;
         Console.WriteLine($"Updated output type {outputType} to status {fileMeta.Status}");
 
         List<JobState> allProgress = job.OutputType_FileMeta_Matches.Values.Select(meta => meta.Status).ToList();

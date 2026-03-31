@@ -327,9 +327,37 @@ const Dashboard = () => {
         // Poll job status and fetch files when Completed
         let done = false;
         const fetched = new Set(); // outputTypes we've already fetched
-        while (!done) {
+        let pollCount = 0;
+        const maxPolls = 900; // ~90s at 100ms
+        while (!done && pollCount < maxPolls) {
+          pollCount += 1;
           await delay(tickLength);
-          const statusRes = await axiosPublic.get(statusUrl);
+
+          let statusRes;
+          try {
+            statusRes = await axiosPublic.get(statusUrl);
+          } catch (pollErr) {
+            const msg =
+              getErrorMessage(pollErr) ||
+              'Lost connection to the server while generating.';
+            // Mark all outputs for this job as failed
+            setOutputItems((prev) =>
+              prev.map((item) =>
+                item.jobId === jobId
+                  ? {
+                      ...item,
+                      status: 'Failed',
+                      error: msg,
+                    }
+                  : item
+              )
+            );
+            setJobCompleteStatus('Failed');
+            setJobCompleteMessage(msg);
+            done = true;
+            break;
+          }
+
           const statusData = statusRes.data?.data ?? statusRes.data ?? {};
           const jobStatus = statusData.JobStatus ?? statusData.jobStatus ?? '';
           const progressRaw = statusData.Progress ?? statusData.progress ?? {};
@@ -448,6 +476,23 @@ const Dashboard = () => {
             }
           }
         }
+
+        if (!done && pollCount >= maxPolls) {
+          const msg = 'Generation timed out waiting for status.';
+          setOutputItems((prev) =>
+            prev.map((item) =>
+              item.jobId === jobId
+                ? {
+                    ...item,
+                    status: 'Failed',
+                    error: msg,
+                  }
+                : item
+            )
+          );
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage(msg);
+        }
       } catch (err) {
         console.error('Failed to generate document', err);
         const msg = getErrorMessage(err);
@@ -529,18 +574,29 @@ const Dashboard = () => {
           return;
         }
 
+        const currentJobId = outputItems.find((item) => item.outputType === outputType)?.jobId ?? outputItems[0]?.jobId;
+        
+        if (!currentJobId) {
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage(
+            'No job found. Generate outputs once before regenerating.'
+          );
+          return;
+        }
+
         const prompt = (promptsByType[outputType] ?? '').trim();
-        const formData = new FormData();
-        formData.append('File', selectedFile);
-        formData.append(
-          'SelectedOutputTypes',
-          prompt ? `${outputType}: ${prompt}` : outputType
-        );
-        formData.append('LlmModel', selectedLLM);
+        const selectedOutputTypes =
+          prompt && prompt.length > 0
+            ? [`${outputType}: ${prompt}`]
+            : [outputType];
 
         let response;
         try {
-          response = await axiosPublic.post('/api/File/generate', formData);
+          response = await axiosPublic.post('/api/File/regenerate', {
+            jobId: currentJobId,
+            SelectedOutputTypes: selectedOutputTypes,
+            LlmModel: selectedLLM,
+          });
         } catch (postErr) {
           const msg = getErrorMessage(postErr);
           console.log(`[RegenerateSubmitError] ${msg}`, postErr?.response?.data ?? postErr);
@@ -553,56 +609,81 @@ const Dashboard = () => {
         const jobId = data.JobId ?? data.jobId;
         const statusUrl = data.JobStatusUrl ?? data.jobStatusUrl;
         const outputApiUrls = data.OutputFilesMetas ?? data.outputFilesMetas ?? {};
-        const downloadUrl = outputApiUrls[outputType];
+        const resolveUrl = (map) => {
+          const direct = map[outputType] ?? map[outputType?.toLowerCase?.()];
+          if (direct) return direct;
+          const lower = String(outputType).toLowerCase();
+          const k = Object.keys(map).find((x) => x.toLowerCase() === lower);
+          return k ? map[k] : '';
+        };
+        const downloadUrl = resolveUrl(outputApiUrls);
 
-        // mark this output as regenerating
         setOutputItems((prev) =>
           prev.map((item) =>
             item.outputType === outputType
               ? {
                   ...item,
-                  status: 'Pending',
+                  status: 'Processing',
                   jobId,
                   downloadUrl,
-                  // keep existing name/url until new one is ready
+                  error: undefined,
                 }
               : item
           )
         );
 
+        const pickProgress = (progressRaw) => {
+          if (!progressRaw || typeof progressRaw !== 'object') return '';
+          const keys = [outputType, outputType?.toLowerCase?.()].filter(Boolean);
+          for (const k of keys) {
+            const v = progressRaw[k];
+            if (v != null && String(v).trim()) return String(v).trim();
+          }
+          const lower = String(outputType).toLowerCase();
+          const matchKey = Object.keys(progressRaw).find(
+            (x) => x.toLowerCase() === lower
+          );
+          return matchKey != null ? String(progressRaw[matchKey]).trim() : '';
+        };
+
+        const pickError = (errorsRaw) => {
+          if (!errorsRaw || typeof errorsRaw !== 'object') return undefined;
+          const keys = [outputType, outputType?.toLowerCase?.()].filter(Boolean);
+          for (const k of keys) {
+            if (errorsRaw[k] != null) return errorsRaw[k];
+          }
+          const lower = String(outputType).toLowerCase();
+          const matchKey = Object.keys(errorsRaw).find(
+            (x) => x.toLowerCase() === lower
+          );
+          return matchKey != null ? errorsRaw[matchKey] : undefined;
+        };
+
         let done = false;
-        while (!done) {
+        let pollCount = 0;
+        const maxPolls = 900;
+        let fetchedFile = false;
+
+        while (!done && pollCount < maxPolls) {
+          pollCount += 1;
           await delay(tickLength);
           const statusRes = await axiosPublic.get(statusUrl);
           const statusData = statusRes.data?.data ?? statusRes.data ?? {};
           const progressRaw = statusData.Progress ?? statusData.progress ?? {};
           const errorsRaw = statusData.Errors ?? statusData.errors ?? {};
-          const rawStatus = progressRaw[outputType];
-          const status =
-            (rawStatus && String(rawStatus).trim()) || 'Processing';
+          const progressStr = pickProgress(progressRaw);
+          const status = progressStr || 'Processing';
+          const err = pickError(errorsRaw);
 
           setOutputItems((prev) =>
             prev.map((item) =>
               item.outputType === outputType
-                ? {
-                    ...item,
-                    status,
-                    error:
-                      (errorsRaw &&
-                        typeof errorsRaw === 'object' &&
-                        errorsRaw[item.outputType]) ||
-                      item.error,
-                  }
+                ? { ...item, status, error: err ?? item.error, jobId, downloadUrl }
                 : item
             )
           );
-          // If it failed, log error once (using the same ref to avoid spam)
+
           if (status === 'Failed') {
-            const err =
-              (errorsRaw &&
-                typeof errorsRaw === 'object' &&
-                errorsRaw[outputType]) ||
-              null;
             if (err) {
               const key = `${jobId}:${outputType}`;
               if (!loggedOutputErrorsRef.current.has(key)) {
@@ -610,51 +691,90 @@ const Dashboard = () => {
                 console.log(`[JobError] jobId=${jobId} outputType=${outputType}:`, err);
               }
             }
+            done = true;
+            continue;
           }
 
-          if (status === 'Completed' || status === 'Failed') {
+          if (status === 'Completed' && !fetchedFile) {
+            fetchedFile = true;
             done = true;
-
-            if (status === 'Completed' && downloadUrl) {
-              try {
-                const fileRes = await axiosPublic.get(downloadUrl, {
-                  responseType: 'blob',
-                });
-                const contentDisposition =
-                  fileRes.headers['content-disposition'] || '';
-                let fileName = 'generated_document';
-                const fileNameMatch = /filename=(?:"?)([^;"]+)/i.exec(
-                  contentDisposition
-                );
-                if (fileNameMatch?.[1])
-                  fileName = fileNameMatch[1].replace(/"/g, '');
-                const blob = new Blob([fileRes.data], {
-                  type: fileRes.data.type || 'application/octet-stream',
-                });
-                if (!fileName.includes('.')) {
-                  const mimeToExt = {
-                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                      '.docx',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-                      '.xlsx',
-                    'application/pdf': '.pdf',
-                    'application/zip': '.zip',
-                  };
-                  if (mimeToExt[blob.type]) fileName += mimeToExt[blob.type];
-                }
-                const url = URL.createObjectURL(blob);
-                setOutputItems((prev) =>
-                  prev.map((item) =>
-                    item.outputType === outputType
-                      ? { ...item, name: fileName, url, blob, status: 'Completed' }
-                      : item
-                  )
-                );
-              } catch (e) {
-                console.error('Failed to fetch regenerated output file', outputType, e);
+            if (!downloadUrl) {
+              setOutputItems((prev) =>
+                prev.map((item) =>
+                  item.outputType === outputType
+                    ? {
+                        ...item,
+                        status: 'Failed',
+                        error: 'No download URL for this output.',
+                      }
+                    : item
+                )
+              );
+              continue;
+            }
+            try {
+              const fileRes = await axiosPublic.get(downloadUrl, {
+                responseType: 'blob',
+              });
+              const contentDisposition =
+                fileRes.headers['content-disposition'] || '';
+              let fileName = 'generated_document';
+              const fileNameMatch = /filename=(?:"?)([^;"]+)/i.exec(
+                contentDisposition
+              );
+              if (fileNameMatch?.[1])
+                fileName = fileNameMatch[1].replace(/"/g, '');
+              const blob = new Blob([fileRes.data], {
+                type: fileRes.data.type || 'application/octet-stream',
+              });
+              if (!fileName.includes('.')) {
+                const mimeToExt = {
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                    '.docx',
+                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                    '.xlsx',
+                  'application/pdf': '.pdf',
+                  'application/zip': '.zip',
+                };
+                if (mimeToExt[blob.type]) fileName += mimeToExt[blob.type];
               }
+              const url = URL.createObjectURL(blob);
+              setOutputItems((prev) =>
+                prev.map((item) =>
+                  item.outputType === outputType
+                    ? { ...item, name: fileName, url, blob, status: 'Completed' }
+                    : item
+                )
+              );
+            } catch (e) {
+              console.error('Failed to fetch regenerated output file', outputType, e);
+              setOutputItems((prev) =>
+                prev.map((item) =>
+                  item.outputType === outputType
+                    ? {
+                        ...item,
+                        status: 'Failed',
+                        error: 'Could not download regenerated file.',
+                      }
+                    : item
+                )
+              );
             }
           }
+        }
+
+        if (pollCount >= maxPolls && !done) {
+          setOutputItems((prev) =>
+            prev.map((item) =>
+              item.outputType === outputType
+                ? {
+                    ...item,
+                    status: 'Failed',
+                    error: 'Regeneration timed out waiting for status.',
+                  }
+                : item
+            )
+          );
         }
       } catch (err) {
         console.error('Failed to regenerate output', err);

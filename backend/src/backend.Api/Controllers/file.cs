@@ -171,22 +171,59 @@ public class FileController : ControllerBase
         }
     }
 
-    // test function
-    // [HttpGet("getDocument")]
-    // public async Task<IActionResult> GetGeneratedFile()
-    // {
-    //     //change this to your excel file path
-    //     var response_path = "/Users/benn/Documents/sh38-main/backend/src/backend.Infrastructure/FileStorages/RAGOutputs/Replybrary_Overview.docx";
+    [HttpPost("regenerate")]
+    public async Task<IActionResult> Regenerate([FromBody] RegenerateRequest req, CancellationToken ct)
+    {
+            // string jobId, string outputType, string llmModel, string outputPrompts, CancellationToken ct
+            //split outputType and outputPrompts
+            var outputTypes = new List<string>();
+            var outputPrompts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var selectedItems = req.SelectedOutputTypes ?? new List<string>();
+            foreach (var item in selectedItems.Select(t => (t ?? "").Trim()).Where(t => !string.IsNullOrWhiteSpace(t)))
+            {
+                var colonIdx = item.IndexOf(':');
+                string type;
+                string? promptPart = null;
+                if (colonIdx > 0)
+                {
+                    type = item.Substring(0, colonIdx).Trim().ToLowerInvariant();
+                    promptPart = item.Substring(colonIdx + 1).Trim();
+                }
+                else
+                    type = item.ToLowerInvariant();
+                if (string.IsNullOrWhiteSpace(type)) continue;
+                if (!outputTypes.Contains(type))
+                    outputTypes.Add(type);
+                if (!string.IsNullOrWhiteSpace(promptPart))
+                    outputPrompts[type] = promptPart;
+            }
 
-    //     var bytes = await System.IO.File.ReadAllBytesAsync(response_path); 
+            try
+            {
+                var job = await _uploadService.RegenerateJobAsync(req.jobId, outputTypes, req.LlmModel, outputPrompts, ct);
 
-    //     FileDescriptor fileDescriptor = CreateFileDescriptor(response_path);
-
-    //     return File(
-    //         bytes,
-    //         fileDescriptor.MimeType,
-    //         fileDescriptor.DownloadName
-    //     );
-    // }
+                return Ok(new ResponseModel<JobResponse>
+                {
+                    Status = 200,
+                    Message = "File processing started",
+                    Data = new JobResponse
+                    {
+                        JobId = job.JobId,
+                        JobStatus = JobState.Processing.ToString(),
+                        JobStatusUrl = $"/api/File/jobstatus/{job.JobId}",
+                        OutputFilesMetas = job.OutputFilesMetas
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                var message = e.InnerException?.Message ?? e.Message;
+                return Problem(
+                    detail: message,
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: "Invalid request"
+                );
+            }
+    }
 }
     
