@@ -159,7 +159,7 @@ const Dashboard = () => {
 
           const statusMap = {};
           for (const s of statusArray) {
-            // backend returns { model, isHealthy, error }
+            // backend returns  "<model>": { isHealthy: true, error : <error message> }
             if (s.model) {
               statusMap[s.model] = {
                 isHealthy: !!s.isHealthy,
@@ -268,6 +268,18 @@ const Dashboard = () => {
         if (!hasLLM) {
           setJobCompleteStatus('Failed');
           setJobCompleteMessage('Please select an LLM model.');
+          return;
+        }
+
+        // Disallow "No LLM" when Custom document is selected
+        if (
+          selectedModes.includes('custom-document') &&
+          String(selectedLLM).toLowerCase() === 'none'
+        ) {
+          setJobCompleteStatus('Failed');
+          setJobCompleteMessage(
+            '`No LLM` can not be used to generate `Custom document`. Select an LLM model to proceed.'
+          );
           return;
         }
 
