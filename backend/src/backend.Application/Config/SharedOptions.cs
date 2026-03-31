@@ -1,6 +1,6 @@
 namespace backend.Application.Config;
 
-
+// Default values
 public class SharedOptions
 {
     public const string SectionName = "Shared";

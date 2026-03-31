@@ -1,3 +1,5 @@
+// Summary: Orchestrates parsing of a solution export into a structured report of apps, workflows, environment variables, and relationships.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,8 +14,10 @@ using backend.Application.Helpers;
 
 namespace backend.Application.Parser;
 
+// Summary: Provides the main entry point and helpers for turning a solution folder into JSON and markdown summaries.
 public static class SolutionParser
 {
+    // Summary: Parses the given solution folder, runs canvas unpack if needed, analyzes artifacts, and writes summary outputs.
     public static string Run(string input_path, string output_path, string jobId, string pacJobsDir)
     {
         string input = input_path;

@@ -1,4 +1,5 @@
 
+// Summary: Parses canvas app artifacts and their unpacked sources to group apps, screens, and connectors for solution reports.
 
 using System;
 using System.Collections.Generic;
@@ -6,11 +7,14 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using backend.Application.Helpers; 
 
 namespace backend.Application.Parser;
 
+// Summary: Provides helper methods to analyze Canvas Apps folders and extract app, screen, and connector metadata.
 public static class CanvasAppsParsing
 {
+    // Summary: Groups canvas app-related files by base app name, returning sorted lists of filenames per app.
     public static Dictionary<string, List<string>> GroupCanvasApps(DirectoryInfo canvasDir)
     {
         var groups = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
@@ -56,6 +60,7 @@ public static class CanvasAppsParsing
             );
     }
 
+    // Summary: Builds detailed canvas app metadata (apps, screens, connections, files) from .msapp and unpacked source folders.
     public static List<CanvasAppDetail> ParseCanvasAppsDetailed(DirectoryInfo canvasDir, DirectoryInfo? canvasSrcDir)
     {
         var result = new List<CanvasAppDetail>();
@@ -173,6 +178,7 @@ public static class CanvasAppsParsing
         return result.OrderBy(x => x.App, StringComparer.OrdinalIgnoreCase).ToList();
     }
 
+    // Summary: Determines whether a given YAML file path should be treated as a user-facing screen definition.
     private static bool ShouldCountAsScreenFile(string path)
     {
         var fileName = Path.GetFileName(path);
@@ -207,6 +213,7 @@ public static class CanvasAppsParsing
     }
 
 
+    // Summary: Extracts connector names referenced in a Connections.json file, returning them in sorted order.
     public static List<string> ExtractConnectorNamesFromConnectionsJson(string path)
     {
         var text = FsHelpers.SafeReadAllText(path);
@@ -235,6 +242,7 @@ public static class CanvasAppsParsing
         return found.OrderBy(x => x, StringComparer.OrdinalIgnoreCase).ToList();
     }
 
+    // Summary: Heuristically checks if a string looks like a connector identifier used in canvas app connections.
     static bool LooksLikeConnector(string s)
     {
         if (string.IsNullOrWhiteSpace(s)) return false;
@@ -243,6 +251,7 @@ public static class CanvasAppsParsing
         return false;
     }
 
+    // Summary: Normalizes a connector identifier down to its canonical name (e.g., after a PowerApps provider URL).
     static string NormalizeConnector(string s)
     {
         var t = s.Trim();

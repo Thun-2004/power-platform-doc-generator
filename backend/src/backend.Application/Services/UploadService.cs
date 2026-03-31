@@ -1,3 +1,5 @@
+// Summary: Coordinates upload of solution files, job creation, and background processing to generate requested outputs.
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -10,6 +12,7 @@ using backend.Application.Config;
 
 namespace backend.Application.Services;
 
+// Summary: Application service that manages file uploads and regeneration requests for output documents.
 public class UploadService : IUploadService
 {
     private readonly ILogger<UploadService> _logger;
@@ -18,6 +21,7 @@ public class UploadService : IUploadService
     private readonly IFileStorage _storage;
     private readonly SharedOptions _sharedConfig;
 
+    // Summary: Creates an UploadService with dependencies for logging, job tracking, file processing, storage, and shared configuration.
     public UploadService(
         ILogger<UploadService> logger,
         IJobStore jobs,
@@ -32,6 +36,7 @@ public class UploadService : IUploadService
         _sharedConfig = sharedConfig.Value;
     }
 
+    // Summary: Validates and saves an uploaded file, creates a job, starts background processing, and returns initial output file URLs.
     public async Task<JobStartResult> StartJobAsync(IFormFile file, List<string> outputTypes, string LlmModel, IReadOnlyDictionary<string, string>? outputPrompts, CancellationToken ct)
     {
         // normalize
@@ -69,11 +74,9 @@ public class UploadService : IUploadService
             {
                 await _fileProcessing.ProcessFile(outputTypes, job.JobId, LlmModel, outputPrompts);
             }
-            //TODO: more descriptive error handling
             catch (Exception e)
             {
                 _logger.LogError(e, "FileProcessing failed for job {JobId}", job.JobId);
-                // _jobs.FailJob(job.JobId, e.Message);
             }
         }, CancellationToken.None);
 
@@ -86,6 +89,7 @@ public class UploadService : IUploadService
         return new JobStartResult(job.JobId, outputFilesMetas);
     }
 
+    // Summary: Validates an existing job and requested output types, restarts background processing, and returns updated output file URLs.
     public Task<JobStartResult> RegenerateJobAsync(string jobId, List<string> outputTypes, string llmModel, IReadOnlyDictionary<string, string>? outputPrompts, CancellationToken ct)
     {
         var job = _jobs.Get(jobId);

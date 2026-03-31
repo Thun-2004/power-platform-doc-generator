@@ -1,3 +1,5 @@
+// Summary: Generates an Excel workbook summarizing workflows and screen-to-workflow relationships from parsed solution chunks.
+
 using System;
 using System.IO;
 using System.Linq;
@@ -6,8 +8,10 @@ using ClosedXML.Excel;
 
 namespace backend.Application.LLM;
 
+// Summary: Provides helper methods for exporting workflow and relationship data into Excel sheets.
 public static class ExcelExport
 {
+    // Summary: Reads workflow and relationship JSON chunks and writes a multi-sheet Excel file to the specified output directory.
     public static void Export(string chunksDir, string outDir, string fileNamePrefix = "Export")
     {
         var workflowsPath = Path.Combine(chunksDir, "workflows_detailed.json");
@@ -78,6 +82,7 @@ public static class ExcelExport
         wb.SaveAs(outPath);
     }
 
+    // Summary: Removes a known prefix from a value if present, preserving the original text otherwise.
     private static string StripPrefix(string value, string prefix)
     {
         if (value.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
