@@ -273,12 +273,11 @@ const Dashboard = () => {
 
         // Disallow "No LLM" when Custom document is selected
         if (
-          selectedModes.includes('custom-document') &&
-          String(selectedLLM).toLowerCase() === 'none'
+          (selectedModes.includes('custom-document') || selectedModes.includes('faq') || selectedModes.includes('environment-variables')) && String(selectedLLM).toLowerCase() === 'none'
         ) {
           setJobCompleteStatus('Failed');
           setJobCompleteMessage(
-            '`No LLM` can not be used to generate `Custom document`. Select an LLM model to proceed.'
+            '`No LLM` can not be used to generate `Custom document`, `FAQ`, `Environment Variables`. Select an LLM model to proceed.'
           );
           return;
         }
@@ -963,6 +962,13 @@ const Dashboard = () => {
                     );
                   })}
                 </select>
+                {
+                  selectedLLM === 'none' && (
+                    <p className="text-xs text-amber-700">
+                      Local parser allows only certain types of outputs: <br/> `Overview`, `Workflows`, `Diagrams`, `ERD`, `Screen Mapping`.
+                    </p>
+                  )
+                }
                 {llmStatusMap[selectedLLM]?.error && (
                   <p className="text-xs text-amber-700">
                     {llmStatusMap[selectedLLM].error}
