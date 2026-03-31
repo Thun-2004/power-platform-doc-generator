@@ -6,7 +6,7 @@ using backend.Application.Config;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace backend.Api;
+namespace backend.Api.Helpers;
 
 public sealed class FileStorageTtlCleanupService : BackgroundService
 {
@@ -21,12 +21,11 @@ public sealed class FileStorageTtlCleanupService : BackgroundService
         _backendOptions = backendOptions.Value;
     }
 
+    // Run once on startup
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        // Run once on startup
         await CleanupOnce(stoppingToken);
 
-        // Then run periodically.
         // every minute check for anything older than TTL.
         var delay = TimeSpan.FromMinutes(1);
         while (!stoppingToken.IsCancellationRequested)
