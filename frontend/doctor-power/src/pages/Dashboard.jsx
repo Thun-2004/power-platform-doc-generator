@@ -397,8 +397,19 @@ const Dashboard = () => {
               const fileRes = await axiosPublic.get(downloadUrl, {
                 responseType: 'blob',
               });
-              const contentDisposition =
-                fileRes.headers['content-disposition'] || '';
+
+              //if fileRes.data is empty
+              if (fileRes.data.length === 0) {
+                setOutputItems((prev) =>
+                  prev.map((item) =>
+                    item.outputType === outputType
+                      ? { ...item, status: 'Failed', error: 'No file found' }
+                      : item
+                  )
+                );
+              }
+
+              const contentDisposition = fileRes.headers['content-disposition'] || '';
               let fileName = 'generated_document';
               const fileNameMatch = /filename=(?:"?)([^;"]+)/i.exec(
                 contentDisposition
@@ -427,6 +438,15 @@ const Dashboard = () => {
                 )
               );
             } catch (e) {
+
+              setOutputItems((prev) =>
+                prev.map((item) =>
+                  item.outputType === outputType
+                    ? { ...item, status: 'Failed', error: 'Failed to fetch output file' }
+                    : item
+                )
+              );
+
               console.error('Failed to fetch output file', outputType, e);
             }
           }
