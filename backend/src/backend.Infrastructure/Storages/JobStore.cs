@@ -4,13 +4,14 @@ using System.Collections.Concurrent;
 
 namespace backend.Infrastructure.Storages; 
 
-
+// Summary: Implements the IJobStore interface to manage job records and output file metadata in memory.
 public class JobStore : IJobStore
 {
-
+    
     //link job id to job for fast look up : O(1)
     private readonly ConcurrentDictionary<string, JobRecord> _jobs = new(); 
 
+    // Summary: Creates a new JobStore instance with an empty job dictionary.
     public JobRecord Create(List<string> outputTypes, string zipFileName, string zipFilePath)
     {
         var map = new Dictionary<string, FileMetadata>();
@@ -179,14 +180,4 @@ public class JobStore : IJobStore
 
         return fileMeta;
     }
-
-    // public void FailJob(string jobId, string message, string? outputType = null)
-    // {
-    //     if (!_jobs.TryGetValue(jobId, out var job))
-    //         return;
-
-    //     job.JobStatus = JobState.Failed;
-    //     job.ErrorMessage = message;
-    //     job.FailedOutputType.Add(outputType)
-    // }
 }

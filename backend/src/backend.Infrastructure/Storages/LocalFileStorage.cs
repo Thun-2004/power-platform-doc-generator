@@ -17,6 +17,7 @@ public class LocalFileStorage : IFileStorage
         _options = options.Value;
     }
 
+    // Summary: Saves uploaded folder in appsettings.json to the local file system and returns the full file path.
     public async Task<string> SaveUploadAsync(IFormFile file, CancellationToken ct)
     {
         var originalFileName = file.FileName;

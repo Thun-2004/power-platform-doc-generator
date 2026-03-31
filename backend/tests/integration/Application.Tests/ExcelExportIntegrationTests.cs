@@ -3,7 +3,6 @@ using ClosedXML.Excel;
 
 namespace Application.IntegrationTests;
 
-/// <summary>Integration-style test: real filesystem + ClosedXML, minimal chunk JSON (no API, no pac).</summary>
 public class ExcelExportIntegrationTests
 {
     private const string WorkflowsJson = """
