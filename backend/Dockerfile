@@ -34,7 +34,6 @@ RUN apt-get update && apt-get install -y \
     libpango-1.0-0 \
     libpangocairo-1.0-0 \
     libasound2 \
-    # Optional but commonly required by Chromium
     libgtk-3-0 \
     ca-certificates \
     fonts-liberation \
