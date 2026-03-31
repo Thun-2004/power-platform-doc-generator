@@ -57,6 +57,14 @@ public class FileControllerTests
             IReadOnlyDictionary<string, string>? outputPrompts,
             CancellationToken ct) =>
             throw new NotImplementedException();
+
+        public Task<JobStartResult> RegenerateJobAsync(
+            string jobId,
+            List<string> outputTypes,
+            string llmModel,
+            IReadOnlyDictionary<string, string>? outputPrompts,
+            CancellationToken ct) =>
+            throw new NotImplementedException();
     }
 
     private sealed class StubJobStatusService : IJobStatusService
