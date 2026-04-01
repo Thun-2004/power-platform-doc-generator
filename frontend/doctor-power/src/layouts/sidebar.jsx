@@ -34,7 +34,7 @@ const Sidebar = () => {
             <House size={20} />
             <span className="text-menu">Home</span>
           </div>
-          <div 
+          {/* <div 
             className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all ${
               activeMenu === 'collections' 
                 ? 'bg-blue-600 text-white' 
@@ -47,7 +47,7 @@ const Sidebar = () => {
           >
             <Bookmark size={20}/>
             <span className="text-menu">User handbook</span>
-          </div>
+          </div> */}
         </nav>
       </aside>
   );

@@ -22,7 +22,7 @@ function App() {
             <Sidebar/>
             <Routes>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/mycollection" element={<MyCollection />} />
+              {/* <Route path="/mycollection" element={<MyCollection />} /> */}
             </Routes>
            
           </div>
