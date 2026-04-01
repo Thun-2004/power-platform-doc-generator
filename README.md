@@ -1,91 +1,116 @@
 
-⸻
+### Doctor Power – Docker & Local Setup
 
-Doctor Power – Docker Setup Guide
+---
 
-Requirements
-	•	Install Docker Desktop
-	•	Ensure Docker is running
+### Requirements
 
-⸻
+- **Docker Desktop** installed  
+- **Docker** running and available on your PATH  
+- A valid **LLM** endpoint and API key
 
-## 1. Create Environment File
+---
 
-    In the project root folder, create a file named:
+### 1. Create your `.env` file (project root)
 
-    .env
+In the project root folder (same level as `docker-compose.yml`), create a file named `.env` and add:
 
-    Add the following:
-        AZURE_OPENAI_ENDPOINT=your endpoint
-        AZURE_OPENAI_API_KEY=your key
+```bash
+AZURE_OPENAI_ENDPOINT=your-endpoint-url
+AZURE_OPENAI_API_KEY=your-azure-openai-key
+```
 
-    Replace your_openai_api_key_here with your actual OpenAI API key.
+- **`AZURE_OPENAI_ENDPOINT`**: Your Azure OpenAI endpoint URL  
+- **`AZURE_OPENAI_API_KEY`**: The API key for that Azure OpenAI resource  
 
-⸻
+> Do **not** commit the `.env` file to source control.
 
-## 2. Start the Application
+---
 
-    From the project root:
+### 2. Start the application with Docker
 
-        docker compose up --build
+From the project root:
 
-    Wait until you see:
+```bash
+docker compose up --build
+```
 
-    Application started
-    Now listening on...
+Wait until you see log lines like:
 
+```text
+Application started
+Now listening on...
+```
 
-⸻
+Then open:
 
-    Access the Application
+- **Frontend**: `http://localhost:5173`  
+- **Backend API**: `http://localhost:5280`
 
-    Frontend:
+To stop the application:
 
-        http://localhost:5173
+- Press `CTRL + C` in the terminal running `docker compose up`
+- Optionally clean up containers and networks:
 
-    Backend API:
+```bash
+docker compose down
+```
 
-        http://localhost:5280
+---
 
+### 3. Run the application locally (without Docker)
 
-⸻
+If you prefer running each piece directly:
 
-    To Stop the Application
+1. **Create `.env` in the project root** (same as above):
 
-    Press:
+   ```bash
+   AZURE_OPENAI_ENDPOINT=your-endpoint-url
+   AZURE_OPENAI_API_KEY=your-azure-openai-key
+   ```
 
-        CTRL + C
+2. **Start the frontend**
 
-    Then optionally:
+   ```bash
+   cd frontend/doctor-power
+   npm install
+   npm run dev
+   ```
 
-        docker compose down
+   The frontend will usually run at `http://localhost:5173`.
 
+3. **Start the backend**
 
-⸻
+   ```bash
+   cd backend/src/backend.Api
+   dotnet watch
+   ```
 
-If you want to run it locally, 
+   The backend API will usually run at `http://localhost:5280`.
 
-Add .env to the root directory
+---
 
-Add the following:
-        AZURE_OPENAI_ENDPOINT=your endpoint
-        AZURE_OPENAI_API_KEY=your key
+### 4. Where outputs are stored (backend)
 
-Frontend: 
-cd frontend/doctor-power/src
-npm run dev
+Generated files are written under the backend’s file storage root
+(`backend/src/backend.Infrastructure/FileStorages`):
 
-Backend:
-cd backend/src/backend.Api
-dotnet watch
+- **`UploadedFile`**: stores the original uploaded solution zip  
+- **`PPCliJobs`**: temporarily stores output from `pac` CLI jobs  
+- **`ParsedOutput`**: stores parsed/intermediate artifacts  
+- **`RAGOutput`**: stores the final generated outputs
 
+Processing order:
 
-the output should be in backend/src/backend.Infrastructure/FileStorages
+1. `UploadedFile` → original upload  
+2. `PPCliJobs` → unpacked/temporary CLI artifacts  
+3. `ParsedOutput` → structured parse results  
+4. `RAGOutput` → final documents returned to the frontend
 
-Here is the order of storing output: 
-UploadedFile -> store uploaded document 
-PPCliJobs -> temporarily store output from pac cli
-ParsedOutput -> store output being parsed
-RAGOutput -> store fina output 
+---
 
+### 5. Editing backend settings
 
+To adjust backend configuration (file paths, timeouts, model settings, etc.), see:
+
+- `backend/README.md` – contains details on backend options and how to change them.
