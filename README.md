@@ -16,12 +16,11 @@
 In the project root folder (same level as `docker-compose.yml`), create a file named `.env` and add:
 
 ```bash
-AZURE_OPENAI_ENDPOINT=your-endpoint-url
 AZURE_OPENAI_API_KEY=your-azure-openai-key
 ```
 
-- **`AZURE_OPENAI_ENDPOINT`**: Your Azure OpenAI endpoint URL  
 - **`AZURE_OPENAI_API_KEY`**: The API key for that Azure OpenAI resource  
+- the name must match the one you set in backend/src/backend.Api/appsettings.json, LLMKeys
 
 > Do **not** commit the `.env` file to source control.
 
@@ -65,7 +64,6 @@ If you prefer running each piece directly:
 1. **Create `.env` in the project root** (same as above):
 
    ```bash
-   AZURE_OPENAI_ENDPOINT=your-endpoint-url
    AZURE_OPENAI_API_KEY=your-azure-openai-key
    ```
 
