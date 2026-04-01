@@ -30,6 +30,7 @@ Main sections (easy summary):
   - Update `Shared.AIModels`.
 - **Change LLM provider endpoints or key env var names**
   - Update `Llm.LLMUrls` and `Llm.LLMKeys`.
+  - Go to backend/src/backend.Application/LLM/OpenAIHttp.cs and update CreateClient()
 
 ### 3) After you change values
 
@@ -62,4 +63,4 @@ Guide to create new tests
 
 1. Run 'dotnet new xunit -n <name>.Tests -o <path to your test folder>'
 
-2. Run 'dotnet sln backend.sln add /Users/benn/Desktop/sh38-main/backend/tests/integration/Application.Tests/Application.Tests.csproj --solution-folder tests/integration' 
+2. Run 'dotnet sln backend.sln add /<path to the project>/sh38-main/backend/tests/integration/Application.Tests/Application.Tests.csproj --solution-folder tests/integration' 

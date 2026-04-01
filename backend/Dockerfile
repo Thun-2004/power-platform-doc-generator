@@ -3,7 +3,8 @@
 #   docker build --platform=linux/amd64 -f Dockerfile.dev -t wm-backend .
 #
 # Run API container 
-#   docker run --rm -p 5280:5280 -e ASPNETCORE_ENVIRONMENT=Development -e OPENAI_API_KEY=REMOVED_OPENAI_KEY wm-backend
+#   docker run --rm -p 5280:5280 wm-backend
+
 # ---------- DEV STAGE ----------
 FROM mcr.microsoft.com/dotnet/sdk:9.0
 

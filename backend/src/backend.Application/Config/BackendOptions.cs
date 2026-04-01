@@ -26,5 +26,5 @@ public class BackendOptions
         ["environment-variables"] = "environment-variables.txt"
     };
 
-    public string EnvMapPath { get; set; } = "../../backend.Application/LLM/envmap.replybrary.json";
+    public string EnvMapPath { get; set; } = "../../backend.Application/LLM/envmap.json"; //temp: should be uploaded one not static
 }
