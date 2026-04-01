@@ -26,6 +26,10 @@ public static class LlmHealth
         var llm = scope.ServiceProvider.GetRequiredService<IOptions<LlmOptions>>().Value;
         var shared = scope.ServiceProvider.GetService<IOptions<SharedOptions>>()?.Value;
 
+        // Try to get a logger so we can write detailed errors when health checks fail.
+        var loggerFactory = scope.ServiceProvider.GetService<Microsoft.Extensions.Logging.ILoggerFactory>();
+        var logger = loggerFactory?.CreateLogger("LlmHealth");
+
         var results = new List<LlmModelStatus>();
 
         // Map provider -> models from SharedOptions.AIModels if available
@@ -64,12 +68,18 @@ public static class LlmHealth
                         catch (Exception ex)
                         {
                             modelError = ex.Message;
+                            // Print details so backend logs clearly show which model/endpoint failed.
+                            logger?.LogError(ex,
+                                "LLM health check failed for model {Model} on provider {Provider} with base URL {BaseUrl}",
+                                modelName, provider, baseUrl);
 
-                            // Only mark model unhealthy for real deployment/auth problems.
-                            // avoids false-negatives when the health-call payload differs
+                            // Only mark model unhealthy for real deployment/auth problems / missing models.
+                            // Avoids false-negatives when the health-call payload differs
                             // from the real generation payload.
                             var msg = ex.Message ?? string.Empty;
-                            var isDeploymentMissing = msg.Contains("DeploymentNotFound", StringComparison.OrdinalIgnoreCase);
+                            var isDeploymentMissing =
+                                msg.Contains("DeploymentNotFound", StringComparison.OrdinalIgnoreCase) ||
+                                msg.Contains("404", StringComparison.OrdinalIgnoreCase);
                             var isAuthFailed =
                                 msg.Contains("401", StringComparison.OrdinalIgnoreCase) ||
                                 msg.Contains("403", StringComparison.OrdinalIgnoreCase) ||
@@ -96,6 +106,9 @@ public static class LlmHealth
                     {
                         ok = false;
                         err = ex.Message;
+                        logger?.LogError(ex,
+                            "LLM base URL health check failed for provider {Provider} with base URL {BaseUrl}",
+                            provider, baseUrl);
                     }
 
                     results.Add(new LlmModelStatus(provider, provider, baseUrl, ok, err));
@@ -104,6 +117,10 @@ public static class LlmHealth
             catch (Exception ex)
             {
                 var baseUrl = llm.LLMUrls.GetValueOrDefault(provider) ?? string.Empty;
+
+                logger?.LogError(ex,
+                    "LLM health configuration or connection failed for provider {Provider} with base URL {BaseUrl}",
+                    provider, baseUrl);
 
                 if (modelsByProvider.TryGetValue(provider, out var models) && models is { Length: > 0 })
                 {
