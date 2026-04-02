@@ -1,23 +1,55 @@
-build-job:
-  stage: build
-  script:
-    - echo "Hello, $GITLAB_USER_LOGIN!"
+#Taken from website tutorial: https://medium.com/@wahab.kazmi2000/building-and-deploying-a-react-js-project-with-docker-and-gitlab-ci-3913efa74c71
+stages:
+ - frontend
+ - backend
+ - image
 
-test-job1:
-  stage: test
-  script:
-    - echo "This job tests something"
+variables:
+ IMAGE_NAME: development
+ IMAGE_TAG: latest
+ APP_DIRECTORY: doctor-power
 
-test-job2:
-  stage: test
-  script:
-    - echo "This job tests something, but takes more time than test-job1."
-    - echo "After the echo commands complete, it runs the sleep command for 20 seconds"
-    - echo "which simulates a test that runs 20 seconds longer than test-job1"
-    - sleep 20
+frontend_build: 
+   stage: frontend
+   image: node:14
+   script:
+   - cd frontend/$APP_DIRECTORY
+   - npm install
+   - npm run build
+   - npm test --passWithNoTests
 
-deploy-prod:
-  stage: deploy
-  script:
-    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
-  environment: production
+backend_build:
+   stage: backend
+   image: mcr.microsoft.com/dotnet/sdk:9.0
+   script:
+   - cd backend
+   - dotnet restore
+   - dotnet build
+   - dotnet test
+
+# build-docker-image:
+#   stage: image
+#   image: docker:19.03.12
+#   services:
+#     - name: docker:19.03.12-dind
+#       command: ["--tls=false"]
+#   variables:
+#     DOCKER_HOST: tcp://docker:2375
+#     DOCKER_TLS_CERTDIR: ""
+#   script:
+#     - cd frontend/$APP_DIRECTORY
+#     - docker info
+#     - |
+#       set -e
+#       BRANCH="${CI_COMMIT_BRANCH:-$CI_COMMIT_REF_NAME}"
+#       if [ "$BRANCH" = "main" ]; then
+#         export IMAGE_NAME=production
+#       elif [ "$BRANCH" = "feature/frontend" ]; then
+#         export IMAGE_NAME=staging
+#       else
+#         echo "Skipping Docker image build for branch $BRANCH"
+#         exit 0
+#       fi
+#       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+#       docker build -t "$CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA" .
+#       docker push "$CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA"
