@@ -22,6 +22,7 @@ AZURE_OPENAI_API_KEY=your-azure-openai-key
 
 - **`AZURE_OPENAI_ENDPOINT`**: Your Azure OpenAI endpoint URL  
 - **`AZURE_OPENAI_API_KEY`**: The API key for that Azure OpenAI resource  
+- The variable names must match what you configure in `backend/src/backend.Api/appsettings.json` (for example under `LLMKeys`).
 
 > Do **not** commit the `.env` file to source control.
 
