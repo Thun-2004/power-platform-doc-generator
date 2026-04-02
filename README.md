@@ -112,3 +112,5 @@ Processing order:
 To adjust backend configuration (file paths, timeouts, model settings, etc.), see:
 
 - `backend/README.md` – contains details on backend options and how to change them.
+
+---
